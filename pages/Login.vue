@@ -12,11 +12,21 @@
                 <button>Sign in</button>
             </div>
         </div>
+        <!-- <i class="fa fa-user"></i> -->
     </div>
 </template>
 
 <script setup>
     import {ref} from 'vue'
+
+
+
+
+
+
+
+
+
 
 
     const LoginDetails = ref({

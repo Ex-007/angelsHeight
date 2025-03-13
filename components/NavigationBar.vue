@@ -9,7 +9,7 @@
 
             <div class="secondTop">
                 <ul class="classical">
-                    <li><nuxt-link to="/">Home</nuxt-link></li>
+                    <li><nuxt-link to="/"><i class="fa fa-home"></i></nuxt-link></li>
                 </ul>
             </div>
         </div>
@@ -50,18 +50,18 @@ ul{
 }
 li{
     list-style-type: none;
-    border: 1px solid white;
+    /* border: 1px solid white; */
     padding: 3px;
-    background-color: #007bff;
+    /* background-color: #007bff; */
     border-radius: 5px;
 }
 li:hover{
     background: white;
 }
 a{
-    color: rgb(154, 230, 179);
+    color: rgb(255, 255, 255);
     text-decoration: none;
-    font-size: 20px;
+    font-size: 40px;
 
 }
 </style>

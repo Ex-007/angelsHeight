@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.9.0",
+    "font-awesome": "^4.7.0",
     "nuxt": "^3.15.4",
     "vue": "latest",
     "vue-router": "latest"
@@ -19,5 +20,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "author": "ABTech",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@nuxtjs/supabase": "^1.5.0"
+  }
 }
