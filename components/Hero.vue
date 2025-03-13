@@ -15,6 +15,20 @@
 </template>
 
 <script setup>
+import { useRouter } from 'vue-router'
+const router = useRouter()
+
+// sign in page
+const userPage =  () => {
+    router.push('/Login')
+}
+
+// REgister page
+const accountPage =  () => {
+    router.push('/Confirm')
+}
+
+
 
 </script>
 

@@ -9,7 +9,7 @@
 
             <div class="secondTop">
                 <ul class="classical">
-                    <li><nuxt-link to="/login">Login</nuxt-link></li>
+                    <li><nuxt-link to="/">Home</nuxt-link></li>
                 </ul>
             </div>
         </div>
