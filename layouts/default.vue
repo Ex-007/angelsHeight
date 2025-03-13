@@ -1,0 +1,17 @@
+<template>
+    <div>
+        <NavigationBar />
+        <div>
+            <slot />
+        </div>
+        <FooterBar />
+    </div>
+</template>
+
+<style scoped>
+    body, html{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+</style>

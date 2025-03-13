@@ -1,0 +1,23 @@
+{
+  "name": "angelsheight",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@pinia/nuxt": "^0.9.0",
+    "nuxt": "^3.15.4",
+    "vue": "latest",
+    "vue-router": "latest"
+  },
+  "description": "This is the main website of Angelsheight institution",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "ABTech",
+  "license": "ISC"
+}
