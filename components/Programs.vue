@@ -69,6 +69,9 @@
         .woven{
             margin: 0 auto;
         }
+        h1{
+            font-size: 20px;
+        }
     }
     
 </style>

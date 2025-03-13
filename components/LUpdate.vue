@@ -35,4 +35,9 @@
         padding: 10px;
         border-radius: 20px;
     }
+    @media (max-width: 768px){
+        h1{
+            font-size: 20px;
+        }
+    }
 </style>

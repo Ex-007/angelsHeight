@@ -55,4 +55,9 @@
     h2{
         color: rgb(84, 8, 112);
     }
+    @media (max-width: 768px){
+        h1{
+            font-size: 20px;
+        }
+    }
 </style>

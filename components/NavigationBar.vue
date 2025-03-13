@@ -56,7 +56,7 @@ li{
     border-radius: 5px;
 }
 li:hover{
-    background: white;
+    background: rgb(195, 38, 38);
 }
 a{
     color: rgb(255, 255, 255);
