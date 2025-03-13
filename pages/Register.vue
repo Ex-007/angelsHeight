@@ -7,6 +7,12 @@
             <!-- <h5>There's an error</h5> -->
             <div class="stepA">
                 <h1>Personal Information</h1>
+
+                <div class="stepA">
+                    <h3>Please upload your passport</h3>
+                    <label for="olevel"><i class="fa fa-file" style="font-size: 40px; cursor: pointer;"></i></label>
+                    <input type="file" id="olevel" style="display: none;">
+                 </div>
                 
                 <!-- SURNAME -->
                 <label for="surnanme">Surname:</label>
@@ -84,35 +90,84 @@
     
                 <!-- EMERGENCY CONTACTS -->
                  <div class="stepA emergencyy">
-                    <h1>Person to be Notified during Emergency</h1>
+                    <h1 class="personTo">Person to be Notified during Emergency</h1>
 
-                    <!-- FIRSTNAME -->
+                    <!-- FULLNAME -->
                     <label for="fullname">Fullname:</label>
                     <input type="text" id="fullname" class="contactInput">
+
+                    <!-- ADDRESS -->
+                    <label for="adddre">Address:</label>
+                    <input type="text" id="adddre" class="contactInput">
+
+                    <!-- PHONE NUMBER -->
+                    <label for="adddre">Phone Number:</label>
+                    <input type="text" id="adddre" class="contactInput">
+
+                    <!-- EMAIL -->
+                    <label for="eee">Email:</label>
+                    <input type="text" id="eee" class="contactInput">
                  </div>
               </div>
             
             
             
             
+              <div class="stepA">
+                <h1>Program to Enroll For</h1>
+                
+                <!-- FIRST CHOICE -->
+                <label for="firstChoice">First Choice:</label>
+                <input type="text" id="firstChoice" class="contactInput">
+    
+                <!-- SECOND CHOISE -->
+                <label for="secondChoice">Second Choice:</label>
+                <input type="text" id="secondChoice" class="contactInput">
+    
+                <!-- EDUCATIONAL BACKGROUND -->
+                 <div class="stepA eduBack">
+                    <p>List all the schools attended in chronological order</p>
+                    <input type="text" class="contactInput" placeholder="School Name">
+                    <input type="text" class="contactInput" placeholder="Result Awarded">
+                 </div>
+
+                 <div class="stepA academi">
+                    <h3>Please upload your O'level result</h3>
+                    <label for="olevel"><i class="fa fa-file" style="font-size: 40px; cursor: pointer;"></i></label>
+                    <input type="file" id="olevel" style="display: none;">
+                 </div>    
+               
+              </div>
             
             
+              <div class="stepA">
+                    <h1 class="personTo">Sponsor</h1>
+
+                    <!-- FULLNAME -->
+                    <label for="financialName">Fullname:</label>
+                    <input type="text" id="financialName" class="contactInput">
+
+                    <!-- ADDRESS -->
+                    <label for="financialAddress">Address:</label>
+                    <input type="text" id="financialAddress" class="contactInput">
+
+                    <!-- PHONE NUMBER -->
+                    <label for="financialPhone">Phone Number:</label>
+                    <input type="text" id="financialPhone" class="contactInput">
+
+                    <!--    RELATIONSHIP -->
+                    <label for="financialRelat">Relationship:</label>
+                    <input type="text" id="financialRelat" class="contactInput">
+                 </div>
             
             
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            <div class="buttons">
-                <button @click.prevent="togglePasswordVisibility" type="button">{{ passwordVisible ? 'Hide' : 'Show' }} Password </button>
-                <button>Sign in</button>
+            <div class="stepA buttonSign">
+                <button>Submit</button>
             </div>
+            
+            
+            
+
         </div>
         <!-- <i class="fa fa-user"></i> -->
     </div>
@@ -195,8 +250,16 @@ button{
 label{
     color: white;
 }
-h1{
+.personTo, h3{
     color: white;
+    background: none;
+}
+h1{
+    background-color: white;
+    color: #6897a7;
     text-align: center;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 20px;
 }
 </style>
