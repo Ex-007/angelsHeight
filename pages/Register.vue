@@ -249,6 +249,8 @@ button{
 }
 label{
     color: white;
+    text-align: center;
+    text-align-last: center;
 }
 .personTo, h3{
     color: white;
@@ -261,5 +263,11 @@ h1{
     padding: 10px;
     margin: 10px 0;
     border-radius: 20px;
+}
+
+@media (max-width: 768px){
+    h1{
+        font-size: 19px;
+    }
 }
 </style>

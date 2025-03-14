@@ -5,6 +5,7 @@
                 Note: Confirm Your Form Purchase.
             </p>
             <h5 v-if="noInput">{{ errorMessage }}</h5>
+            <h5 class="successful" v-if="successfully">Welcome {{ successMessage }}, waiting for redirect...</h5>
             <input type="text" class="contactInput" placeholder="Please input your payment ID" v-model="paymentId">
             <button @click="confirmPay" :disabled="idStore.isLoading">{{ idStore.isLoading ? 'Confirming...' : 'Confirm Payment' }}</button>
         </div>
@@ -19,7 +20,9 @@
     const router = useRouter()
 
     const errorMessage = ref('')
+    const successMessage = ref('')
     const noInput = ref(false)
+    const successfully = ref(false)
     const paymentId = ref('') 
 
     // FUNCTION TO CHECK IF THE ID EXISTS, IF YES, NAVIGATE TO THE REGISTRATION PAGE  
@@ -36,8 +39,15 @@
             errorMessage.value = 'Transaction ID not found'
             return
         }
-        alert('Welcome ', idStore.incoming.name)
+        successfully.value = true
+        successMessage.value = idStore.incoming?.name
+        // console.log(idStore.incoming?.name)
+        setTimeout(() => {
+            router.push('/Register')
+        }, 2000);
     }
+
+    // abc123def456
 </script>
 
 <style scoped>
@@ -73,6 +83,7 @@
 h5{
     font-size: 20px;
     color: rgba(179, 20, 20, 0.996);
+    text-align: center;
 }
 button{
     width: 150px;
@@ -81,5 +92,16 @@ button{
     padding: 10px;
     border-radius: 20px;
     cursor: pointer;
+}
+.successful{
+    color: rgb(50, 217, 50);
+    text-align: center;
+}
+
+@media (max-width: 768px){
+    h5{
+        font-size: 17px;
+        text-align-last: center;
+    }
 }
 </style>
