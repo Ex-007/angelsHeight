@@ -11,6 +11,7 @@
           <li @click="activeTab = 'requests'" :class="{ active: activeTab === 'requests' }">📩 Course Form</li>
           <li @click="activeTab = 'profile'" :class="{ active: activeTab === 'profile' }">👤 Profile</li>
           <li @click="activeTab = 'premium'" :class="{ active: activeTab === 'premium' }">💎 Transaction ID</li>
+          <li @click="activeTab = 'admitted'" :class="{ active: activeTab === 'admitted' }">💎 Admitted Students</li>
           <li @click="logout">🚪 Logout</li>
         </ul>
       </aside>
@@ -75,10 +76,29 @@
             <h3 class="transIdSuccess">{{ transSuccessful.success }}</h3>
             <label for="studentName">Student Name:</label>
             <input type="text" id="studentName" class="contactInput" placeholder="Enter Student's Name" v-model="transacct.name">
+            <label for="studentEmail">Student Email:</label>
+            <input type="text" id="studentEmail" class="contactInput" placeholder="Enter Student's Email" v-model="transacct.email">
             <label for="transactionId">Transaction ID:</label>
             <input type="text" id="transactionId" class="contactInput" placeholder="Enter Transaction Id" v-model="transacct.identity">
             <h3 class="transIdError">{{ transSuccessful.errorin }}</h3>
             <button @click="saveDetail" :disabled="admin.isLoading">{{ admin.isLoading ? 'Saving...' : 'Save' }}</button>
+        </div>
+        </section>
+  
+        <!-- ADMITTED STUDENTS -->
+        <section v-if="activeTab === 'admitted'">
+            <div class="transactionDet">
+            <!-- <h3 class="transIdSuccess">{{ transSuccessful.success }}</h3> -->
+            <label for="studentName">Student Name:</label>
+            <input type="text" id="studentName" class="contactInput" placeholder="Enter Student's Name" v-model="admitted.name">
+            <label for="studentEmail">Student Email:</label>
+            <input type="text" id="studentEmail" class="contactInput" placeholder="Enter Student's Email" v-model="admitted.email">
+            <label for="studentPhone">Student Phone Number:</label>
+            <input type="text" id="studentPhone" class="contactInput" placeholder="Enter Student's Email" v-model="admitted.phone">
+            <label for="transactionId">Transaction ID:</label>
+            <input type="text" id="transactionId" class="contactInput" placeholder="Enter Transaction Id" v-model="admitted.identity">
+            <h3 class="transIdError">{{ transSuccessful.errorin }}</h3>
+            <button @click="saveAdmitted" :disabled="admin.isLoading">{{ admin.isLoading ? 'Saving...' : 'Save' }}</button>
         </div>
         </section>
       </main>
@@ -104,7 +124,8 @@
     // TRANSACTION ID REFERENCE
     const transacct = ref({
         name : '',
-        identity : ''
+        identity : '',
+        email : ''
     })
 
     // TRANSACTION ID FUNCTION
@@ -119,11 +140,37 @@
         transacct.value.name = ''
         transacct.value.identity = ''
     }
+    
+    // SAVING ADNITTES STUDENTS FILE
+    const admittedSuccess = ref({
+      success : '',
+      errorin : ''
+    })
+    // TRANSACTION ID REFERENCE
+    const admission = ref({
+        name : '',
+        identity : '',
+        email : '',
+        phone : ''
+    })
 
+    // TRANSACTION ID FUNCTION
+    const saveAdmitted = async() => {
+        if(admission.value.identity == '' || admission.value.name == '' || admission.value.email == '' || admission.value.phone == ''){
+          admittedSuccess.value.errorin = 'no field should be empty'
+            return
+        }
 
+        // console.log(transacct.value)
+        await admin.admittedStudentss(admission.value)
+        admittedSuccess.value.success = 'Successful'
+        admittedSuccess.value.name = ''
+        admittedSuccess.value.identity = ''
+        admittedSuccess.value.email = ''
+        admittedSuccess.value.phone = ''
+    }
 
-
-
+    
 
 
 

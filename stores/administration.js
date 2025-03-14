@@ -16,14 +16,39 @@ export const useAdminStore = defineStore('admin', () => {
             .insert([
                 {
                     pay_identity : transactionDet.identity,
-                    name : transactionDet.name
+                    name : transactionDet.name,
+                    email : transactionDet.email
                 }
             ])
             if(checkError) throw checkError
             transSaveSuccess.value = "Uploaded Successfully"
         } catch (err) {
             error.value = err.message
-            // console.log(err.message)
+        } finally{
+            isLoading.value = false
+        }
+    }
+
+    // SAVE ADMITTED STUDENTS TO THE CLOUD
+    const admittedStudentss = async (admission) => {
+        isLoading.value = true
+        error.value = null
+        const client = useSupabaseClient()
+        try {
+            const {data, error:adminError} = await client
+            .from('ADMITTEDSTUDENTS')
+            .insert([
+                {
+                    pay_identity : admission.identity,
+                    name : admission.name,
+                    email : admission.email,
+                    phone: admission.phone
+                }
+            ])
+            if(adminError) throw adminError
+            transSaveSuccess.value = "Uploaded Successfully"
+        } catch (err) {
+            error.value = err.message
         } finally{
             isLoading.value = false
         }
@@ -36,6 +61,7 @@ export const useAdminStore = defineStore('admin', () => {
         isLoading,
         error,
         transactioDetails,
-        transSaveSuccess
+        transSaveSuccess,
+        admittedStudentss
     }
 })

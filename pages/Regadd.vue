@@ -149,10 +149,7 @@ button{
     cursor: pointer;
 }
 span{
-    background-color: white;
-    color: #6897a7;
-    padding: 8px;
-    border-radius: 15px;
+    color: white;
     cursor: pointer;
 }
 h3{
@@ -162,10 +159,7 @@ h3{
 }
 @media (max-width: 768px){
     span{
-    background-color: white;
-    color: #6897a7;
-    padding: 8px;
-    border-radius: 15px;
+    color: white;
     cursor: pointer;
 }
 h3{

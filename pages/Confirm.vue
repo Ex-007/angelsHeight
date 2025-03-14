@@ -7,6 +7,7 @@
       <div v-else-if="error">
         <h2>Verification Failed</h2>
         <p>{{ error }}</p>
+        <h3>Please Login to continue</h3>
         <NuxtLink to="/login">Return to login</NuxtLink>
       </div>
     </div>
@@ -29,38 +30,25 @@
     }
     
     // Exchange the confirmation code for a session
-    // const { error: verifyError } = await client.auth.verifyOtp({
-    //   token_hash: code,
-    //   type: 'email'
-    // })
+    const { error: verifyError } = await client.auth.verifyOtp({
+      token_hash: code,
+      type: 'email'
+    })
     
-    // if (verifyError) throw verifyError
+    if (verifyError) throw verifyError
     
     // Check if the user exists and is confirmed
-    // const { data: { user }, error: userError } = await client.auth.getUser()
+    const { data: { user }, error: userError } = await client.auth.getUser()
     
-    // if (userError) throw userError
+    if (userError) throw userError
     
-    // if (user) {
-    //   router.push('/admin-dash')
-    // } else {
-    //   throw new Error('Email verification unsuccessful')
-    // }
+    if (user) {
+      router.push('/admin-dash')
+    } else {
+      throw new Error('Email verification unsuccessful')
+    }
 
-    // Verify the email confirmation using OTP verification method
-    const { error: verifyError } = await client.auth.verifyOtp({
-      token: code,
-      type: 'email'
-    });
-
-    if (verifyError) throw verifyError;
-
-    console.log('User Verified Successfully');
-
-    // Redirect to the admin dashboard
-    router.push('/admin-dash');
-
-
+   
 
   } catch (err) {
     error.value = err.message
@@ -80,5 +68,13 @@
     margin: 2rem auto;
     padding: 2rem;
     text-align: center;
+  }
+  h3{
+    color:white;
+    text-align:center;
+  }
+  a{
+    text-decoration: none;
+    color: rgb(60, 60, 222);
   }
   </style>

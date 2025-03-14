@@ -6,6 +6,48 @@ export const useStudentStore = defineStore('studentauth', () => {
     const error = ref(null)
     const userData = ref(null)
     const canProceed = ref(false)
+    const incoming = ref(null)
+
+
+    // CHECK IF THE REGISTERER IS AN ADMITTED STUDENT BEFORE REGISTRATION
+    const checkAdmission = async (RegisterDetails) => {
+        isLoading.value = true
+        error.value = null
+        const client = useSupabaseClient()
+        try {
+            const {data: queryData, error: queryError} = await client
+            .from('ADMITTEDSTUDENTS')
+            .select('*')
+            .eq('email', RegisterDetails.email)
+            .single()
+
+            if(queryError) throw queryError
+            console.log(data)
+            incoming.value = queryData
+
+            // CHECK IF THE REGISTERER EXISTS IN THE ADMITTED STUDENTS PAGE
+            if (queryError) {
+                if (queryError.code === 'PGRST116') {
+                    error.value = 'You\'re not admitted yet'
+                    isLoading.value = false
+                    return
+                }
+                // THROW OTHER ERRORS
+                throw queryError
+            }
+
+            console.log(queryData)
+            incoming.value = queryData
+            // IF THE EMAIL IS FOUND, REGISTER THE STUDENT
+            await registration(RegisterDetails)
+            canProceed.value = true
+        } catch (err) {
+            error.value = err.message
+            console.log(err.message)
+        } finally{
+            isLoading.value = false
+        }
+    }
 
     // REGISTER STUDENTS
     const registration = async(RegisterDetails) => {
@@ -30,7 +72,6 @@ export const useStudentStore = defineStore('studentauth', () => {
             })
             if(signUpError) throw signUpError
             userData.value = data.user
-            canProceed.value = true
         } catch (err) {
             error.value = err.message
             console.log(err.message)
@@ -76,7 +117,7 @@ export const useStudentStore = defineStore('studentauth', () => {
     return{
         isLoading,
         error,
-        registration,
+        checkAdmission,
         canProceed,
         loginUser
     }

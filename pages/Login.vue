@@ -97,7 +97,7 @@
             return
         }
         registerE.value = false
-        await auth.registration(RegisterDetails.value)
+        await auth.checkAdmission(RegisterDetails.value)
     }
 
     // WATCH FOR AUTHENTICATION TO PROCEED TO THE PAGE FOR EMAIL CONFIRMATION

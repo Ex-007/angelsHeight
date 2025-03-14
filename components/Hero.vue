@@ -2,7 +2,7 @@
 <section class="hero">
         <div class="overlay"></div>
         <div class="hero-content">
-            <h1>ANGELSHEIGHT</h1>
+            <h1>ANGELS HEIGHT</h1>
             <p>
                 College of Health Technology <br> <span class="spanning"> In affiliation with Kwara State College of Health Technology </span>
             </p>
