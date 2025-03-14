@@ -8,9 +8,11 @@ export default defineNuxtConfig({
     'font-awesome/css/font-awesome.min.css',
   ],
   supabase:{
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_KEY,
     redirectOptions:{
       login: '/Login',
-      callback : '/confirm',
+      callback : '/Confirm',
       exclude: ['/*'],
     },
   },

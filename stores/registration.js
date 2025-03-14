@@ -1,13 +1,52 @@
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 
 export const useAuthStore = defineStore('auth', () => {
-    const userValue = ref(null)
     const isLoading = ref(false)
     const error = ref(null)
+    const userData = ref(null)
     const canProceed = ref(false)
 
-        
-    return {
+    // REGISTER ADMIN
+    const registerNewAdmin = async(RegisterDetails) => {
+        console.log(RegisterDetails)
+        isLoading.value = true
+        error.value = null
+        canProceed.value = false
+        const client = useSupabaseClient()
+        try {
+            const {data, error:signUpError} = await client.auth.signUp({
+                email : RegisterDetails.email,
+                password : RegisterDetails.password,
+                options:{
+                    emailRedirectTo: `${window.location.origin}/Confirm`,
+                    data:{
+                        Fullname: RegisterDetails.fullname,
+                        Phone: RegisterDetails.phone,
+                        role: "admin"
+                    }
+                }
+            })
 
+            if(signUpError) throw signUpError
+            userData.value = data.user
+            canProceed.value = true
+            console.log(data)
+            console.log(data.user)
+        } catch (err) {
+            error.value = err.message
+            console.log(err.message)
+        } finally{
+            isLoading.value = false
+        }
+    }
+   
+
+
+
+    return{
+        isLoading,
+        error,
+        registerNewAdmin,
+        canProceed
     }
 })

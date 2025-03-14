@@ -1,13 +1,84 @@
+<!-- pages/confirm.vue -->
 <template>
-    <div>
-        <h1>This is the confirm page</h1>
+    <div class="confirmation-container">
+      <div v-if="loading">
+        <p>Verifying your email...</p>
+      </div>
+      <div v-else-if="error">
+        <h2>Verification Failed</h2>
+        <p>{{ error }}</p>
+        <NuxtLink to="/login">Return to login</NuxtLink>
+      </div>
     </div>
-</template>
+  </template>
+  
+  <script setup>
+  import{useRoute, useRouter} from 'vue-router'
 
-<script setup>
+  const client = useSupabaseClient()
+  const loading = ref(true)
+  const error = ref(null)
+  const router = useRouter()
+  const route = useRoute()
+  
+  onMounted(async () => {
+  try {
+    const code = route.query.code
+    if (!code) {
+      throw new Error('No confirmation code found in URL')
+    }
+    
+    // Exchange the confirmation code for a session
+    // const { error: verifyError } = await client.auth.verifyOtp({
+    //   token_hash: code,
+    //   type: 'email'
+    // })
+    
+    // if (verifyError) throw verifyError
+    
+    // Check if the user exists and is confirmed
+    // const { data: { user }, error: userError } = await client.auth.getUser()
+    
+    // if (userError) throw userError
+    
+    // if (user) {
+    //   router.push('/admin-dash')
+    // } else {
+    //   throw new Error('Email verification unsuccessful')
+    // }
 
-</script>
+    // Verify the email confirmation using OTP verification method
+    const { error: verifyError } = await client.auth.verifyOtp({
+      token: code,
+      type: 'email'
+    });
 
-<style lang="scss" scoped>
+    if (verifyError) throw verifyError;
 
-</style>
+    console.log('User Verified Successfully');
+
+    // Redirect to the admin dashboard
+    router.push('/admin-dash');
+
+
+
+  } catch (err) {
+    error.value = err.message
+  } finally {
+    loading.value = false
+  }
+})
+
+// http://localhost:3000/Confirm?code=b3bca032-5c6f-4ae0-9b06-0be4bd0454f7
+
+
+  </script>
+  
+  <style scoped>
+  .confirmation-container {
+    max-width: 500px;
+    margin: 2rem auto;
+    padding: 2rem;
+    text-align: center;
+  }
+  </style>

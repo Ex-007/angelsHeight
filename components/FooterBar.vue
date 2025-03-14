@@ -3,19 +3,19 @@
       <div class="footer-container">
         <!-- Logo & About -->
         <div class="footer-section">
-          <h2 class="logo">ANGELSHEIGHT</h2>
+          <h2 class="logo">ANGELS HEIGHT</h2>
           <p>...Healthcare Training Per Excellence is Our Concern.</p>
         </div>
   
         <!-- Quick Links -->
         <div class="footer-section">
           <h3>Quick Links</h3>
-          <ul>
+          <!-- <ul>
             <li><nuxt-link to="/" class="routerMove"><i class="fa fa-home"></i>Home</nuxt-link></li>
             <li><nuxt-link to="/About" class="routerMove"><i class="fa fa-user"></i>About Us</nuxt-link></li>
             <li><nuxt-link to="/Notifications" class="routerMove"><i class="fa fa-bell"></i>Notifications</nuxt-link></li>
             <li><nuxt-link to="/Support" class="routerMove"><i class="fa fa-heart"></i>Support</nuxt-link></li>
-          </ul>
+          </ul> -->
         </div>
   
         <!-- Support & Help -->
@@ -38,11 +38,10 @@
           </div>
         </div>
       </div>
-  
       <!-- Copyright -->
       <div class="footer-bottom">
         <p>&copy; {{ new Date().getFullYear() }} Angelsheight. All rights reserved.</p>
-        <p>Email: admin@angelsheight.org</p>
+        <p><a href="mailto:admin@angelsheight.org">admin@angelsheight.org</a></p>
       </div>
     </footer>
   </template>

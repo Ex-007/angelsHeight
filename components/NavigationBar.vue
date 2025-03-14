@@ -4,7 +4,7 @@
         <div class="overall">
             <div class="firstTop">
                 <img src="/img/angelLogo.png" alt="The logo image" width="60px">
-                <h1>ANGELSHEIGHT</h1>
+                <h1>ANGELS HEIGHT</h1>
             </div>
 
             <div class="secondTop">
