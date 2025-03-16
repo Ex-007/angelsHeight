@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- REGISTRATION FOR ADMIN -->
-        <div class="page" v-if="registerVisible">
+        <div class="page">
             <h5 v-if="registerE">{{ registerError }}</h5>
             <input type="text" class="contactInput" placeholder="Please input your Fullname" v-model="lecturerDetails.fullname">
             <p v-if="nameError" class="errorClass">{{ nameError }}</p>
