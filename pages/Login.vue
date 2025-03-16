@@ -95,7 +95,7 @@
     // AUTHENTICATING THE INPUT
     const namePattern = /^[A-Za-z]+(?:\s[A-Za-z]+){1,2}$/
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,40}$/
 
     // REGISTRATION DETAILS
     const RegisterDetails = ref({
@@ -108,20 +108,23 @@
     // REGISTRATION FUNCTION
     const registerStudent = async () => {
          // CHECK NAME
-        if(!namePattern.test(RegisterDetails.fullname)){
+        if(!namePattern.test(RegisterDetails.value.fullname)){
             nameError.value = 'Name must contain two to three words'
             return
         }
+        nameError.value = ''
         // CHECK EMAIL
-        if(!emailPattern.test(RegisterDetails.email)){
+        if(!emailPattern.test(RegisterDetails.value.email)){
             emailError.value = 'Invalid Email Format'
             return
         }
+        emailError.value = ''
         // CHECK PASSWORD
-        if(!passwordPattern.test(RegisterDetails.password)){
+        if(!passwordPattern.test(RegisterDetails.value.password)){
             passwordError.value = 'Password must be at least 8 characters long \nmust include an UPPER CASE \na lower case \na special character'
             return
         }
+        passwordError.value = ''
         // CHECK WHITE SPACES
         if(RegisterDetails.value.email == '' || RegisterDetails.value.password == '' || RegisterDetails.value.fullname == '' || RegisterDetails.value.phone == ''){
             registerE.value = true
