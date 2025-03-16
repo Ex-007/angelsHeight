@@ -184,8 +184,10 @@
 
 <script setup>
     import {ref} from 'vue'
+    import {useRouter} from 'vue-router'
     import {useFormStore} from '@/stores/formcollection'
     const store = useFormStore()
+    const router = useRouter()
 
     const passportPreviewUrl = ref('')
     const certificateFileName = ref('')
@@ -294,6 +296,7 @@ const validateForm = () => {
             await store.registerStudent()
             showValidationErrors.value = false
             successMessage.value = 'Student registration successful!'
+            router.push('/Formsubmitted')
             
             // Reset form after successful submission (optional)
             // resetForm()
