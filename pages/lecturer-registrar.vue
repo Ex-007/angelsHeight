@@ -28,6 +28,11 @@
     const registerError = ref('')
     const registerE = ref(false)
 
+    // AUTHENTICATING THE INPUT
+    const namePattern = /^[A-Za-z]+(?:\s[A-Za-z]+){1,2}$/
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    // const passwordPattern = /^(?=.*[a-z])
+
     // REGISTRATION DETAILS
     const lecturerDetails = ref({
         fullname : '',
@@ -37,6 +42,7 @@
     })
     // REGISTRATION FUNCTION
     const registerLecturer = async () => {
+    
         if(lecturerDetails.value.email == '' || lecturerDetails.value.password == '' || lecturerDetails.value.fullname == '' || lecturerDetails.value.phone == ''){
             registerE.value = true
             registerError.value = 'Please Fill all Fields'
