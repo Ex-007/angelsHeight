@@ -70,24 +70,24 @@ export const useFormStore = defineStore ('form', () => {
             
             // UPLOAD THE PASSPORT
             const {data:passportData, error:passportError} = await client.storage
-            .from('STUDENTFORM')
+            .from('studentform')
             .upload(passportPhotoPath, studentData.passportPhoto)
             if(passportError) throw passportError
 
             // UPLOAD THE CERTIFICATE
             const {data:certificateData, error:certificateError} = await client.storage
-            .from('STUDENTFORM')
+            .from('studentform')
             .upload(certificatePath, studentData.certificate)
             if(certificateError) throw certificateError
 
             // GET THE DOWNLOADURL FOR THE FILES
             // PASSPORT
             const passportUrll = client.storage
-            .from('STUDENTFORM')
+            .from('studentform')
             .getPublicUrl(passportPhotoPath).data.publicUrl
             // CERTIFICATE
             const certificateUrll = client.storage
-            .from('STUDENTFORM')
+            .from('studentform')
             .getPublicUrl(certificatePath).data.publicUrl
 
             // SAVE URLs TO REACTIVE STORE
@@ -116,7 +116,7 @@ export const useFormStore = defineStore ('form', () => {
 
             // UPLOADING THE OTHER DETAILS
             const {data:saveDate, error:saveError} = await client
-            .from('STUDENTFORM')
+            .from('studentform')
             .insert({
                 passportUrl: studentData.passportUrl,
                 surname: studentData.surname,
