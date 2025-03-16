@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- REGISTRATION FOR ADMIN -->
-        <div class="page" v-if="registerVisible">
+        <div class="page">
             <h5 v-if="registerE">{{ registerError }}</h5>
             <input type="text" class="contactInput" placeholder="Please input your Fullname" v-model="lecturerDetails.fullname">
             <p v-if="nameError" class="errorClass">{{ nameError }}</p>
@@ -37,7 +37,7 @@
     // AUTHENTICATING THE INPUT
     const namePattern = /^[A-Za-z]+(?:\s[A-Za-z]+){1,2}$/
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,40}$/
 
     // REGISTRATION DETAILS
     const lecturerDetails = ref({
@@ -49,20 +49,24 @@
     // REGISTRATION FUNCTION
     const registerLecturer = async () => {
         // CHECK NAME
-        if(!namePattern.test(lecturerDetails.fullname)){
+        if(!namePattern.test(lecturerDetails.value.fullname)){
             nameError.value = 'Name must contain two to three words'
             return
         }
+        nameError.value = ''
         // CHECK EMAIL
-        if(!emailPattern.test(lecturerDetails.email)){
+        if(!emailPattern.test(lecturerDetails.value.email)){
             emailError.value = 'Invalid Email Format'
             return
         }
+        emailError.value = ''
         // CHECK PASSWORD
-        if(!passwordPattern.test(lecturerDetails.password)){
+        if(!passwordPattern.test(lecturerDetails.value.password)){
             passwordError.value = 'Password must be at least 8 characters long \nmust include an UPPER CASE \na lower case \na special character'
             return
         }
+        passwordError.value = ''
+
     
         // CHECK FOR EMPTY SPACES
         if(lecturerDetails.value.email == '' || lecturerDetails.value.password == '' || lecturerDetails.value.fullname == '' || lecturerDetails.value.phone == ''){
