@@ -13,8 +13,8 @@
 
                 <div class="stepA">
                     <h3>Please upload your passport</h3>
-                    <label for="olevel"><i class="fa fa-file" style="font-size: 40px; cursor: pointer;"></i></label>
-                    <input type="file" id="olevel" style="display: none;" @change="handlePassportPhoto" accept="image/*" required>
+                    <label for="passport"><i class="fa fa-file" style="font-size: 40px; cursor: pointer;"></i></label>
+                    <input type="file" id="passport" style="display: none;" @change="handlePassportPhoto" accept="image/*" required>
                     <div v-if="passportPreviewUrl" class="preview">
                         <img :src="passportPreviewUrl" alt="Passport Preview" width="100" />
                     </div>
@@ -184,8 +184,10 @@
 
 <script setup>
     import {ref} from 'vue'
+    import {useRouter} from 'vue-router'
     import {useFormStore} from '@/stores/formcollection'
     const store = useFormStore()
+    const router = useRouter()
 
     const passportPreviewUrl = ref('')
     const certificateFileName = ref('')
@@ -204,12 +206,12 @@
     }
     // UPLOADING THE CERTIFICATE
     const handleCertificate = (event) => {
-        const file = event.target.files[0]
-        console.log(file)
-        if (file) {
-            store.setCertificate(file)
-            console.log(file)
-            certificateFileName.value = file.name
+        const filez = event.target.files[0]
+        console.log(filez)
+        if (filez) {
+            store.setCertificate(filez)
+            console.log(filez)
+            certificateFileName.value = filez.name
         }
     }
 
@@ -294,6 +296,7 @@ const validateForm = () => {
             await store.registerStudent()
             showValidationErrors.value = false
             successMessage.value = 'Student registration successful!'
+            router.push('/Formsubmitted')
             
             // Reset form after successful submission (optional)
             // resetForm()
