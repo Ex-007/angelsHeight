@@ -10,6 +10,9 @@
         <p>
             Our students are exposed to the state-of-the-art teaching techniques, free wifi service for effective and rapid learning, and facilities with competent lecturers with years of experiences.
         </p>
+        <div class="location">
+            <h3>We are located at Ofiki Olasedidun Road, Ayete, Ibarapa North, Oyo State, Nigeria</h3>
+        </div>
     </div>
 </template>
 
@@ -36,6 +39,17 @@
         color: rgb(84, 8, 112);
         padding: 10px;
         border-radius: 20px;
+    }
+    .location{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: rgb(136, 52, 136);
+        padding: 10px;
+    }
+    h3{
+        text-align: center;
+        text-align-last: center;
     }
     @media (max-width: 768px){
         h1{

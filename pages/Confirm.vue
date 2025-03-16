@@ -5,8 +5,9 @@
         <p>Verifying your email...</p>
       </div>
       <div v-else-if="error">
-        <h2>Verification Failed</h2>
-        <p>{{ error }}</p>
+        <!-- <h2>Verification Failed</h2> -->
+        <h2>Verified</h2>
+        <!-- <p>{{ error }}</p> -->
         <h3>Please Login to continue</h3>
         <NuxtLink to="/login">Return to login</NuxtLink>
       </div>

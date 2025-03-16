@@ -2,6 +2,7 @@
     <div>
         <Hero />
         <About />
+        <AdmissionOn />
         <Programs />
         <WhyChoose />
         <LUpdate />

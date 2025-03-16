@@ -6,6 +6,11 @@
             <p>
                 College of Health Technology <br> <span class="spanning"> In affiliation with Kwara State College of Health Technology </span>
             </p>
+            <div class="announcement">
+                <h2>Admission is Open</h2>
+                <h3>Enjoy Scholarship offer</h3>
+                <h3>For Enquiries: <a href="mailto:info@angelsheight.org">info@angelsheight.org</a> </h3>
+            </div>
             <div class="hero-buttons">
                 <button class="primary-btn" @click='userPage'>Sign in</button>
                 <button class="secondary-btn" @click="accountPage">Join Us</button>
@@ -33,6 +38,14 @@ const accountPage =  () => {
 </script>
 
 <style scoped>
+.announcement{
+    background-color: red;
+    padding: 10px;
+    border-radius: 20px;
+    border: 4px solid white;
+    outline: 4px solid red;
+    margin-bottom: 20px;
+}
      .hero {
     position: relative;
     display: flex;
@@ -108,6 +121,10 @@ const accountPage =  () => {
     }
     .spanning{
         font-size: 19px;
+    }
+    a{
+        color: white;
+        font-size: 18px;
     }
 
     @keyframes fadeInUp{

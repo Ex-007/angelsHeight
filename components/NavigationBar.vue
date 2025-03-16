@@ -64,4 +64,9 @@ a{
     font-size: 40px;
 
 }
+@media (max-width: 768px){
+        h1{
+            font-size: 25px;
+        }
+    }
 </style>

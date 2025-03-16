@@ -4,9 +4,12 @@
         <div class="page" v-if="registerVisible">
             <h5 v-if="registerE">{{ registerError }}</h5>
             <input type="text" class="contactInput" placeholder="Please input your Fullname" v-model="lecturerDetails.fullname">
+            <p v-if="nameError" class="errorClass">{{ nameError }}</p>
             <input type="text" class="contactInput" placeholder="Please input your Phone Number" v-model="lecturerDetails.phone">
             <input type="email" class="contactInput" placeholder="Please input your email" v-model="lecturerDetails.email">
+            <p v-if="emailError" class="errorClass">{{ emailError }}</p>
             <input :type="passwordVisible ? 'text' : 'password'" class="contactInput" placeholder="Password" v-model="lecturerDetails.password">
+            <p v-if="passwordError" class="errorClass">{{ passwordError }}</p>
             <div class="buttons">
                 <button @click.prevent="togglePasswordVisibility" type="button">{{ passwordVisible ? 'Hide' : 'Show' }} Password </button>
                 <button @click="registerLecturer" :disabled="auth.isLoading">{{ auth.isLoading ? 'Registering...' : "Register"}}</button>
@@ -22,6 +25,9 @@
     const router = useRouter()
     import {useAuthStore} from '@/stores/registration'
     const auth = useAuthStore()
+    const nameError = ref('')
+    const passwordError = ref('')
+    const emailError = ref('')
 
 
     // REGISTRATION ERROR
@@ -31,7 +37,7 @@
     // AUTHENTICATING THE INPUT
     const namePattern = /^[A-Za-z]+(?:\s[A-Za-z]+){1,2}$/
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    // const passwordPattern = /^(?=.*[a-z])
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/
 
     // REGISTRATION DETAILS
     const lecturerDetails = ref({
@@ -42,7 +48,23 @@
     })
     // REGISTRATION FUNCTION
     const registerLecturer = async () => {
+        // CHECK NAME
+        if(!namePattern.test(lecturerDetails.fullname)){
+            nameError.value = 'Name must contain two to three words'
+            return
+        }
+        // CHECK EMAIL
+        if(!emailPattern.test(lecturerDetails.email)){
+            emailError.value = 'Invalid Email Format'
+            return
+        }
+        // CHECK PASSWORD
+        if(!passwordPattern.test(lecturerDetails.password)){
+            passwordError.value = 'Password must be at least 8 characters long \nmust include an UPPER CASE \na lower case \na special character'
+            return
+        }
     
+        // CHECK FOR EMPTY SPACES
         if(lecturerDetails.value.email == '' || lecturerDetails.value.password == '' || lecturerDetails.value.fullname == '' || lecturerDetails.value.phone == ''){
             registerE.value = true
             registerError.value = 'Please Fill all Fields'
@@ -79,6 +101,9 @@
         padding: 20px;
         border-radius: 10px;
         box-shadow: inset 10px 6px 50px rgb(26, 49, 195);
+    }
+    .errorClass{
+        color: red;
     }
 .page p{
     text-align: center;

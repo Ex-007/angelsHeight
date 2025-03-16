@@ -1,8 +1,13 @@
 <template>
     <div>
         <div class="page">
+            <div class="payMake">
+                <h3>Please Contact The School's management for Payment process</h3>
+                <p>You can reach them on <a href="tel:09032327228">09032327228</a> or <a href="tel:08107812435">08107812435</a></p>
+                <p>For Enquiries <a href="mailto:info@angelsheight.org">info@angelsheight.org</a></p>
+            </div>
             <p>
-                Note: Confirm Your Form Purchase.
+                Note: Confirm Your Form Purchase if you've already made payment.
             </p>
             <h5 v-if="noInput">{{ errorMessage }}</h5>
             <h5 class="successful" v-if="successfully">Welcome {{ successMessage }}, waiting for redirect...</h5>
@@ -96,6 +101,15 @@ button{
 .successful{
     color: rgb(50, 217, 50);
     text-align: center;
+}
+.payMake{
+    background-color: red;
+    color: white;
+    padding: 10px;
+    border-radius: 20px;
+}
+a{
+    color: white;
 }
 
 @media (max-width: 768px){

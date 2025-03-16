@@ -12,9 +12,12 @@
         <div class="page" v-if="registerVisible">
             <h5 v-if="registerE">{{ registerError }}</h5>
             <input type="text" class="contactInput" placeholder="Please input your Fullname" v-model="RegisterDetails.fullname">
+            <p v-if="nameError" class="errorClass">{{ nameError }}</p>
             <input type="text" class="contactInput" placeholder="Please input your Phone Number" v-model="RegisterDetails.phone">
             <input type="email" class="contactInput" placeholder="Please input your email" v-model="RegisterDetails.email">
+            <p v-if="emailError" class="errorClass">{{ emailError }}</p>
             <input :type="passwordVisible ? 'text' : 'password'" class="contactInput" placeholder="Password" v-model="RegisterDetails.password">
+            <p v-if="passwordError" class="errorClass">{{ passwordError }}</p>
             <div class="buttons">
                 <button @click.prevent="togglePasswordVisibility" type="button">{{ passwordVisible ? 'Hide' : 'Show' }} Password </button>
                 <button @click="registerStudent" :disabled="auth.isLoading">{{auth.isLoading ? 'Registering...' : 'Register'}}</button>
@@ -54,6 +57,9 @@
     const auth = useStudentStore()
     const router = useRouter()
     const resetEmail = ref('')
+    const nameError = ref('')
+    const passwordError = ref('')
+    const emailError = ref('')
 
 
     // LOGIN VISIBILITY
@@ -86,6 +92,11 @@
     const loginError = ref('')
     const loginE = ref(false)
 
+    // AUTHENTICATING THE INPUT
+    const namePattern = /^[A-Za-z]+(?:\s[A-Za-z]+){1,2}$/
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+
     // REGISTRATION DETAILS
     const RegisterDetails = ref({
         fullname : '',
@@ -96,6 +107,22 @@
 
     // REGISTRATION FUNCTION
     const registerStudent = async () => {
+         // CHECK NAME
+        if(!namePattern.test(RegisterDetails.fullname)){
+            nameError.value = 'Name must contain two to three words'
+            return
+        }
+        // CHECK EMAIL
+        if(!emailPattern.test(RegisterDetails.email)){
+            emailError.value = 'Invalid Email Format'
+            return
+        }
+        // CHECK PASSWORD
+        if(!passwordPattern.test(RegisterDetails.password)){
+            passwordError.value = 'Password must be at least 8 characters long \nmust include an UPPER CASE \na lower case \na special character'
+            return
+        }
+        // CHECK WHITE SPACES
         if(RegisterDetails.value.email == '' || RegisterDetails.value.password == '' || RegisterDetails.value.fullname == '' || RegisterDetails.value.phone == ''){
             registerE.value = true
             registerError.value = 'Please Fill all Fields'

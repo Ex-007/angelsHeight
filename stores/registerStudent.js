@@ -133,9 +133,6 @@ export const useStudentStore = defineStore('studentauth', () => {
             isLoading.value = false
         }
     }
-   
-
-
 
     return{
         isLoading,
