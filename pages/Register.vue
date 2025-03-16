@@ -13,8 +13,8 @@
 
                 <div class="stepA">
                     <h3>Please upload your passport</h3>
-                    <label for="olevel"><i class="fa fa-file" style="font-size: 40px; cursor: pointer;"></i></label>
-                    <input type="file" id="olevel" style="display: none;" @change="handlePassportPhoto" accept="image/*" required>
+                    <label for="passport"><i class="fa fa-file" style="font-size: 40px; cursor: pointer;"></i></label>
+                    <input type="file" id="passport" style="display: none;" @change="handlePassportPhoto" accept="image/*" required>
                     <div v-if="passportPreviewUrl" class="preview">
                         <img :src="passportPreviewUrl" alt="Passport Preview" width="100" />
                     </div>
@@ -204,12 +204,12 @@
     }
     // UPLOADING THE CERTIFICATE
     const handleCertificate = (event) => {
-        const file = event.target.files[0]
-        console.log(file)
-        if (file) {
-            store.setCertificate(file)
-            console.log(file)
-            certificateFileName.value = file.name
+        const filez = event.target.files[0]
+        console.log(filez)
+        if (filez) {
+            store.setCertificate(filez)
+            console.log(filez)
+            certificateFileName.value = filez.name
         }
     }
 

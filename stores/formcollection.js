@@ -134,6 +134,7 @@ export const useFormStore = defineStore ('form', () => {
                 disability: studentData.disability,
                 disableContent: studentData.disableContent,
                 phone: studentData.phone,
+                email: studentData.email,
                 E_fullname: studentData.E_fullname,
                 E_address: studentData.E_address,
                 E_phone: studentData.E_phone,
