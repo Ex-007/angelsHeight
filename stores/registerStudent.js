@@ -1,5 +1,4 @@
 import {defineStore} from 'pinia'
-import { useRouter } from 'vue-router'
 
 export const useStudentStore = defineStore('studentauth', () => {
     const isLoading = ref(false)
@@ -7,7 +6,10 @@ export const useStudentStore = defineStore('studentauth', () => {
     const userData = ref(null)
     const canProceed = ref(false)
     const incoming = ref(null)
-
+    const adminRedirect = ref(false)
+    const lecturerRedirect = ref(false)
+    const studentRedirect = ref(false)
+    const canReset = ref(false)
 
     // CHECK IF THE REGISTERER IS AN ADMITTED STUDENT BEFORE REGISTRATION
     const checkAdmission = async (RegisterDetails) => {
@@ -21,10 +23,6 @@ export const useStudentStore = defineStore('studentauth', () => {
             .eq('email', RegisterDetails.email)
             .single()
 
-            if(queryError) throw queryError
-            console.log(data)
-            incoming.value = queryData
-
             // CHECK IF THE REGISTERER EXISTS IN THE ADMITTED STUDENTS PAGE
             if (queryError) {
                 if (queryError.code === 'PGRST116') {
@@ -32,18 +30,15 @@ export const useStudentStore = defineStore('studentauth', () => {
                     isLoading.value = false
                     return
                 }
-                // THROW OTHER ERRORS
                 throw queryError
             }
 
-            console.log(queryData)
             incoming.value = queryData
             // IF THE EMAIL IS FOUND, REGISTER THE STUDENT
             await registration(RegisterDetails)
             canProceed.value = true
         } catch (err) {
             error.value = err.message
-            console.log(err.message)
         } finally{
             isLoading.value = false
         }
@@ -66,7 +61,7 @@ export const useStudentStore = defineStore('studentauth', () => {
                         Fullname: RegisterDetails.fullname,
                         Phone: RegisterDetails.phone,
                         Email: RegisterDetails.email,
-                        role:'user'
+                        role:'student'
                     }
                 }
             })
@@ -84,8 +79,10 @@ export const useStudentStore = defineStore('studentauth', () => {
     const loginUser = async(loginDetails) => {
         isLoading.value = true
         error.value = null
+        adminRedirect.value = false
+        studentRedirect.value = false
+        lecturerRedirect.value = false
         const client = useSupabaseClient()
-        const router = useRouter()
         
         try {
             const {data, error:signInError} = await client.auth.signInWithPassword({
@@ -97,16 +94,42 @@ export const useStudentStore = defineStore('studentauth', () => {
             userData.value = data.user
             // Check the user's role for redirection
             const userRole = data.user.user_metadata.role
+            console.log(userRole)
+
             if(userRole === 'admin') {
-                router.push('/admin-dash')
-            } else {
-                router.push('/Student-profile')
+                adminRedirect.value = true
+                studentRedirect.value = false
+                lecturerRedirect.value = false
+            } else if(userRole === 'lecturer') {
+                lecturerRedirect.value = true
+                adminRedirect.value = false
+                studentRedirect.value = false
+            }else{
+                studentRedirect.value = true
+                adminRedirect.value = false
+                lecturerRedirect.value = false
             }
             
         } catch (err) {
             error.value = err.message
-            console.log(err.message)
         } finally {
+            isLoading.value = false
+        }
+    }
+
+    // RESET PASSWORD
+    const resetPassword = async (resetEmail) => {
+        isLoading.value = true
+        error.value = null
+        canReset.value = false
+        const client = useSupabaseClient()
+        try {
+            const {data:resetData, error:resetError} = await client.auth.resetPasswordForEmail(resetEmail)
+            if(resetError) throw resetError
+            canReset.value = true
+        } catch (err) {
+            error.value = err.message
+        } finally{
             isLoading.value = false
         }
     }
@@ -119,6 +142,11 @@ export const useStudentStore = defineStore('studentauth', () => {
         error,
         checkAdmission,
         canProceed,
-        loginUser
+        loginUser,
+        studentRedirect,
+        lecturerRedirect,
+        adminRedirect,
+        resetPassword,
+        canReset
     }
 })

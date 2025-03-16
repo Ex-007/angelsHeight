@@ -8,10 +8,10 @@
         </div>
         <ul>
           <li @click="activeTab = 'home'" :class="{ active: activeTab === 'home' }">🏠 Home</li>
-          <li @click="activeTab = 'requests'" :class="{ active: activeTab === 'requests' }">📩 Course Form</li>
-          <li @click="activeTab = 'profile'" :class="{ active: activeTab === 'profile' }">👤 Students</li>
-          <li @click="activeTab = 'premium'" :class="{ active: activeTab === 'premium' }">💎 Transaction ID</li>
-          <li @click="activeTab = 'admitted'" :class="{ active: activeTab === 'admitted' }">💎 Admitted Students</li>
+          <!-- <li @click="activeTab = 'requests'" :class="{ active: activeTab === 'requests' }">📩 Course Form</li> -->
+          <!-- <li @click="activeTab = 'profile'" :class="{ active: activeTab === 'profile' }">👤 Students</li> -->
+          <!-- <li @click="activeTab = 'premium'" :class="{ active: activeTab === 'premium' }">💎 Transaction ID</li> -->
+          <!-- <li @click="activeTab = 'admitted'" :class="{ active: activeTab === 'admitted' }">💎 Admitted Students</li> -->
           <li @click="logout">🚪 Logout</li>
         </ul>
       </aside>
@@ -34,7 +34,7 @@
         </section>
   
         <!-- Requests Section -->
-        <section v-if="activeTab === 'requests'">
+        <!-- <section v-if="activeTab === 'requests'">
         <div class="courseForm">
 
             <h2>Course Form</h2>
@@ -60,28 +60,18 @@
         </div>
 
 
-        </section>
+        </section> -->
   
         <!-- Profile Section -->
-        <section v-if="activeTab === 'profile'">
+        <!-- <section v-if="activeTab === 'profile'">
           <div class="transactionDet">
-            <!-- <h3 class="transIdSuccess">{{ transSuccessful.success }}</h3> -->
-            <!-- <label for="studentName">Student Name:</label>
-            <input type="text" id="studentName" class="contactInput" placeholder="Enter Student's Name">
-            <label for="studentEmail">Student Email:</label>
-            <input type="text" id="studentEmail" class="contactInput" placeholder="Enter Student's Email">
-            <label for="studentPhone">Student Phone Number:</label>
-            <input type="text" id="studentPhone" class="contactInput" placeholder="Enter Student's Email">
-            <label for="transactionId">Transaction ID:</label>
-            <input type="text" id="transactionId" class="contactInput" placeholder="Enter Transaction Id">
-            <h3 class="transIdError">{{ transSuccessful.errorin }}</h3>
-            <button @click="saveAdmitted" :disabled="admin.isLoading">{{ admin.isLoading ? 'Saving...' : 'Save' }}</button> -->
+            
         </div>
 
-        </section>
+        </section> -->
   
         <!-- TransactionID Section -->
-        <section v-if="activeTab === 'premium'">
+        <!-- <section v-if="activeTab === 'premium'">
             <div class="transactionDet">
             <h3 class="transIdSuccess">{{ transSuccessful.success }}</h3>
             <label for="studentName">Student Name:</label>
@@ -93,10 +83,10 @@
             <h3 class="transIdError">{{ transSuccessful.errorin }}</h3>
             <button @click="saveDetail" :disabled="admin.isLoading">{{ admin.isLoading ? 'Saving...' : 'Save' }}</button>
         </div>
-        </section>
+        </section> -->
   
         <!-- ADMITTED STUDENTS -->
-        <section v-if="activeTab === 'admitted'">
+        <!-- <section v-if="activeTab === 'admitted'">
             <div class="transactionDet">
               <h1>Registered Students</h1>
               <input type="text" class="contactInput" placeholder="Enter Student's Name" v-model="admission.name">
@@ -107,7 +97,7 @@
               <button @click="saveAdmitted" :disabled="admin.isLoading">{{ admin.isLoading ? 'Saving...' : 'Save' }}</button>
               
           </div>
-        </section>
+        </section> -->
       </main>
     </div>
   </template>
@@ -116,90 +106,83 @@
   import { ref, watch, onMounted  } from 'vue';
 
 
-  import { useRouter, useRoute } from 'vue-router';
-    import {useAdminStore} from '@/stores/administration'
-    const admin = useAdminStore()
-    const router = useRouter();
-    const route = useRoute()
+//   import { useRouter, useRoute } from 'vue-router';
+//     import {useAdminStore} from '@/stores/administration'
+//     const admin = useAdminStore()
+//     const router = useRouter();
+//     const route = useRoute()
     
     const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
-  const transSuccessful = ref({
-    success : '',
-    errorin : ''
-  })
+//   const transSuccessful = ref({
+//     success : '',
+//     errorin : ''
+//   })
     // TRANSACTION ID REFERENCE
-    const transacct = ref({
-        name : '',
-        identity : '',
-        email : ''
-    })
+    // const transacct = ref({
+    //     name : '',
+    //     identity : '',
+    //     email : ''
+    // })
 
     // TRANSACTION ID FUNCTION
-    const saveDetail = async() => {
-        if(transacct.value.id == '' || transacct.value.name == ''){
-            transSuccessful.value.errorin = 'no field should be empty'
-            return
-        }
-        // console.log(transacct.value)
-        await admin.transactioDetails(transacct.value)
-        transSuccessful.value.success = 'Successful'
-        transacct.value.name = ''
-        transacct.value.identity = ''
-    }
+    // const saveDetail = async() => {
+    //     if(transacct.value.id == '' || transacct.value.name == ''){
+    //         transSuccessful.value.errorin = 'no field should be empty'
+    //         return
+    //     }
+    //     await admin.transactioDetails(transacct.value)
+    //     transSuccessful.value.success = 'Successful'
+    //     transacct.value.name = ''
+    //     transacct.value.identity = ''
+    // }
     
     // SAVING ADNITTES STUDENTS FILE
-    const admittedSuccess = ref({
-      success : '',
-      errorin : ''
-    })
+    // const admittedSuccess = ref({
+    //   success : '',
+    //   errorin : ''
+    // })
     // TRANSACTION ID REFERENCE
-    const admission = ref({
-        name : '',
-        identity : '',
-        email : '',
-        phone : ''
-    })
+    // const admission = ref({
+    //     name : '',
+    //     identity : '',
+    //     email : '',
+    //     phone : ''
+    // })
 
     // TRANSACTION ID FUNCTION
-    const saveAdmitted = async() => {
-        if(admission.value.identity == '' || admission.value.name == '' || admission.value.email == '' || admission.value.phone == ''){
-          admittedSuccess.value.errorin = 'no field should be empty'
-            return
-        }
+    // const saveAdmitted = async() => {
+    //     if(admission.value.identity == '' || admission.value.name == '' || admission.value.email == '' || admission.value.phone == ''){
+    //       admittedSuccess.value.errorin = 'no field should be empty'
+    //         return
+    //     }
 
-        // console.log(transacct.value)
-        await admin.admittedStudentss(admission.value)
-        admittedSuccess.value.success = 'Successful'
-        admittedSuccess.value.name = ''
-        admittedSuccess.value.identity = ''
-        admittedSuccess.value.email = ''
-        admittedSuccess.value.phone = ''
-    }
+    //     await admin.admittedStudentss(admission.value)
+    //     admittedSuccess.value.success = 'Successful'
+    //     admittedSuccess.value.name = ''
+    //     admittedSuccess.value.identity = ''
+    //     admittedSuccess.value.email = ''
+    //     admittedSuccess.value.phone = ''
+    // }
 
     
-    // WATCH FOR THE LOGOUT
-    watch(() => admin.canOut, (newVal) => {
-      if (newVal) {
-          router.push('/')
-      }
-    });
 
 
 
 
 
 
-  // FUNCTION TO LOGOUT
-  const logout = () => {
-    admin.logOut()
-  };
+
   
-  const navigateToRequests = () => {
-    activeTab.value = 'requests';
-  };
+//   const logout = () => {
+//     alert("Logging out...");
+//   };
+  
+//   const navigateToRequests = () => {
+//     activeTab.value = 'requests';
+//   };
 
-  const tracking = ref('')
+//   const tracking = ref('')
 
 
 
@@ -416,100 +399,3 @@ label{
 
 
 
-
-
-
-
-
-
-<!-- <template>
-    <div>
-        <div class="transactionDet">
-            <label for="studentName">Student Name:</label>
-            <input type="text" id="studentName" class="contactInput" placeholder="Enter Student's Name" v-model="transacct.name">
-            <label for="transactionId">Transaction ID:</label>
-            <input type="text" id="transactionId" class="contactInput" placeholder="Enter Transaction Id" v-model="transacct.id">
-            <button @click="saveDetail">Saving</button>
-        </div>
-    </div>
-</template>
-
-<script setup>
-    import { ref } from 'vue';
-    import {useAdminStore} from '@/stores/administration'
-    const admin = useAdminStore()
-
-    const transacct = ref({
-        name : '',
-        id : ''
-    })
-
-    const saveDetail = async() => {
-        if(transacct.value.id == '' || transacct.value.name == ''){
-            console.log('no field should be empty')
-            return
-        }
-        console.log(transacct.value)
-        await admin.transactioDetails(transacct.value)
-        console.log(admin.transSaveSuccess)
-        transacct.value.name = ''
-        transacct.value.id = ''
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-</script>
-
-<style scoped>
-    .transactionDet{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        gap: 10px;
-        background-color: #6897a7;
-        margin: 10px;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: inset 10px 6px 50px rgb(26, 49, 195);
-    }
-
-.contactInput{
-    width: 300px;
-    border-radius: 10px;
-    height: 35px;
-    border: none;
-    outline: none;
-    padding: 10px;
-    box-shadow: inset 10px 6px 50px rgb(192, 192, 196);
-}
-
-label{
-    color: white;
-}
-button{
-    width: 150px;
-    height: 30px;
-    border-radius: 20px;
-    border: none;
-
-}
-</style> -->

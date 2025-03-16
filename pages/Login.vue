@@ -4,6 +4,10 @@
             <h3>Only for Admitted Students</h3>
         </div>
 
+        <div class="errorDiv" v-if="auth.error">
+            <h3 class="errorClass">{{ auth.error }}</h3>
+        </div>
+
         <!-- REGISTRATION FOR STUDENT -->
         <div class="page" v-if="registerVisible">
             <h5 v-if="registerE">{{ registerError }}</h5>
@@ -26,7 +30,7 @@
             <input :type="passwordVisible ? 'text' : 'password'" class="contactInput" placeholder="Password" v-model="LoginDetails.password">
             <div class="buttons">
                 <button @click.prevent="togglePasswordVisibility" type="button">{{ passwordVisible ? 'Hide' : 'Show' }} Password </button>
-                <button @click="loginUser" :disabled="auth.isLoading">{{ auth.isLoading ? 'signing in' : 'Sign in' }}</button>
+                <button @click="loginUser" :disabled="auth.isLoading">{{ auth.isLoading ? 'signing in...' : 'Sign in' }}</button>
             </div>
             <h3>Don't have an account? <span @click="toggleRegister">Register</span></h3>
         </div>
@@ -34,7 +38,7 @@
         <!-- FORGOT PASSWORD -->
         <div class="page" v-if="forgotPass">
             <h5 v-if="loginE">{{ loginError }}</h5>
-            <input type="email" class="contactInput" placeholder="Please input your email" v-model="forgotPAssword">
+            <input type="email" class="contactInput" placeholder="Please input your email" v-model="resetEmail">
             <button @click="confirmForgotEmail">Confirm</button>
             <h3 @click="toggleRegister" class="forgotBut">Go back to Sign In</h3>
         </div>
@@ -49,6 +53,7 @@
     import {useStudentStore} from '@/stores/registerStudent'
     const auth = useStudentStore()
     const router = useRouter()
+    const resetEmail = ref('')
 
 
     // LOGIN VISIBILITY
@@ -100,13 +105,53 @@
         await auth.checkAdmission(RegisterDetails.value)
     }
 
-    // WATCH FOR AUTHENTICATION TO PROCEED TO THE PAGE FOR EMAIL CONFIRMATION
+    // WATCH FOR SIGN IN BY LECTURERS
+    watch(() => auth.lecturerRedirect, (newVal) => {
+        if (newVal) {
+            router.push('/lecturer-direct')
+        }
+    });
+
+    // WATCH FOR SIGN IN BY STUDENTS
+    watch(() => auth.studentRedirect, (newVal) => {
+        if (newVal) {
+
+            router.push('/Student-profile')
+        }
+    });
+
+    // WATCH FOR SIGN IN BY ADMINS
+    watch(() => auth.adminRedirect, (newVal) => {
+        if (newVal) {
+
+            router.push('/admin-dash')
+        }
+    });
+    // WATCH FOR PASSWORD RESET
     watch(() => auth.canProceed, (newVal) => {
         if (newVal) {
 
             router.push('/confirm-email')
         }
     });
+    // WATCH FOR AUTHENTICATION TO PROCEED TO THE PAGE FOR EMAIL CONFIRMATION
+    watch(() => auth.canReset, (newVal) => {
+        if (newVal) {
+            router.push('/confirm-reset')
+        }
+    });
+
+    // FUNCTION FOR FORGOT PASSWORD
+    const forgotErrorAlert = ref('')
+    const confirmForgotEmail = async () => {
+        if(resetEmail.value === ''){
+            forgotErrorAlert.value = 'Field Cannot be empty'
+            return
+        }
+
+        auth.resetPassword(resetEmail.value)
+    }
+
 
     // LOGIN DETAILS
     const LoginDetails = ref({
@@ -122,7 +167,6 @@
             return
         }
         loginE.value = false
-        console.log(LoginDetails.value)
         await auth.loginUser(LoginDetails.value)
     }
 
@@ -136,6 +180,10 @@
 </script>
 
 <style scoped>
+    .errorClass{
+        color: red;
+    }
+
     .page{
         display: flex;
         justify-content: center;

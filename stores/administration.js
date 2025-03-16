@@ -4,6 +4,7 @@ export const useAdminStore = defineStore('admin', () => {
     const isLoading = ref(false)
     const error = ref(null)
     const transSaveSuccess = ref(null)
+    const canOut = ref(false)
 
     // SAVE TRANSACTION ID TO THE CLOUD
     const transactioDetails = async (transactionDet) => {
@@ -54,7 +55,20 @@ export const useAdminStore = defineStore('admin', () => {
         }
     }
 
-    
+    // SIGNOUT 
+    const logOut = async () => {
+        isLoading.value = true
+        error.value = null
+        canOut.value = false
+        const client = useSupabaseClient()
+        try {
+            const {data:signoutData, error:signoutError} = await client.auth.signOut()
+            if(signoutError) throw signoutError
+            canOut.value = true
+        } catch (err) {
+            error.value = err.message
+        }
+    }
 
 
     return{
@@ -62,6 +76,8 @@ export const useAdminStore = defineStore('admin', () => {
         error,
         transactioDetails,
         transSaveSuccess,
-        admittedStudentss
+        admittedStudentss,
+        canOut,
+        logOut
     }
 })
