@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>This is the error page</h3>
+        <h3>This is the error page...</h3>
     </div>
 </template>
 
