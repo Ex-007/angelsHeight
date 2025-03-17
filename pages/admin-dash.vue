@@ -8,7 +8,7 @@
         </div>
         <ul>
           <li @click="activeTab = 'home'" :class="{ active: activeTab === 'home' }">🏠 Home</li>
-          <li @click="activeTab = 'requests'" :class="{ active: activeTab === 'requests' }">📩 Course Form</li>
+          <li @click="activeTab = 'requests'" :class="{ active: activeTab === 'requests' }">📩 Results</li>
           <li @click="activeTab = 'profile'" :class="{ active: activeTab === 'profile' }">👤 Students</li>
           <li @click="activeTab = 'premium'" :class="{ active: activeTab === 'premium' }">💎 Transaction ID</li>
           <li @click="activeTab = 'registered'" :class="{ active: activeTab === 'registered' }">💎 Registered Students</li>
@@ -31,27 +31,45 @@
         <!-- Requests Section -->
         <section v-if="activeTab === 'requests'">
         <div class="courseForm">
+            <h2>Enter Student's Result</h2>
+            <div class="searchStudent">
+              <input type="text" class="contactInput" placeholder="Enter Matric No">
+            </div>
+            <button @click="searchResult">Search</button>
 
-            <h2>Course Form</h2>
-            <div class="courseYear">
-                <h3>Select Year</h3>
-                <select>
-                  <option>Selecet Year</option>
-                  <option>2024/2025</option>
-                  <option>2025/2026</option>
-                  <option>2026/2027</option>
-                  <option>2027/2028</option>
-                </select>
+            <div class="fetchedStudentProfile">
+              <div class="control firstSide">
+
+                <label for="courseCode">Course Code : </label>
+                <input type="text" id="courseCode" placeholder="Enter Course Code">
+  
+                <label for="cc">CC : </label>
+                <input type="number" id="cc" placeholder="Enter CC">
+  
+                <label for="cu">CU : </label>
+                <input type="number" id="cu" placeholder="Enter CU">
+  
+                <label for="test">Test : </label>
+                <input type="number" id="test" placeholder="Enter Test Score">
+              </div>
+
+              <div class="control secondSide">
+
+                <label for="prct">PRCT : </label>
+                <input type="number" id="prct" placeholder="Enter Prct">
+  
+                <label for="assmt">Assessment : </label>
+                <input type="number" id="assmt" placeholder="Enter Assessment">
+  
+                <label for="exam">Exam : </label>
+                <input type="number" id="exam" placeholder="Enter Exam Score">
+  
+                <label for="total">Course Code : </label>
+                <input type="number" id="total" placeholder="Enter Total">
+              </div>
+
             </div>
-            <div class="courseYear">
-                <h3>Select Semester</h3>
-                <select>
-                  <option>Selecet Semester</option>
-                  <option>First</option>
-                  <option>Second</option>
-                </select>
-            </div>
-            <button @click="refreshRequests">Submit</button>
+            <button @click="updateResult">Update</button>
         </div>
 
 
@@ -178,8 +196,8 @@
     const router = useRouter();
     const route = useRoute()
     
-    // const activeTab = ref('registered');
-    const activeTab = ref('home');
+    const activeTab = ref('requests');
+    // const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
     success : '',
@@ -271,15 +289,21 @@ const adminData = ref({
 
 // ASSIGN ADMIN DETAILS
 const fixDetails = async () => {
-  console.log(admin.loggedAdmin)
-  console.log(admin.loggedAdmin.Fullname)
   adminData.value.name =  admin.loggedAdmin.Fullname
   adminData.value.email =  admin.loggedAdmin.email
   adminData.value.phone =  admin.loggedAdmin.Phone
   adminData.value.role =  admin.loggedAdmin.role
 }
 
+// SEARCH A STUDENT TO UPLOAD THE RESULT
+const searchResult = () => {
+  alert('Searching Student in progress...')
+}
 
+// SEARCH A STUDENT TO UPLOAD THE RESULT
+const updateResult = () => {
+  alert('Updating...')
+}
 
 
 
@@ -292,14 +316,29 @@ const fixDetails = async () => {
     await fixDetails()
   })
 
-
-
-
-
   </script>
   
   <style scoped>
-  
+  .fetchedStudentProfile{
+    display: flex;
+    gap: 10px;
+  }
+  .control{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .control input{
+    border-radius: 20px;
+    padding: 10px;
+    font-size: 17px;
+    border: none;
+  }
+  .courseForm button{
+    width: 200px;
+    border-radius: 10px;
+  }
   .newly {
     display: flex;
     height: calc(100vh - 500px); 
