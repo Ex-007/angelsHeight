@@ -40,6 +40,36 @@
             <div class="fetchedStudentProfile">
               <div class="control firstSide">
 
+                <label for="matricc">Matric No : </label>
+                <input type="text" id="matricc" placeholder="Enter Matric No">
+  
+                <label for="semester">Semester</label>
+                <select id="semester">
+                  <option>First</option>
+                  <option>Second</option>
+                </select>
+  
+                <label for="level">Level</label>
+                <select id="level">
+                  <option>NDI</option>
+                  <option>NDII</option>
+                  <option>HNDI</option>
+                  <option>HNDII</option>
+                </select>
+  
+                <label for="year">Year</label>
+                <select id="year">
+                  <option>2024/2025</option>
+                  <option>2025/2026</option>
+                  <option>2026/2027</option>
+                  <option>2027/2028</option>
+                </select>
+  
+                
+              </div>
+
+              <div class="control firstSide">
+
                 <label for="courseCode">Course Code : </label>
                 <input type="text" id="courseCode" placeholder="Enter Course Code">
   
@@ -69,6 +99,7 @@
               </div>
 
             </div>
+            <input type="text" class="contactInput" placeholder="Student's Name">
             <button @click="updateResult">Update</button>
         </div>
 
@@ -202,8 +233,8 @@ import auth from '~/middleware/auth';
     definePageMeta({
       middleware: [auth]
     })
-    // const activeTab = ref('requests');
-    const activeTab = ref('home');
+    const activeTab = ref('requests');
+    // const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
     success : '',
@@ -340,6 +371,10 @@ const updateResult = () => {
     padding: 10px;
     font-size: 17px;
     border: none;
+    width: 100px;
+  }
+  .control select{
+    width: 100px;
   }
   .courseForm button{
     width: 200px;
