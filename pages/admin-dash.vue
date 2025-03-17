@@ -192,12 +192,18 @@
 
   import { useRouter, useRoute } from 'vue-router';
     import {useAdminStore} from '@/stores/administration'
+import auth from '~/middleware/auth';
     const admin = useAdminStore()
     const router = useRouter();
     const route = useRoute()
     
-    const activeTab = ref('requests');
-    // const activeTab = ref('home');
+
+    // ROUTE GUARD
+    definePageMeta({
+      middleware: [auth]
+    })
+    // const activeTab = ref('requests');
+    const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
     success : '',
