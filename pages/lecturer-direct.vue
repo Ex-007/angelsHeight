@@ -184,7 +184,10 @@
 
 //   const tracking = ref('')
 
-
+      // ROUTE GUARD
+      definePageMeta({
+      middleware: [auth]
+    })
 
 
 

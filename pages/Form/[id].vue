@@ -2,6 +2,7 @@
     <div>
         <!-- Error/Success Messages -->
         <div v-if="store.error" class="error-message">{{ store.error }}</div>
+        <h5 v-if="noInput" class="error-message">{{ errorMessage }}</h5>
         <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
         <form @submit.prevent="submitRegistration" class="page">
             <p>
@@ -171,6 +172,7 @@
             
             
             <div class="stepA buttonSign">
+                <h5 v-if="noInput" class="error-message">{{ errorMessage }}</h5>
                 <button type="submit" :disabled="store.isLoading">{{ store.isLoading ? 'Registering' : 'Register' }}</button>
             </div>
             
@@ -183,12 +185,16 @@
 </template>
 
 <script setup>
-    import {ref} from 'vue'
-    import {useRouter} from 'vue-router'
+    import {ref, watch} from 'vue'
+    import {useRouter, useRoute} from 'vue-router'
     import {useFormStore} from '@/stores/formcollection'
     const store = useFormStore()
     const router = useRouter()
+    const route = useRoute()
+    const noInput = ref(false)
+    const errorMessage = ref('')
 
+    const paymentId = route.params.id
     const passportPreviewUrl = ref('')
     const certificateFileName = ref('')
     const successMessage = ref('')
@@ -200,7 +206,6 @@
         const file = event.target.files[0]
         if (file) {
             store.setPassportPhoto(file)
-        // PASSPORT PREVIEW
             passportPreviewUrl.value = URL.createObjectURL(file)
         }
     }
@@ -217,11 +222,32 @@
 
     // WATCHING THE DISABILITY SECTION
     watch(() => store.studentData.disability, (newValue) => {
-        // If disability is set to "No", clear the disability content
         if (newValue === "No") {
             store.studentData.disableContent = ""
         }
     })
+
+        // NO TRANSACTION ID FOUND
+    watch(() => store.noTransactionId, (newVal) => {
+        if (newVal) {
+            noInput.value = true
+            errorMessage.value = 'Transaction ID not found'
+        }
+    });
+        // NO TRANSACTION ID FOUND
+    watch(() => store.alreadyRegistered, (newVal) => {
+        if (newVal) {
+            noInput.value = true
+            errorMessage.value = 'You have already Registered'
+        }
+    });
+        // NO TRANSACTION ID FOUND
+    watch(() => store.canProceed, (newVal) => {
+        if (newVal) {
+            successMessage.value = 'Student registration successful!'
+            router.push('/Formsubmitted')
+        }
+    });
 
     // Form validation function
 const validateForm = () => {
@@ -286,6 +312,7 @@ const validateForm = () => {
     // Submit form
     const submitRegistration = async () => {
         showValidationErrors.value = true
+        store.studentData.paymentId = paymentId
 
         if(!validateForm()){
             window.scrollTo({top:0, behavior: 'smooth'})
@@ -293,24 +320,16 @@ const validateForm = () => {
         }
 
         try {
-            await store.registerStudent()
-            showValidationErrors.value = false
-            successMessage.value = 'Student registration successful!'
-            router.push('/Formsubmitted')
-            
-            // Reset form after successful submission (optional)
-            // resetForm()
+            await store.checkId()
+            // await store.registerStudent()
+            // showValidationErrors.value = false
+            // successMessage.value = 'Student registration successful!'
+            // router.push('/Formsubmitted')
+
         } catch (error) {
             console.error('Registration failed:', error)
         }
     }
-
-
-
-
-
-
-
 
 
 
@@ -376,6 +395,12 @@ h5{
     font-size: 20px;
     color: rgba(179, 20, 20, 0.996);
 }
+.error-message{
+    align-items: center;
+    text-align: center;
+    font-size: 25px;
+    color: rgba(248, 45, 45, 0.996);
+}
 button{
     width: 150px;
     background-color: white;
@@ -408,6 +433,9 @@ h1{
     padding: 10px;
     margin: 10px 0;
     border-radius: 20px;
+}
+h5{
+    text-align: center;
 }
 
 @media (max-width: 768px){

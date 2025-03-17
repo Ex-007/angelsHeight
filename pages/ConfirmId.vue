@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-    import {ref} from 'vue'
+    import {ref, watch} from 'vue'
     import { useRouter } from 'vue-router'
     import {useConfirmIdStore} from '@/stores/confirmId'
     const idStore = useConfirmIdStore()
@@ -39,18 +39,44 @@
         }
         noInput.value = false
         await idStore.checkId(paymentId.value)
-        if(!idStore.incoming){
+        // if(!idStore.incoming){
+        //     noInput.value = true
+        //     errorMessage.value = 'Transaction ID not found'
+        //     return
+        // }
+        // successfully.value = true
+        // successMessage.value = idStore.incoming?.name
+        // setTimeout(() => {
+        //     router.push('/Register')
+        // }, 2000);
+    }
+
+    // WATCH FOR REQUIREMENTS MET
+    watch(() => idStore.canProceed, (newVal) => {
+        if (newVal) {
+            successfully.value = true
+            successMessage.value = idStore.incoming?.name
+            setTimeout(() => {
+                router.push(`/Form/${paymentId.value}`)
+            }, 2000);
+        }
+    });
+
+    // NO TRANSACTION ID FOUND
+    watch(() => idStore.noTransactionId, (newVal) => {
+        if (newVal) {
             noInput.value = true
             errorMessage.value = 'Transaction ID not found'
-            return
         }
-        successfully.value = true
-        successMessage.value = idStore.incoming?.name
-        // console.log(idStore.incoming?.name)
-        setTimeout(() => {
-            router.push('/Register')
-        }, 2000);
-    }
+    });
+
+    // ALREADY REGISTERED
+    watch(() => idStore.alreadyRegistered, (newVal) => {
+        if (newVal) {
+            noInput.value = true
+            errorMessage.value = 'You have already Registered'
+        }
+    });
 
     // abc123def456
 </script>
@@ -89,6 +115,10 @@ h5{
     font-size: 20px;
     color: rgba(179, 20, 20, 0.996);
     text-align: center;
+}
+h3{
+    text-align: center;
+    text-align-last: center;
 }
 button{
     width: 150px;
