@@ -23,6 +23,7 @@ export const useFormStore = defineStore ('form', () => {
         disableContent: '',
         phone: '',
         email: '',
+        paymentId: '',
 
         // EMERGENCY CONTACTS
         E_fullname: '',
@@ -47,6 +48,9 @@ export const useFormStore = defineStore ('form', () => {
 
     const isLoading = ref(false)
     const error = ref(null)
+    const alreadyRegistered = ref(false)
+    const canProceed = ref(false)
+    const noTransactionId = ref(false)
 
     // SETTING THE FILES
     // FOR PASSPORT
@@ -105,10 +109,77 @@ export const useFormStore = defineStore ('form', () => {
         }
     }
 
+    // CHECK TO AVOID IF THE TRANSACTION ID ALREADY EXISTS TRULY AND RETURN IF IT DOES
+ // CHECK THE TRANSACTON IDENTITY
+ const checkId = async () => {
+    isLoading.value = true
+    error.value = null
+    alreadyRegistered.value = false
+    noTransactionId.value = false
+    const client = useSupabaseClient()
+
+    try {
+        const {data:checkData, error:checkError} = await client
+        .from('TRANSACTIONID')
+        .select('*')
+        .eq('pay_identity', studentData.paymentId)
+        .single()
+        
+        if(checkError){
+            if (checkError.code === 'PGRST116') {
+                error.value = 'You\'re not admitted yet'
+                noTransactionId.value = true
+                isLoading.value = false
+                return
+            }
+            throw checkError
+        }
+        await checkReg()
+    } catch (err) {
+        error.value = err.message
+    } finally{
+        isLoading.value = false
+    }
+}
+
+// CHECK REGISTRATION STORE IF STUDENT ALREADY REGISTERED
+const checkReg = async () => {
+    isLoading.value = true
+    error.value = false
+    // canProceed.value = false
+    alreadyRegistered.value = false
+    const client = useSupabaseClient()
+    try {
+        const {data:emailData, error:emailError} = await client
+        .from('studentform')
+        .select('*')
+        .eq('paymentId', studentData.paymentId)
+        .single()
+
+
+        if(emailError){
+            if (emailError.code === 'PGRST116') {
+                console.log('You are welcome')
+                await registerStudent()
+                return
+            }
+            throw emailError
+        }
+        alreadyRegistered.value = true
+    } catch (err) {
+        error.value = err.message
+        console.log(err.message)
+    } finally{
+        isLoading.value = false
+    }
+}
+
+
     // REGISTER THE STUDENT
     const registerStudent = async () => {
         isLoading.value = true
         error.value = null
+        canProceed.value = false
         const client = useSupabaseClient()
         try {
             // UPLOADING THE FILES
@@ -135,6 +206,7 @@ export const useFormStore = defineStore ('form', () => {
                 disableContent: studentData.disableContent,
                 phone: studentData.phone,
                 email: studentData.email,
+                paymentId: studentData.paymentId,
                 E_fullname: studentData.E_fullname,
                 E_address: studentData.E_address,
                 E_phone: studentData.E_phone,
@@ -152,6 +224,7 @@ export const useFormStore = defineStore ('form', () => {
             .select()
 
             if(saveError) throw saveError
+            canProceed.value = true
             return saveDate
         } catch (err) {
             error.value = err.message
@@ -169,7 +242,11 @@ export const useFormStore = defineStore ('form', () => {
         setPassportPhoto,
         setCertificate,
         uploadFiles,
-        registerStudent
+        registerStudent,
+        alreadyRegistered,
+        noTransactionId,
+        checkId,
+        canProceed
     }
 
 
