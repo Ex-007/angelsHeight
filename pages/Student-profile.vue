@@ -88,11 +88,6 @@
   const getVerified = () => {
     router.push('/Verification')
   }
-
-      // ROUTE GUARD
-    definePageMeta({
-      middleware: [auth]
-    })
   
   const activeTab = ref('home');
   
