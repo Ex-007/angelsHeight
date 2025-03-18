@@ -119,6 +119,10 @@
                 <div class="stat-value">{{ student.cumulativeGPA }}</div>
                 <div class="stat-label">GPA</div>
               </div>
+              <div class="stat">
+                <div class="stat-value">{{ student.gpaClassification }}</div>
+                <div class="stat-label">GRADE</div>
+              </div>
             </div>
           </div>
 
@@ -148,7 +152,7 @@
                 <td>{{ incomingg.exam }}</td>
                 <td>{{ incomingg.cu }}</td>
                 <td>{{ incomingg.total }}</td>
-                <td>{{ incomingg.gradePoint }}</td>
+                <td>{{ incomingg.gradePoint.toFixed(2) }}</td>
               </tr>
             </tbody>
           </table>
@@ -369,7 +373,7 @@ td{
   text-align: center;
   padding: 20px;
   font-style: italic;
-  color: #666;
+  color: #e10808;
 }
 
 

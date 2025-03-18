@@ -107,7 +107,9 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
             if(data && data.length > 0){
                 results.value = data.map(courseScore => {
                     const totalScore = calculateTotalScore( courseScore.assmt, courseScore.exam, courseScore.practical, courseScore.test)
+                    console.log(totalScore)
                     const {grade, gradePoint} = calculateGrade(totalScore)
+                    console.log(grade, gradePoint)
                     return{
                         ...courseScore,
                         totalScore,
@@ -128,65 +130,115 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
     }
 
     // Calculate cumulative GPA for displayed courses
-    const cumulativeGPA = computed(() => {
-        if (results.value.length === 0) return 0
+    // const cumulativeGPA = computed(() => {
+    //     if (results.value.length === 0) return 0
 
-        const totalPoints = results.value.reduce((sum, course) => {
-            return sum + (course.gradePoint * (course.cu || 1))
-        }, 0)
+    //     const totalPoints = results.value.reduce((sum, course) => {
+    //         return sum + (course.gradePoint * (course.cu || 1))
+    //     }, 0)
 
-        const totalCreditUnits = results.value.reduce((sum, course) => {
-            return sum + (course.cu || 1)
-        }, 0)
+    //     const totalCreditUnits = results.value.reduce((sum, course) => {
+    //         return sum + (course.cu || 1)
+    //     }, 0)
 
-        return (totalPoints / totalCreditUnits).toFixed(2)
-    })
+    //     return (totalPoints / totalCreditUnits).toFixed(2)
+    // })
 
     // CALCULATE TOTAL SCORE
     const calculateTotalScore = (assessment, exam, practical, test) => {
-        const assessmentScore = assessment || 0
-        const testScore = test || 0
-        const examScore = exam || 0
-        const practicalScore = practical || 0
+        const assessmentScore = Number(assessment || 0)
+        const testScore = Number(test || 0)
+        const examScore = Number(exam || 0)
+        const practicalScore = Number(practical || 0)
 
         return assessmentScore + testScore + examScore + practicalScore
     }
 
     // CALCULATE GRADE POINT BASED ON TOTAL SCORE
     const calculateGrade = (totalScore) => {
+        if (totalScore >= 75) return {
+          grade: 'A',
+          gradePoint: 4.0
+        };
         if (totalScore >= 70) return {
-            grade: 'A',
-            gradePoint: 4.0
-        }
+          grade: 'AB',
+          gradePoint: 3.5
+        };
         if (totalScore >= 65) return {
-            grade: 'AB',
-            gradePoint: 3.5
-        }
+          grade: 'B',
+          gradePoint: 3.25
+        };
         if (totalScore >= 60) return {
-            grade: 'B',
-            gradePoint: 3.0
-        }
+          grade: 'BC',
+          gradePoint: 3.0
+        };
         if (totalScore >= 55) return {
-            grade: 'BC',
-            gradePoint: 2.75
-        }
+          grade: 'C',
+          gradePoint: 2.75
+        };
         if (totalScore >= 50) return {
-            grade: 'C',
-            gradePoint: 2.5
-        }
+          grade: 'CD',
+          gradePoint: 2.5
+        };
         if (totalScore >= 45) return {
-            grade: 'CD',
-            gradePoint: 2.25
-        }
+          grade: 'D',
+          gradePoint: 2.25
+        };
         if (totalScore >= 40) return {
-            grade: 'D',
-            gradePoint: 2.0
-        }
+          grade: 'E',
+          gradePoint: 2.0
+        };
         return {
-            grade: 'F',
-            gradePoint: 0.0
-        }
-    }
+          grade: 'F',
+          gradePoint: 0.0
+        };
+      };
+    
+      // Calculate GPA classification
+    const getGPAClassification = (gpa) => {
+        const numGPA = parseFloat(gpa);
+        if (numGPA >= 3.50) return 'Distinction';
+        if (numGPA >= 3.00) return 'Upper credit';
+        if (numGPA >= 2.50) return 'Lower credit';
+        if (numGPA >= 2.00) return 'Pass';
+        return 'Fail';
+    };
+    // Total credit units
+    const totalCreditUnits = computed(() => {
+        return results.value.reduce((sum, course) => {
+          const creditUnit = Number(course.cu || 1);
+          return sum + creditUnit;
+        }, 0);
+      });
+
+    // Total weighted points
+    const totalWeightedPoints = computed(() => {
+        return results.value.reduce((sum, course) => {
+          const creditUnit = Number(course.cu || 1);
+          return sum + (course.gradePoint * creditUnit);
+        }, 0);
+      });
+
+    // Calculate cumulative GPA
+    const cumulativeGPA = computed(() => {
+        if (results.value.length === 0) return '0.00';
+        return (totalWeightedPoints.value / totalCreditUnits.value).toFixed(2);
+    });
+  
+  // Get GPA classification
+  const gpaClassification = computed(() => {
+    return getGPAClassification(cumulativeGPA.value);
+  });
+
+
+
+
+
+
+
+
+
+
 
 
     return{
@@ -202,7 +254,8 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
         isBypass,
         logOut,
         canOut,
-        user
+        user,
+        gpaClassification
     }
 
 
