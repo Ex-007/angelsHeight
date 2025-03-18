@@ -107,9 +107,7 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
             if(data && data.length > 0){
                 results.value = data.map(courseScore => {
                     const totalScore = calculateTotalScore( courseScore.assmt, courseScore.exam, courseScore.practical, courseScore.test)
-                    console.log(totalScore)
                     const {grade, gradePoint} = calculateGrade(totalScore)
-                    console.log(grade, gradePoint)
                     return{
                         ...courseScore,
                         totalScore,
@@ -128,21 +126,6 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
             isLoading.value = false
         }
     }
-
-    // Calculate cumulative GPA for displayed courses
-    // const cumulativeGPA = computed(() => {
-    //     if (results.value.length === 0) return 0
-
-    //     const totalPoints = results.value.reduce((sum, course) => {
-    //         return sum + (course.gradePoint * (course.cu || 1))
-    //     }, 0)
-
-    //     const totalCreditUnits = results.value.reduce((sum, course) => {
-    //         return sum + (course.cu || 1)
-    //     }, 0)
-
-    //     return (totalPoints / totalCreditUnits).toFixed(2)
-    // })
 
     // CALCULATE TOTAL SCORE
     const calculateTotalScore = (assessment, exam, practical, test) => {
