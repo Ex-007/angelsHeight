@@ -56,9 +56,6 @@ export const useConfirmIdStore = defineStore('confirmStore', () => {
             .eq('paymentId', paymentId)
             .single()
 
-            // if(emailError) throw emailError
-            // incoming.value = emailData
-
             if(emailError){
                 if (emailError.code === 'PGRST116') {
                     canProceed.value = true

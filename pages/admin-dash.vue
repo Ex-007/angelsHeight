@@ -33,24 +33,27 @@
         <div class="courseForm">
             <h2>Enter Student's Result</h2>
             <div class="searchStudent">
-              <input type="text" class="contactInput" placeholder="Enter Matric No">
+              <input type="text" class="contactInput" placeholder="Enter Matric No" v-model="studentMatric">
             </div>
             <button @click="searchResult">Search</button>
+            <div class="availableStudent">
+              <h3 v-if="admin.searchDataa" class="matricName">{{ searchResults.lastname + ' ' + searchResults.firstname + ' ' + searchResults.middlename }}</h3>
+            </div>
 
             <div class="fetchedStudentProfile">
               <div class="control firstSide">
 
                 <label for="matricc">Matric No : </label>
-                <input type="text" id="matricc" placeholder="Enter Matric No">
+                <input type="text" id="matricc" class="contactInput" placeholder="Matric No" v-model="scoreDet.matricNo">
   
                 <label for="semester">Semester</label>
-                <select id="semester">
+                <select id="semester" class="contactInput" v-model="scoreDet.semester">
                   <option>First</option>
                   <option>Second</option>
                 </select>
   
                 <label for="level">Level</label>
-                <select id="level">
+                <select id="level" class="contactInput" v-model="scoreDet.level">
                   <option>NDI</option>
                   <option>NDII</option>
                   <option>HNDI</option>
@@ -58,7 +61,7 @@
                 </select>
   
                 <label for="year">Year</label>
-                <select id="year">
+                <select id="year" class="contactInput" v-model="scoreDet.year">
                   <option>2024/2025</option>
                   <option>2025/2026</option>
                   <option>2026/2027</option>
@@ -70,56 +73,96 @@
 
               <div class="control firstSide">
 
-                <label for="courseCode">Course Code : </label>
-                <input type="text" id="courseCode" placeholder="Enter Course Code">
+                <label for="courseCode">Course Title : </label>
+                <input type="text" class="contactInput" id="courseCode" placeholder="Course Code" v-model="scoreDet.courseCode">
   
-                <label for="cc">CC : </label>
-                <input type="number" id="cc" placeholder="Enter CC">
+                <label for="cc">Course Code : </label>
+                <input type="text" class="contactInput" id="cc" placeholder="CC" v-model="scoreDet.cc">
   
                 <label for="cu">CU : </label>
-                <input type="number" id="cu" placeholder="Enter CU">
+                <input type="number" class="contactInput" id="cu" placeholder="CU" v-model="scoreDet.cu">
   
                 <label for="test">Test : </label>
-                <input type="number" id="test" placeholder="Enter Test Score">
+                <input type="number" class="contactInput" id="test" placeholder="Test Score" v-model="scoreDet.test">
               </div>
 
               <div class="control secondSide">
 
                 <label for="prct">PRCT : </label>
-                <input type="number" id="prct" placeholder="Enter Prct">
+                <input type="number" class="contactInput" id="prct" placeholder="Prct" v-model="scoreDet.practical">
   
                 <label for="assmt">Assessment : </label>
-                <input type="number" id="assmt" placeholder="Enter Assessment">
+                <input type="number" class="contactInput" id="assmt" placeholder="Assessment" v-model="scoreDet.assmt">
   
                 <label for="exam">Exam : </label>
-                <input type="number" id="exam" placeholder="Enter Exam Score">
+                <input type="number" class="contactInput" id="exam" placeholder="Exam" v-model="scoreDet.exam">
   
-                <label for="total">Course Code : </label>
-                <input type="number" id="total" placeholder="Enter Total">
+                <label for="total">Total : </label>
+                <input type="number" class="contactInput" id="total" placeholder="Total" v-model="scoreDet.total">
               </div>
 
             </div>
-            <input type="text" class="contactInput" placeholder="Student's Name">
-            <button @click="updateResult">Update</button>
+            <input type="text" class="contactInput" placeholder="Student's Name" v-model="scoreDet.name">
+            <h4 v-if="uploadSuccess" class="transIdSuccess">{{ upSuccMsg }}</h4>
+            <h4 v-if="uploadError" class="transIdError">{{ upErrMsg }}</h4>
+            <button @click="updateResult">{{admin.isLoading ? 'Uploading' : 'Upload'}}</button>
         </div>
 
 
         </section>
   
-        <!-- Profile Section -->
+        <!-- UPDATE STUDENTS PROFILE -->
         <section v-if="activeTab === 'profile'">
           <div class="transactionDet">
-            <!-- <h3 class="transIdSuccess">{{ transSuccessful.success }}</h3> -->
-            <!-- <label for="studentName">Student Name:</label>
-            <input type="text" id="studentName" class="contactInput" placeholder="Enter Student's Name">
-            <label for="studentEmail">Student Email:</label>
-            <input type="text" id="studentEmail" class="contactInput" placeholder="Enter Student's Email">
-            <label for="studentPhone">Student Phone Number:</label>
-            <input type="text" id="studentPhone" class="contactInput" placeholder="Enter Student's Email">
-            <label for="transactionId">Transaction ID:</label>
-            <input type="text" id="transactionId" class="contactInput" placeholder="Enter Transaction Id">
-            <h3 class="transIdError">{{ transSuccessful.errorin }}</h3>
-            <button @click="saveAdmitted" :disabled="admin.isLoading">{{ admin.isLoading ? 'Saving...' : 'Save' }}</button> -->
+            <h3>UPDATE STUDENT DETAILS</h3>
+            <div class="innerDetails">
+              <label for="stEmail">Student Email</label>
+              <input type="text" id="stEmail" class="contactInput" placeholder="Student Email" v-model="updateStudentInfo.email">
+
+              <label for="stMatric">Student Matric</label>
+              <input type="text" id="stMatric" class="contactInput" placeholder="Student Matric" v-model="updateStudentInfo.matricNo">
+
+              <label for="stLast">Student Lastname</label>
+              <input type="text" id="stLast" class="contactInput" placeholder="Student Lastname" v-model="updateStudentInfo.lastname" readonly>
+
+              <label for="stFirst">Student Firstname</label>
+              <input type="text" id="stFirst" class="contactInput" placeholder="Student Firstname" v-model="updateStudentInfo.firstname" readonly>
+
+              <label for="stMiddle">Student Middlename</label>
+              <input type="text" id="stMiddle" class="contactInput" placeholder="Student Middlename" v-model="updateStudentInfo.middlename" readonly>
+
+              <label for="stDept">Student Department</label>
+              <select id="stDept" class="contactInput" v-model="updateStudentInfo.department">
+                <option>Environmental Health Technology</option>
+                <option>Community Health Extension Worker (CHEW) Junior</option>
+                <option>Community Health Extension Worker (CHEW) Senior</option>
+                <option>Dental Therapy</option>
+                <option>Pharmacy Technician</option>
+                <option>Opticianry Dispensary</option>
+                <option>Public Health Technology</option>
+                <option>Health Assistant Medical</option>
+                <option>Health Technician</option>
+                <option>Computer Science Technology</option>
+                <option>Nutrition and Dietetics</option>
+                <option>Medical Laboratory Technician</option>
+                <option>Orthopedic Plaster Card</option>
+              </select>
+
+              <label for="stFac">Student Faculty</label>
+              <select id="stFac" class="contactInput" v-model="updateStudentInfo.faculty">
+                <option>Environmental Science</option>
+                <option>Engineering</option>
+                <option>Science</option>
+                <option>Medicine</option>
+              </select>
+            </div>
+
+            <h3 v-if="updateDentt.error">{{ updateDentt.message }}</h3>
+            <h3 v-if="updateDentt.success">{{ updateDentt.message }}</h3>
+            <div class="buttons">
+              <button @click="fetchStudentUpd">{{ admin.isFetching ? 'Fetching...' : 'Fetch' }}</button>
+              <button @click="updateStudenInfo">{{ admin.isUpdating ? 'Updating...' : 'Update' }}</button>
+            </div>
         </div>
 
         </section>
@@ -143,6 +186,7 @@
         <section v-if="activeTab === 'admitted'">
             <div class="transactionDet">
               <h1>Admitted Students</h1>
+              <h4 v-if="admittedSuc">{{ transSuccessful.success }}</h4>
               <input type="text" class="contactInput" placeholder="Enter Student's Name" v-model="admission.name">
               <input type="text" class="contactInput" placeholder="Enter Student's Email" v-model="admission.email">
               <input type="text" class="contactInput" placeholder="Enter Student's Phone Number" v-model="admission.phone">
@@ -233,8 +277,8 @@ import auth from '~/middleware/auth';
     definePageMeta({
       middleware: [auth]
     })
-    const activeTab = ref('requests');
-    // const activeTab = ref('home');
+    // const activeTab = ref('profile');
+    const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
     success : '',
@@ -273,6 +317,7 @@ import auth from '~/middleware/auth';
         email : '',
         phone : ''
     })
+    const admittedSuc = ref(false)
 
     // TRANSACTION ID FUNCTION
     const saveAdmitted = async() => {
@@ -282,11 +327,12 @@ import auth from '~/middleware/auth';
         }
 
         await admin.admittedStudentss(admission.value)
+        admittedSuc.value = true
         admittedSuccess.value.success = 'Successful'
-        admittedSuccess.value.name = ''
-        admittedSuccess.value.identity = ''
-        admittedSuccess.value.email = ''
-        admittedSuccess.value.phone = ''
+        admission.value.name = ''
+        admission.value.identity = ''
+        admission.value.email = ''
+        admission.value.phone = ''
     }
 
     // WATCH FOR THE LOGOUT
@@ -300,6 +346,13 @@ import auth from '~/middleware/auth';
     watch(() => admin.isBypass, (newVal) => {
       if (newVal) {
           router.push('/login')
+      }
+    });
+    // WATCH UPDATE SUCCESS
+    watch(() => admin.updateInfoDataSuccess, (newVal) => {
+      if (newVal) {
+        updateDentt.success = true
+        updateDentt.message = 'Update Successful'
       }
     });
 
@@ -332,15 +385,136 @@ const fixDetails = async () => {
   adminData.value.role =  admin.loggedAdmin.role
 }
 
+
+// SEARCH A STUDENT
+const studentMatric = ref('')
 // SEARCH A STUDENT TO UPLOAD THE RESULT
-const searchResult = () => {
-  alert('Searching Student in progress...')
+const searchResult = async () => {
+  if(studentMatric.value == ''){
+    alert('Enter Matric No')
+    return
+  }
+  await admin.searchAdmitted(studentMatric.value)
+  attachValue()
 }
 
-// SEARCH A STUDENT TO UPLOAD THE RESULT
-const updateResult = () => {
-  alert('Updating...')
+const searchResults = ref({
+  firstname : '',
+  lastname : '',
+  middlename : ''
+})
+const attachValue = () => {
+  searchResults.value.firstname = admin.searchDataa.firstname
+  searchResults.value.lastname = admin.searchDataa.lastname
+  searchResults.value.middlename = admin.searchDataa.middlename
 }
+
+
+// EXAM INPUT DETAILS
+const scoreDet = ref({
+  matricNo: '',
+  semester: '',
+  level: '',
+  year: '',
+  courseCode: '',
+  cc : '',
+  cu: '',
+  test: '',
+  practical: '',
+  assmt: '',
+  exam: '',
+  total:'',
+  name: ''
+})
+
+const uploadError = ref(false)
+const uploadSuccess = ref(false)
+const upErrMsg = ref('')
+const upSuccMsg = ref('')
+// UPLOAD STUDENT'S RESULT
+const updateResult = async () => {
+  uploadSuccess.value = false
+  uploadError.value = false
+  if(scoreDet.value.matricNo == '' || scoreDet.value.semester == ''  || scoreDet.value.assmt == '' || scoreDet.value.cc == ''  || scoreDet.value.courseCode == '' || scoreDet.value.cu == '' || scoreDet.value.exam == '' || scoreDet.value.level == '' || scoreDet.value.name == '' || scoreDet.value.practical == '' || scoreDet.value.test == '' || scoreDet.value.total == '' || scoreDet.value.year == ''){
+    uploadError.value = true
+    upErrMsg.value = 'No field should be left empty'
+    return
+  }
+  uploadError.value = false
+  await admin.uploadResult(scoreDet.value)
+  uploadSuccess.value = true
+  upSuccMsg.value = 'Uploade successful'
+  clearResult()
+}
+
+const clearResult = () => {
+  scoreDet.value.courseCode = ''
+  scoreDet.value.total = ''
+  scoreDet.value.exam = ''
+  scoreDet.value.assmt = ''
+  scoreDet.value.cu = ''
+  scoreDet.value.cc = ''
+  scoreDet.value.practical = ''
+  scoreDet.value.test = ''
+}
+
+// STUDENT INFORMATION UPDATE
+const updateStudentInfo = ref ({
+  matricNo: '',
+  email: '',
+  lastname: '',
+  firstname: '',
+  middlename: '',
+  department: '',
+  faculty: ''
+})
+
+// FETCH INFO
+const fetchStudentUpd = async () => {
+  if(updateStudentInfo.value.email === ''){
+    alert('search field cannot be empty')
+    return
+  }
+  await admin.fetchStudentForUpdate(updateStudentInfo.value)
+  await updateInformation()
+}
+// POPULATE UI WITH FETCHED INFO
+const updateInformation = async() => {
+  updateStudentInfo.value.email = admin.updateSearch.email
+  updateStudentInfo.value.matricNo = admin.updateSearch.matricNo
+  updateStudentInfo.value.lastname = admin.updateSearch.lastname
+  updateStudentInfo.value.firstname = admin.updateSearch.firstname
+  updateStudentInfo.value.middlename = admin.updateSearch.middlename
+  updateStudentInfo.value.department = admin.updateSearch.department
+  updateStudentInfo.value.faculty = admin.updateSearch.faculty
+}
+
+// ERROR AND SUCCESS
+const updateDentt = ref({
+  message: '',
+  error: false,
+  success: false
+})
+// const updateMessage = ref(false)
+// const updateText = ref('')
+// UPDATE FETCHED INFO
+const updateStudenInfo = async() => {
+  await admin.updateMatFacDep(updateStudentInfo.value)
+  updateDentt.value.success = true
+  updateDentt.value.message = 'Updated Successfully'
+  clearUpdate()
+}
+// CLEAR UPDATE
+const clearUpdate = () => {
+  updateStudentInfo.value.email = ''
+  updateStudentInfo.value.matricNo = ''
+  updateStudentInfo.value.lastname = ''
+  updateStudentInfo.value.firstname = ''
+  updateStudentInfo.value.middlename = ''
+  updateStudentInfo.value.department = ''
+  updateStudentInfo.value.faculty = ''
+}
+
 
 
 
@@ -356,6 +530,26 @@ const updateResult = () => {
   </script>
   
   <style scoped>
+  .matricName{
+    background-color: green;
+    color: white;
+    font-size: 23px;
+    padding: 10px;
+  }
+  h3{
+    color: white;
+  }
+  .innerDetails{
+    display: flex;
+    flex-direction: column;
+  }
+  .buttons{
+    display: flex;
+    gap: 10px;
+  }
+  .availableStudent{
+    border-bottom: 4px solid blue;
+  }
   .fetchedStudentProfile{
     display: flex;
     gap: 10px;

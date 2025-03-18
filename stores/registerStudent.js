@@ -52,13 +52,12 @@ export const useStudentStore = defineStore('studentauth', () => {
         canProceed.value = false
         const client = useSupabaseClient()
         try {
-            const {data, error:signUpError} = await client.auth.signUp({
+            const {data:authData, error:signUpError} = await client.auth.signUp({
                 email : RegisterDetails.email,
                 password : RegisterDetails.password,
                 options:{
                     emailRedirectTo: `${window.location.origin}/Confirm`,
                     data:{
-                        Fullname: RegisterDetails.fullname,
                         Phone: RegisterDetails.phone,
                         Email: RegisterDetails.email,
                         role:'student'
@@ -66,10 +65,40 @@ export const useStudentStore = defineStore('studentauth', () => {
                 }
             })
             if(signUpError) throw signUpError
-            userData.value = data.user
+            const regID = authData.user.id
+            userData.value = authData.user
+           await  saveOtherDetails(regID, RegisterDetails)
         } catch (err) {
             error.value = err.message
             console.log(err.message)
+        } finally{
+            isLoading.value = false
+        }
+    }
+
+    // FUNCTION TO SAVE OTHER DETAILS TO THE DATABASE
+    const saveOtherDetails = async (regID, RegisterDetails) => {
+        isLoading.value = true
+        error.value = null
+        const client = useSupabaseClient()
+        try {
+            const {data:otherDetailsData, error:otherDetailsError} = await client
+            .from('STUDENTDETAILS')
+            .insert([
+                {
+                    matricNo : null,
+                    studentUID : regID,
+                    email : RegisterDetails.email,
+                    lastname : RegisterDetails.lastname,
+                    firstname : RegisterDetails.firstname,
+                    middlename : RegisterDetails.middlename,
+                    faculty : null,
+                    department : null
+                }
+            ])
+            if(otherDetailsError) throw otherDetailsError
+        } catch (err) {
+            error.value = err.message
         } finally{
             isLoading.value = false
         }

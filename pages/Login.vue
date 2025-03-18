@@ -11,7 +11,9 @@
         <!-- REGISTRATION FOR STUDENT -->
         <div class="page" v-if="registerVisible">
             <h5 v-if="registerE">{{ registerError }}</h5>
-            <input type="text" class="contactInput" placeholder="Please input your Fullname" v-model="RegisterDetails.fullname">
+            <input type="text" class="contactInput" placeholder="Please input your Firstname" v-model="RegisterDetails.firstname">
+            <input type="text" class="contactInput" placeholder="Please input your Lastname" v-model="RegisterDetails.lastname">
+            <input type="text" class="contactInput" placeholder="Please input your Middlename" v-model="RegisterDetails.middlename">
             <p v-if="nameError" class="errorClass">{{ nameError }}</p>
             <input type="text" class="contactInput" placeholder="Please input your Phone Number" v-model="RegisterDetails.phone">
             <input type="email" class="contactInput" placeholder="Please input your email" v-model="RegisterDetails.email">
@@ -93,13 +95,15 @@
     const loginE = ref(false)
 
     // AUTHENTICATING THE INPUT
-    const namePattern = /^[A-Za-z]+(?:\s[A-Za-z]+){1,2}$/
+    // const namePattern = /^[A-Za-z]+(?:\s[A-Za-z]+){1,2}$/
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,40}$/
 
     // REGISTRATION DETAILS
     const RegisterDetails = ref({
-        fullname : '',
+        middlename : '',
+        lastname : '',
+        firstname : '',
         phone: '',
         email: '',
         password: ''
@@ -108,8 +112,16 @@
     // REGISTRATION FUNCTION
     const registerStudent = async () => {
          // CHECK NAME
-        if(!namePattern.test(RegisterDetails.value.fullname)){
-            nameError.value = 'Name must contain two to three words'
+        if(RegisterDetails.value.firstname == ''){
+            nameError.value = 'Firstname cannot be empty'
+            return
+        }
+        if(RegisterDetails.value.lastname == ''){
+            nameError.value = 'Lastname cannot be empty'
+            return
+        }
+        if(RegisterDetails.value.middlename == ''){
+            nameError.value = 'Middlename cannot be empty'
             return
         }
         nameError.value = ''

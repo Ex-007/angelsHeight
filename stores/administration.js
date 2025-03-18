@@ -4,12 +4,18 @@ export const useAdminStore = defineStore('admin', () => {
     const isLoading = ref(false)
     const error = ref(null)
     const transSaveSuccess = ref(null)
+    const resultUploadData = ref(null)
     const canOut = ref(false)
     const formStudents = ref([])
     const selectedUser = ref(null)
     const isLoggedIn = ref(false)
     const loggedAdmin = ref(null)
     const isBypass = ref(false)
+    const updateInfoDataSuccess = ref(false)
+    const searchDataa = ref(null)
+    const updateSearch = ref(null)
+    const isUpdating = ref(false)
+    const isFetching = ref(false)
 
 
     // FETCH THE SIGNED IN USER
@@ -158,8 +164,122 @@ export const useAdminStore = defineStore('admin', () => {
         }
      }
 
+    //  UPLOAD STUDENT'S RESULT
+    const uploadResult = async (studentDet) => {
+        isLoading.value = true
+        error.value = false
+        const client = useSupabaseClient()
+        try {
+            const {data:resultUploadData, error:resultUploadError} = await client
+            .from('STUDENTRECORDS')
+            .insert([
+                {
+                    name: studentDet.name,
+                    assmt: studentDet.assmt,
+                    cc: studentDet.cc,
+                    coursecode: studentDet.courseCode,
+                    cu: studentDet.cu,
+                    exam: studentDet.exam,
+                    level: studentDet.level,
+                    matricNo: studentDet.matricNo,
+                    practical: studentDet.practical,
+                    semester: studentDet.semester,
+                    test: studentDet.test,
+                    total: studentDet.total,
+                    year: studentDet.year
+                }
+            ])
+            if(resultUploadError) throw resultUploadError
+            resultUploadData.value = 'Successfully Uploaded'
+        } catch (err) {
+            error.value = err.message
+        } finally{
+            isLoading.value = false
+        }
+    }
 
+    // SEARCH FOR STUDENT ADMISSION BEFORE UPLOADING RESULT
+    const searchAdmitted = async (studentMatric) => {
+        isLoading.value = true
+        error.value = false
+        const client = useSupabaseClient()
+        try {
+            const {data:searchData, error:searchError} = await client
+            .from('STUDENTDETAILS')
+            .select('*')
+            .eq('matricNo', studentMatric)
+            .single()
 
+            if(searchError){
+                if (searchError.code === 'PGRST116') {
+                    return
+                }
+                throw searchError
+            }
+            searchDataa.value = searchData
+            return searchData
+        } catch (err) {
+            error.value = err.message
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    // FETCH STUDENT DETAILS IN STUDENTS DETAILS FOR UPLOADING PURPOSE
+    const fetchStudentForUpdate = async (queryVal) => {
+        isFetching.value = true
+        error.value = false
+        const client = useSupabaseClient()
+        try {
+            const {data:searchStuData, error:searchStuError} = await client
+            .from('STUDENTDETAILS')
+            .select('*')
+            .eq('email', queryVal.email)
+            .single()
+
+            if(searchStuError){
+                if (searchStuError.code === 'PGRST116') {
+                    error.value = 'No user Found'
+                    return
+                }
+                throw searchStuError
+            }
+            updateSearch.value = searchStuData
+        } catch (err) {
+            error.value = err.message
+        } finally {
+            isFetching.value = false
+        }
+    }
+
+    // UPDATE THE FETCHED INFO INCLUDING MATRIC NO, FACULTY, DEPARTMENT
+    const updateMatFacDep = async (queryVal) => {
+        isUpdating.value = true
+        error.value = null
+        updateInfoDataSuccess.value = false
+        const client = useSupabaseClient()
+        try {
+            const {data:updateInfoData, error:updateInfoError} = await client
+            .from('STUDENTDETAILS')
+            .update({
+                matricNo: queryVal.matricNo,
+                faculty: queryVal.faculty,
+                department: queryVal.department
+            })
+            .eq('email', queryVal.email)
+
+            if(updateInfoError) throw updateInfoError
+            updateInfoDataSuccess.value = true
+            return updateInfoData
+        } catch (err) {
+            error.value = err.message
+            return null
+        } finally{
+            isUpdating.value = false
+        }
+    }
+
+// AH/ME/25/1-0024
 
 
 
@@ -189,6 +309,8 @@ export const useAdminStore = defineStore('admin', () => {
 
     return{
         isLoading,
+        isFetching,
+        isUpdating,
         error,
         transactioDetails,
         transSaveSuccess,
@@ -201,6 +323,14 @@ export const useAdminStore = defineStore('admin', () => {
         selectedUser,
         signinUser,
         isBypass,
-        loggedAdmin
+        loggedAdmin,
+        resultUploadData,
+        uploadResult,
+        searchAdmitted,
+        searchDataa,
+        updateSearch,
+        fetchStudentForUpdate,
+        updateMatFacDep,
+        updateInfoDataSuccess
     }
 })
