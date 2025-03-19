@@ -279,6 +279,31 @@ export const useAdminStore = defineStore('admin', () => {
         }
     }
 
+    // INPUT COURSES
+    const coursesList = async (courseLists) => {
+        isLoading.value = true
+        error.value = false
+        const client = useSupabaseClient()
+        try {
+            const {data:courseUpData, error:courseUpError} = await client
+            .from('COURSELIST')
+            .insert([
+                {
+                    code: courseLists.code,
+                    title: courseLists.title,
+                    units: courseLists.units,
+                }
+            ])
+            if(courseUpError) throw courseUpError
+            resultUploadData.value = 'Successfully Uploaded'
+        } catch (err) {
+            error.value = err.message
+        } finally{
+            isLoading.value = false
+        }
+    }
+
+
 // AH/ME/25/1-0024
 
 
@@ -331,6 +356,7 @@ export const useAdminStore = defineStore('admin', () => {
         updateSearch,
         fetchStudentForUpdate,
         updateMatFacDep,
-        updateInfoDataSuccess
+        updateInfoDataSuccess,
+        coursesList
     }
 })
