@@ -100,10 +100,12 @@
   </template>
   
   <script setup>
-  import { ref, computed, onMounted } from 'vue'
+  import { ref, computed, onMounted, watch } from 'vue'
   import { definePageMeta } from '#imports'
   import {useCourseStore} from '@/stores/courseform'
   const coursess = useCourseStore()
+  import{useRouter} from 'vue-router'
+  const router = useRouter()
   
   // Define this page as a special layout (optional)
   definePageMeta({
@@ -291,15 +293,24 @@
   const allCourses = ref([])
   const fetchCourses = async () => {
     try {
-      console.log(coursess.courseReturn)
       allCourses.value = coursess.courseReturn
     } catch (error) {
       console.error('Error fetching courses:', error)
     }
   }
   
+  // WATCH BYPASS BY NOT LOGGED IN USERS
+  watch(() => coursess.isBypass, (newVal) => {
+    if (newVal) {
+      console.log('active')
+        router.push('/login')
+    }
+  });
+
   // Lifecycle hook
   onMounted(async () => {
+    await coursess.signinUser()
+    // await coursess.fetchDetails()
     await coursess.fetchCourse()
     await fetchCourses()
   })
