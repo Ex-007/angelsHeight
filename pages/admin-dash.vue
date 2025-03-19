@@ -291,8 +291,8 @@ import auth from '~/middleware/auth';
     definePageMeta({
       middleware: [auth]
     })
-    const activeTab = ref('courses');
-    // const activeTab = ref('home');
+    // const activeTab = ref('courses');
+    const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
     success : '',
