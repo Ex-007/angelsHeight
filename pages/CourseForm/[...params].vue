@@ -39,11 +39,12 @@
         <div class="student-info">
           <h3>Student Information</h3>
           <div class="student-details">
-            <p><strong>Name:</strong> {{ studentName }}</p>
-            <p><strong>ID:</strong> {{ studentId }}</p>
-            <p><strong>Department:</strong> {{ department }}</p>
-            <p><strong>Level:</strong> {{ level }}</p>
-            <p><strong>Semester:</strong> {{ semester }}</p>
+            <p><strong>Name:</strong> {{ studentDetail.lastname + ' ' + studentDetail.middlename + ' ' + studentDetail.firstname }}</p>
+            <p><strong>Matric No:</strong> {{ studentDetail.matric }}</p>
+            <p><strong>Department:</strong> {{ studentDetail.department }}</p>
+            <p><strong>Level:</strong> {{ formYear }}</p>
+            <p><strong>Semester:</strong> {{ formSemester }}</p>
+            <p><strong>Year:</strong> {{ formLevel }}</p>
           </div>
         </div>
         
@@ -104,8 +105,12 @@
   import { definePageMeta } from '#imports'
   import {useCourseStore} from '@/stores/courseform'
   const coursess = useCourseStore()
-  import{useRouter} from 'vue-router'
+  import{useRouter, useRoute} from 'vue-router'
   const router = useRouter()
+  const route = useRoute()
+  const params = route.params.params || []
+  const [formSemester, formLevel, formYear] = params
+  console.log(formSemester, formLevel, formYear)
   
   // Define this page as a special layout (optional)
   definePageMeta({
@@ -302,15 +307,38 @@
   // WATCH BYPASS BY NOT LOGGED IN USERS
   watch(() => coursess.isBypass, (newVal) => {
     if (newVal) {
-      console.log('active')
         router.push('/login')
     }
   });
 
+    // STUDENT DETAILS
+  const studentDetail = ref({
+    matric : '',
+    email : '',
+    firstname : '',
+    lastname : '',
+    middlename : '',
+    faculty : '',
+    department : ''
+
+  })
+
+  // ATTACHED FETCHED DETAILS
+  const attachDetails = async () => {
+    console.log(coursess.studentDetails)
+    studentDetail.value.matric = coursess.studentDetails.matricNo
+    studentDetail.value.email = coursess.studentDetails.email
+    studentDetail.value.lastname = coursess.studentDetails.lastname
+    studentDetail.value.firstname = coursess.studentDetails.firstname
+    studentDetail.value.middlename = coursess.studentDetails.middlename
+    studentDetail.value.faculty = coursess.studentDetails.faculty
+    studentDetail.value.department = coursess.studentDetails.department
+  }
+
   // Lifecycle hook
   onMounted(async () => {
     await coursess.signinUser()
-    // await coursess.fetchDetails()
+    await attachDetails()
     await coursess.fetchCourse()
     await fetchCourses()
   })

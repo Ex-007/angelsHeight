@@ -6,6 +6,7 @@ export const useCourseStore = defineStore('courseForm', () => {
     const error = ref(null)
     const courseReturn = ref([])
     const user = ref(null)
+    const studentDetails = ref(null)
 
     // FETCH THE SIGNED IN USER
     const signinUser = async () => {
@@ -39,7 +40,6 @@ export const useCourseStore = defineStore('courseForm', () => {
             }
         } catch (err) {
             isBypass.value = true
-            console.log('No signed in user')
             error.value = err.message
             return null
         } finally {
@@ -63,8 +63,6 @@ export const useCourseStore = defineStore('courseForm', () => {
             .single()
             if(signedStuError) throw signedStuError
             studentDetails.value = signedStuData
-            console.log('we dey hia')
-            console.log(signedStuData)
         } catch (err) {
             error.value = err.message
         } finally{
@@ -118,6 +116,7 @@ export const useCourseStore = defineStore('courseForm', () => {
         fetchCourse,
         signinUser,
         fetchDetails,
-        isBypass
+        isBypass,
+        studentDetails
     }
 })

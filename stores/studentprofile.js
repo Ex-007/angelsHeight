@@ -71,6 +71,7 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
         isLoading.value = true
         error.value = null
         const ident = user.value.id
+        console.log(ident)
         const client = useSupabaseClient()
         try {
             const {data:signedStuData, error:signedStuError} = await client
