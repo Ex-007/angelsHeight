@@ -8,6 +8,7 @@
         </div>
         <ul>
           <li @click="activeTab = 'home'" :class="{ active: activeTab === 'home' }">🏠 Home</li>
+          <li @click="activeTab = 'courses'" :class="{ active: activeTab === 'courses' }">🏠 Courses</li>
           <li @click="activeTab = 'requests'" :class="{ active: activeTab === 'requests' }">📩 Results</li>
           <li @click="activeTab = 'profile'" :class="{ active: activeTab === 'profile' }">👤 Students</li>
           <li @click="activeTab = 'premium'" :class="{ active: activeTab === 'premium' }">💎 Transaction ID</li>
@@ -26,6 +27,19 @@
                 <h2>Phone: {{ adminData.phone }}</h2>
                 <h2>Role: {{ adminData.role }}</h2>
             </div>
+        </section>
+
+        <!-- Entering courses -->
+        <section v-if="activeTab === 'courses'">
+          <div class="transactionDet">
+              <h1>COURSE INPUT</h1>
+              <h4 v-if="admittedSuc">{{ transSuccessful.success }}</h4>
+              <input type="text" class="contactInput" placeholder="Enter Course Code" v-model="courseLists.code">
+              <input type="text" class="contactInput" placeholder="Enter Course Title" v-model="courseLists.title">
+              <input type="number" class="contactInput" placeholder="Enter Course Unit" v-model="courseLists.units">
+              <h3 class="transIdError">{{ alert.message }}</h3>
+              <button @click="saveCourse" :disabled="admin.isLoading">{{ admin.isLoading ? 'Saving...' : 'Save' }}</button> 
+          </div>d
         </section>
   
         <!-- Requests Section -->
@@ -277,7 +291,7 @@ import auth from '~/middleware/auth';
     definePageMeta({
       middleware: [auth]
     })
-    // const activeTab = ref('profile');
+    // const activeTab = ref('courses');
     const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
@@ -515,6 +529,37 @@ const clearUpdate = () => {
   updateStudentInfo.value.faculty = ''
 }
 
+// INPUTTING 
+const courseLists = ref({
+  code: '',
+  title: '',
+  units: ''
+})
+
+const alert = ref({
+  message: '',
+  error: false,
+  success: false
+})
+
+const saveCourse = async () => {
+  if(courseLists.value.code == '' || courseLists.value.title == '' || courseLists.value.units == ''){
+    alert.value.error = true
+    alert.value.message = 'No field should be empty'
+    return
+  }
+  alert.value.error = false
+  await admin.coursesList(courseLists.value)
+  alert.value.success = true
+  alert.value.message = 'Uploaded Successfully'
+  clearCourse()
+}
+
+const clearCourse = () => {
+  courseLists.value.code = ''
+  courseLists.value.title = ''
+  courseLists.value.units = ''
+}
 
 
 

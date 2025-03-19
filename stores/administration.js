@@ -296,6 +296,7 @@ export const useAdminStore = defineStore('admin', () => {
             ])
             if(courseUpError) throw courseUpError
             resultUploadData.value = 'Successfully Uploaded'
+            console.log('successful', courseUpData)
         } catch (err) {
             error.value = err.message
         } finally{

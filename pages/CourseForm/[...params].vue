@@ -39,11 +39,12 @@
         <div class="student-info">
           <h3>Student Information</h3>
           <div class="student-details">
-            <p><strong>Name:</strong> {{ studentName }}</p>
-            <p><strong>ID:</strong> {{ studentId }}</p>
-            <p><strong>Department:</strong> {{ department }}</p>
-            <p><strong>Level:</strong> {{ level }}</p>
-            <p><strong>Semester:</strong> {{ semester }}</p>
+            <p><strong>Name:</strong> {{ studentDetail.lastname + ' ' + studentDetail.middlename + ' ' + studentDetail.firstname }}</p>
+            <p><strong>Matric No:</strong> {{ studentDetail.matric }}</p>
+            <p><strong>Department:</strong> {{ studentDetail.department }}</p>
+            <p><strong>Level:</strong> {{ formYear }}</p>
+            <p><strong>Semester:</strong> {{ formSemester }}</p>
+            <p><strong>Year:</strong> {{ formLevel }}</p>
           </div>
         </div>
         
@@ -100,8 +101,16 @@
   </template>
   
   <script setup>
-  import { ref, computed, onMounted } from 'vue'
+  import { ref, computed, onMounted, watch } from 'vue'
   import { definePageMeta } from '#imports'
+  import {useCourseStore} from '@/stores/courseform'
+  const coursess = useCourseStore()
+  import{useRouter, useRoute} from 'vue-router'
+  const router = useRouter()
+  const route = useRoute()
+  const params = route.params.params || []
+  const [formSemester, formLevel, formYear] = params
+  console.log(formSemester, formLevel, formYear)
   
   // Define this page as a special layout (optional)
   definePageMeta({
@@ -114,22 +123,6 @@
   const department = ref('Computer Science')
   const level = ref('300')
   const semester = ref('First Semester')
-  
-  // Sample courses - replace with actual data from your API
-  const allCourses = ref([
-    { id: 1, code: 'CSC301', title: 'Data Structures', units: 3 },
-    { id: 2, code: 'CSC302', title: 'Algorithm Analysis', units: 3 },
-    { id: 3, code: 'CSC303', title: 'Operating Systems', units: 2 },
-    { id: 4, code: 'CSC304', title: 'Computer Networks', units: 3 },
-    { id: 5, code: 'CSC305', title: 'Web Development', units: 2 },
-    { id: 6, code: 'CSC306', title: 'Database Systems', units: 3 },
-    { id: 7, code: 'CSC307', title: 'Software Engineering', units: 3 },
-    { id: 8, code: 'CSC308', title: 'Artificial Intelligence', units: 2 },
-    { id: 9, code: 'CSC309', title: 'Computer Graphics', units: 2 },
-    { id: 10, code: 'MTH301', title: 'Numerical Analysis', units: 2 },
-    { id: 11, code: 'MTH302', title: 'Linear Algebra', units: 2 },
-    { id: 12, code: 'GNS301', title: 'Technical Writing', units: 1 },
-  ])
   
   // Reactive state
   const searchQuery = ref('')
@@ -302,21 +295,52 @@
   }
   
   // Fetch courses from API
+  const allCourses = ref([])
   const fetchCourses = async () => {
     try {
-      // Replace with actual API call
-      // const response = await fetch('/api/courses')
-      // allCourses.value = await response.json()
-      
-      // For now, we're using the sample data defined above
+      allCourses.value = coursess.courseReturn
     } catch (error) {
       console.error('Error fetching courses:', error)
     }
   }
   
+  // WATCH BYPASS BY NOT LOGGED IN USERS
+  watch(() => coursess.isBypass, (newVal) => {
+    if (newVal) {
+        router.push('/login')
+    }
+  });
+
+    // STUDENT DETAILS
+  const studentDetail = ref({
+    matric : '',
+    email : '',
+    firstname : '',
+    lastname : '',
+    middlename : '',
+    faculty : '',
+    department : ''
+
+  })
+
+  // ATTACHED FETCHED DETAILS
+  const attachDetails = async () => {
+    console.log(coursess.studentDetails)
+    studentDetail.value.matric = coursess.studentDetails.matricNo
+    studentDetail.value.email = coursess.studentDetails.email
+    studentDetail.value.lastname = coursess.studentDetails.lastname
+    studentDetail.value.firstname = coursess.studentDetails.firstname
+    studentDetail.value.middlename = coursess.studentDetails.middlename
+    studentDetail.value.faculty = coursess.studentDetails.faculty
+    studentDetail.value.department = coursess.studentDetails.department
+  }
+
   // Lifecycle hook
-  onMounted(() => {
-    fetchCourses()
+  onMounted(async () => {
+    await coursess.signinUser()
+    await attachDetails()
+    await coursess.fetchCourse()
+    await fetchCourses()
   })
   </script>
   

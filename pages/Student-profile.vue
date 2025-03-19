@@ -39,23 +39,33 @@
           <h2>Course Form</h2>
           <div class="courseYear">
             <h3>Select Year</h3>
-            <select>
-              <option>Selecet Year</option>
-              <option>2024/2025</option>
-              <option>2025/2026</option>
-              <option>2026/2027</option>
-              <option>2027/2028</option>
+            <select v-model="courseFormField.year">
+            <option>2024-2025</option>
+            <option>2025-2026</option>
+            <option>2026-2027</option>
+            <option>2027-2028</option>
+            <option>2028-2029</option>
+            <option>2029-2030</option>
             </select>
           </div>
           <div class="courseYear">
             <h3>Select Semester</h3>
-            <select>
-              <option>Selecet Semester</option>
+            <select v-model="courseFormField.semester">
               <option>First</option>
               <option>Second</option>
             </select>
           </div>
-          <button @click="refreshRequests">Submit</button>
+          <div class="courseYear">
+            <h3>Select level</h3>
+            <select v-model="courseFormField.level">
+              <option>NDI</option>
+              <option>NDII</option>
+              <option>HNDI</option>
+              <option>HNDII</option>
+            </select>
+          </div>
+          <h4 v-if="errorrM" class="resultError">{{ errorM }}</h4>
+          <button @click="fillForm">Submit</button>
         </div>
 
 
@@ -252,6 +262,29 @@ const checkResult = async () => {
   // let matricInf = studentDetail.value.matric
 
   await student.fetchStudentScores(resultSelect.value)
+}
+
+//Course Form Development
+const courseFormField = ref({
+  semester: '',
+  year: '',
+  level: ''
+})
+
+const fillForm = () => {
+  if(courseFormField.value.level == '' || courseFormField.value.level == '' || courseFormField.value.year == ''){
+    errorrM.value = true
+    errorM.value = 'Please Select Year, Semester and Level...'
+    return
+  }
+  errorrM.value = false
+
+  const formSemester = courseFormField.value.semester
+  const formYear = courseFormField.value.year
+  const formLevel = courseFormField.value.level
+
+  router.push(`CourseForm/${formSemester}/${formYear}/${formLevel}`)
+
 }
 
 
