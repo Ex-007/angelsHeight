@@ -159,7 +159,6 @@ const checkReg = async () => {
 
         if(emailError){
             if (emailError.code === 'PGRST116') {
-                console.log('You are welcome')
                 await registerStudent()
                 return
             }

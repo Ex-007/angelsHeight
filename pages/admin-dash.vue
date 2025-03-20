@@ -42,7 +42,7 @@
           </div>d
         </section>
   
-        <!-- Requests Section -->
+        <!-- Result Section -->
         <section v-if="activeTab === 'requests'">
         <div class="courseForm">
             <h2>Enter Student's Result</h2>

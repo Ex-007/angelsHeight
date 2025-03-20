@@ -3,7 +3,8 @@
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
       <div class='profileP'>
-        <img src='/img/profilepicture.jpeg' alt="Profile Picture" class="profilePicture" />
+        <img :src="studentDetail.profilePicture || '/img/profilepicture.jpeg'" alt="Profile Picture" class="profilePicture" />
+        <!-- <img src='/img/profilepicture.jpeg' alt="Profile Picture" class="profilePicture" /> -->
         <p v-if="tracking">{{tracking}}</p>
       </div>
       <ul>
@@ -71,15 +72,38 @@
 
       </section>
 
+
+
+
       <!-- Profile Section -->
       <section v-if="activeTab === 'profile'">
-        <h2>Profile Settings</h2>
-        <h3> johndoe@gmail.com </h3>
-        <p>Update your personal and service details.</p>
-
+        <div class="transactionDet">
+            <h3>PROFILE UPDATE</h3>
+            <div class="innerDetails">
+              <input type="text" id="stEmail" class="contactInput" v-model="updateStudentInfo.email" readonly>
+              <input type="text" id="stMatric" class="contactInput" v-model="updateStudentInfo.matricNo" readonly>
+              <input type="text" id="stLast" class="contactInput" v-model="updateStudentInfo.lastname" readonly>
+              <input type="text" id="stFirst" class="contactInput" v-model="updateStudentInfo.firstname" readonly>
+              <input type="text" id="stMiddle" class="contactInput" v-model="updateStudentInfo.middlename" readonly>
+              <input type="text" id="stMiddle" class="contactInput" v-model="updateStudentInfo.department" readonly>
+              <input type="text" id="stMiddle" class="contactInput" v-model="updateStudentInfo.faculty" readonly>
+            </div>
+            <!-- <div class="stepA">
+              <h3>Please upload your passport</h3>
+              <label for="passport"><i class="fa fa-file" style="font-size: 40px; cursor: pointer;"></i></label>
+              <input type="file" id="passport" style="display: none;" @change="handlePassportPhoto" accept="image/*" required>
+              <div v-if="passportPreviewUrl" class="preview">
+                  <img :src="passportPreviewUrl" alt="Passport Preview" width="100" />
+              </div>
+            </div>
+            <h3 v-if="student.updateInfoDataSuccess">Upload successful</h3>
+            <div class="buttons">
+              <button @click="updateStudenInfo">{{ student.isLoading ? 'Changing...' : 'Change Profile Picture' }}</button>
+            </div> -->
+        </div>
       </section>
 
-      <!-- Premium Section -->
+      <!-- CHECK RESULT -->
       <section v-if="activeTab === 'premium'">
         <h3 class="checkHead">CHECK RESULT</h3>
         <h3 class="checkHead">{{ studentDetail.matric }}</h3>
@@ -219,13 +243,12 @@
     lastname : '',
     middlename : '',
     faculty : '',
-    department : ''
-
+    department : '',
+    profilePicture : ''
   })
 
   // ATTACHED FETCHED DETAILS
   const attachDetails = async () => {
-    // console.log(student.studentDetails)
     studentDetail.value.matric = student.studentDetails.matricNo
     studentDetail.value.email = student.studentDetails.email
     studentDetail.value.lastname = student.studentDetails.lastname
@@ -233,6 +256,16 @@
     studentDetail.value.middlename = student.studentDetails.middlename
     studentDetail.value.faculty = student.studentDetails.faculty
     studentDetail.value.department = student.studentDetails.department
+    // studentDetail.value.profilePicture = student.studentDetails.profilepicture
+    
+    // PROFILE PAGE
+    updateStudentInfo.value.matricNo = student.studentDetails.matricNo
+    updateStudentInfo.value.email = student.studentDetails.email
+    updateStudentInfo.value.lastname = student.studentDetails.lastname
+    updateStudentInfo.value.firstname = student.studentDetails.firstname
+    updateStudentInfo.value.middlename = student.studentDetails.middlename
+    updateStudentInfo.value.faculty = student.studentDetails.faculty
+    updateStudentInfo.value.department = student.studentDetails.department
   }
 
 
@@ -287,10 +320,25 @@ const fillForm = () => {
 
 }
 
+// VIEWING AND CHANGING PICTURE
+const updateStudentInfo = ref ({
+  matricNo: '',
+  email: '',
+  lastname: '',
+  firstname: '',
+  middlename: '',
+  department: '',
+  faculty: ''
+})
 
 
 
 
+const profileDet = ref('agbebibidemi02@gmail.com')
+const fetchPic = async () => {
+  await student.fetchPicture(profileDet.value)
+  studentDetail.value.profilePicture = student.profilepicturee.passportUrl
+}
 
 
 
@@ -300,7 +348,7 @@ const fillForm = () => {
   onMounted(async () => {
     await student.signinUser()
     await student.fetchDetails()
-    // console.log(student.user.id)
+    await fetchPic()
     await attachDetails()
   })
 
@@ -309,6 +357,38 @@ const fillForm = () => {
   </script>
   
   <style scoped>
+      .preview {
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        padding: 5px;
+        display: inline-block;
+        border-radius: 4px;
+    }
+    .transactionDet{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 10px;
+        background-color: #6897a7;
+        margin: 10px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: inset 10px 6px 50px rgb(26, 49, 195);
+    }
+    .innerDetails{
+      display: flex;
+      flex-direction: column;
+    }
+    .contactInput{
+        width: 300px;
+        border-radius: 10px;
+        height: 35px;
+        border: none;
+        outline: none;
+        padding: 10px;
+        box-shadow: inset 10px 6px 50px rgb(192, 192, 196);
+    }
     .homeDetails{
         display: flex;
         flex-direction: column;
@@ -408,7 +488,9 @@ td{
   font-style: italic;
   color: #e10808;
 }
-
+h3{
+  color: white;
+}
 
 
 

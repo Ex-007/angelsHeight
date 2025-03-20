@@ -134,8 +134,8 @@
                 <!-- EDUCATIONAL BACKGROUND -->
                  <div class="stepA eduBack">
                     <p>List all the schools attended in chronological order</p>
-                    <input type="text" class="contactInput" placeholder="School Name">
-                    <input type="text" class="contactInput" placeholder="Result Awarded">
+                    <input type="text" class="contactInput" placeholder="School Name" v-model="store.studentData.schoolAttended" required>
+                    <input type="text" class="contactInput" placeholder="Result Awarded" v-model="store.studentData.resultAwarded" required>
                  </div>
 
                  <div class="stepA academi">

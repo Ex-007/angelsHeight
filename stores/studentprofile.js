@@ -7,6 +7,7 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
     const noResults = ref(false)
     const user = ref(null)
     const studentDetails = ref(null)
+    const profilepicturee = ref(null)
     const isBypass = ref(false)
     const canOut = ref(false)
 
@@ -37,6 +38,7 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
 
             if (loggedUserData && loggedUserData.user) {
                 user.value = loggedUserData.user
+                console.log(loggedUserData.user.email)
                 return loggedUserData.user
             } else {
                 console.log("No user data found:", loggedUserData)
@@ -71,7 +73,6 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
         isLoading.value = true
         error.value = null
         const ident = user.value.id
-        console.log(ident)
         const client = useSupabaseClient()
         try {
             const {data:signedStuData, error:signedStuError} = await client
@@ -215,6 +216,99 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
   });
 
 
+//   FETCH PROFILE PICTURE FROM FORM
+const fetchPicture = async() => {
+    isLoading.value = true
+    error.value = null
+    const fetchEmail = user.value.email
+    const client = useSupabaseClient()
+    try {
+        const {data:imageData, error:imageError} = await client
+        .from('studentform')
+        .select('passportUrl')
+        .eq('email', fetchEmail)
+        .single()
+
+        if(imageError) throw imageError
+        profilepicturee.value = imageData
+    } catch (err) {
+        error.value = err.message
+        console.log(err.value)
+    } finally {
+        isLoading.value = false
+    }
+}
+
+
+
+
+//   Uploading profile picture
+// const studentPicture = reactive({
+//     passportPicture : '',
+//     passportPictureUrl : ''
+// })
+// function setPassportPhoto(file){
+//     studentPicture.passportPicture = file
+// }
+// UPLOADING THE IMAGE
+const uploadFiles = async() => {
+    isLoading.value = true
+    error.value = null
+    const client = useSupabaseClient()
+
+    try {
+        const passportPhotoPath = `profile-picture/${Date.now()}-${studentPicture.passportPicture.name}`
+        
+        // UPLOAD THE PASSPORT
+        const {data:passportData, error:passportError} = await client.storage
+        .from('studentform')
+        .upload(passportPhotoPath, studentPicture.passportPhoto)
+        if(passportError) throw passportError
+
+
+        // GET THE DOWNLOADURL FOR THE FILES
+        const passportUrll = client.storage
+        .from('studentform')
+        .getPublicUrl(passportPhotoPath).data.publicUrl
+
+        // SAVE URLs TO REACTIVE STORE
+        studentPicture.passportPictureUrl = passportUrll
+
+        return{passportUrll}
+
+    } catch (err) {
+        error.value = err.message
+        console.log(err.message)
+        throw error
+    } finally{
+        isLoading.value = false
+    }
+}
+// UPDATING THE BOARD
+// const updateImage = async(queryVal) => {
+//     isLoading.value = true
+//     error.value = null
+//     await uploadFiles()
+//     const client = useSupabaseClient()
+//     try {
+//         const {data:updateData, error:updateError} = await client
+//         .from('STUDENTDETAILS')
+//         .update({
+//             profilepicture: studentPicture.passportPictureUrl
+//         })
+//         .eq('email', queryVal.email)
+
+//             if(updateError) throw updateError
+//             updateInfoDataSuccess.value = true
+//             return updateData
+//     } catch (err) {
+//         error.value = err.message
+//     } finally{
+//         isLoading.value = false
+//     }
+// }
+
+
 
 
 
@@ -239,7 +333,13 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
         logOut,
         canOut,
         user,
-        gpaClassification
+        gpaClassification,
+        profilepicturee,
+        fetchPicture,
+
+
+        // setPassportPhoto,
+        // updateImage
     }
 
 
