@@ -51,15 +51,13 @@ export const useCourseStore = defineStore('courseForm', () => {
     const fetchDetails = async() => {
         isLoading.value = true
         error.value = null
-        console.log('hello')
-        const ident = user.value.id
-        console.log(ident)
+        const ident = user.value.email
         const client = useSupabaseClient()
         try {
             const {data:signedStuData, error:signedStuError} = await client
-            .from('STUDENTDETAILS')
+            .from('ADMITTEDSTUDENTS')
             .select('*')
-            .eq('studentUID', ident)
+            .eq('email', ident)
             .single()
             if(signedStuError) throw signedStuError
             studentDetails.value = signedStuData
@@ -69,20 +67,6 @@ export const useCourseStore = defineStore('courseForm', () => {
             isLoading.value = false
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     // FETCH THE COURSES FROM CLOUD
@@ -103,9 +87,6 @@ export const useCourseStore = defineStore('courseForm', () => {
             isLoading.value = false
         }
     }
-
-
-
 
 
 

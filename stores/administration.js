@@ -92,9 +92,14 @@ export const useAdminStore = defineStore('admin', () => {
             .insert([
                 {
                     pay_identity : admission.identity,
-                    name : admission.name,
+                    firstname : admission.firstname,
+                    middlename : admission.middlename,
+                    lastname : admission.lastname,
                     email : admission.email,
-                    phone: admission.phone
+                    phone: admission.phone,
+                    matricNo: admission.matricNo,
+                    department: admission.department,
+                    faculty: admission.faculty
                 }
             ])
             if(adminError) throw adminError
@@ -232,7 +237,7 @@ export const useAdminStore = defineStore('admin', () => {
         const client = useSupabaseClient()
         try {
             const {data:searchStuData, error:searchStuError} = await client
-            .from('STUDENTDETAILS')
+            .from('ADMITTEDSTUDENTS')
             .select('*')
             .eq('email', queryVal.email)
             .single()
@@ -260,11 +265,11 @@ export const useAdminStore = defineStore('admin', () => {
         const client = useSupabaseClient()
         try {
             const {data:updateInfoData, error:updateInfoError} = await client
-            .from('STUDENTDETAILS')
+            .from('ADMITTEDSTUDENTS')
             .update({
                 matricNo: queryVal.matricNo,
-                faculty: queryVal.faculty,
-                department: queryVal.department
+                // faculty: queryVal.faculty,
+                // department: queryVal.department
             })
             .eq('email', queryVal.email)
 

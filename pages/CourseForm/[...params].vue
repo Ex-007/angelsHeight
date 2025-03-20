@@ -37,7 +37,7 @@
       <!-- Selected Courses Table -->
       <div id="printable-section">
         <div class="student-info">
-          <h3>Student Information</h3>
+          <h3 class="sleekness">Student Information</h3>
           <div class="student-details">
             <p><strong>Name:</strong> {{ studentDetail.lastname + ' ' + studentDetail.middlename + ' ' + studentDetail.firstname }}</p>
             <p><strong>Matric No:</strong> {{ studentDetail.matric }}</p>
@@ -49,7 +49,7 @@
         </div>
         
         <div class="selected-courses">
-          <h3>Selected Courses</h3>
+          <h3 class="sleekness">Selected Courses</h3>
           <table v-if="selectedCourses.length > 0">
             <thead>
               <tr>
@@ -83,10 +83,12 @@
         <div class="signature-section">
           <div class="signature-box">
             <p>Student's Signature: ________________________</p>
+            <br><br>
             <p>Date: ________________________</p>
           </div>
           <div class="signature-box">
             <p>Advisor's Signature: ________________________</p>
+            <br><br>
             <p>Date: ________________________</p>
           </div>
         </div>
@@ -110,7 +112,6 @@
   const route = useRoute()
   const params = route.params.params || []
   const [formSemester, formLevel, formYear] = params
-  console.log(formSemester, formLevel, formYear)
   
   // Define this page as a special layout (optional)
   definePageMeta({
@@ -194,6 +195,9 @@
             padding: 20px;
             line-height: 1.5;
           }
+            .sleekness{
+              text-align:center;
+            }
             .headerWithDet{
                 display: flex;
                 flex-direction: column;
@@ -282,7 +286,7 @@
     printWindow.onload = () => {
       printWindow.focus()
       printWindow.print()
-      // Close the window after printing (optional)
+      // Close the window after printing
       // printWindow.onafterprint = () => { printWindow.close() }
     }
   }
@@ -325,7 +329,7 @@
 
   // ATTACHED FETCHED DETAILS
   const attachDetails = async () => {
-    console.log(coursess.studentDetails)
+    // console.log(coursess.studentDetails)
     studentDetail.value.matric = coursess.studentDetails.matricNo
     studentDetail.value.email = coursess.studentDetails.email
     studentDetail.value.lastname = coursess.studentDetails.lastname
@@ -345,6 +349,9 @@
   </script>
   
   <style scoped>
+  .sleekness{
+    text-align: center;
+  }
     .headerWithDet{
     display: flex;
     flex-direction: column;

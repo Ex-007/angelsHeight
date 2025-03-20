@@ -117,25 +117,58 @@
                  </div>
               </div>
             
-            
-            
-            
+        
               <div class="stepA">
                 <h1>Program to Enroll For</h1>
                 
                 <!-- FIRST CHOICE -->
                 <label for="firstChoice">First Choice:</label>
-                <input type="text" id="firstChoice" class="contactInput" v-model="store.studentData.firstChoice" required>
+                <select id="firstChoice" class="contactInput" v-model="store.studentData.firstChoice" required>
+                    <option>Environmental Health Technology</option>
+                    <option>Community Health Extension Worker (CHEW) Junior</option>
+                    <option>Community Health Extension Worker (CHEW) Senior</option>
+                    <option>Dental Therapy</option>
+                    <option>Pharmacy Technician</option>
+                    <option>Opticianry Dispensar</option>
+                    <option>Public Health Technology</option>
+                    <option>Health Assistant Medical</option>
+                    <option>Health Technician</option>
+                    <option>Computer Science Technology</option>
+                    <option>Nutrition and Dietetics</option>
+                    <option>Medical Laboratory Technician</option>
+                    <option>Orthopedic Plaster Card</option>
+                </select>
+                <!-- <input type="text" id="firstChoice" class="contactInput" v-model="store.studentData.firstChoice" required> -->
     
                 <!-- SECOND CHOISE -->
                 <label for="secondChoice">Second Choice:</label>
-                <input type="text" id="secondChoice" class="contactInput" v-model="store.studentData.secondChoice" required>
+                <select id="secondChoice" class="contactInput" v-model="store.studentData.secondChoice" required>
+                    <option>Environmental Health Technology</option>
+                    <option>Community Health Extension Worker (CHEW) Junior</option>
+                    <option>Community Health Extension Worker (CHEW) Senior</option>
+                    <option>Dental Therapy</option>
+                    <option>Pharmacy Technician</option>
+                    <option>Opticianry Dispensar</option>
+                    <option>Public Health Technology</option>
+                    <option>Health Assistant Medical</option>
+                    <option>Health Technician</option>
+                    <option>Computer Science Technology</option>
+                    <option>Nutrition and Dietetics</option>
+                    <option>Medical Laboratory Technician</option>
+                    <option>Orthopedic Plaster Card</option>
+                </select>
+                <!-- <input type="text" id="secondChoice" class="contactInput" v-model="store.studentData.secondChoice" required> -->
     
                 <!-- EDUCATIONAL BACKGROUND -->
                  <div class="stepA eduBack">
                     <p>List all the schools attended in chronological order</p>
                     <input type="text" class="contactInput" placeholder="School Name" v-model="store.studentData.schoolAttended" required>
-                    <input type="text" class="contactInput" placeholder="Result Awarded" v-model="store.studentData.resultAwarded" required>
+                    <select class="contactInput" placeholder="Result Awarded" v-model="store.studentData.resultAwarded" required>
+                        <option>WAEC</option>
+                        <option>NECO</option>
+                        <option>NABTEB</option>
+                    </select>
+                    <!-- <input type="text" class="contactInput" placeholder="Result Awarded" v-model="store.studentData.resultAwarded" required> -->
                  </div>
 
                  <div class="stepA academi">
@@ -212,7 +245,6 @@
     // UPLOADING THE CERTIFICATE
     const handleCertificate = (event) => {
         const filez = event.target.files[0]
-        console.log(filez)
         if (filez) {
             store.setCertificate(filez)
             console.log(filez)

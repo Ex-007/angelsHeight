@@ -38,7 +38,7 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
 
             if (loggedUserData && loggedUserData.user) {
                 user.value = loggedUserData.user
-                console.log(loggedUserData.user.email)
+                // console.log(loggedUserData.user.email)
                 return loggedUserData.user
             } else {
                 console.log("No user data found:", loggedUserData)
@@ -72,13 +72,13 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
     const fetchDetails = async() => {
         isLoading.value = true
         error.value = null
-        const ident = user.value.id
+        const ident = user.value.email
         const client = useSupabaseClient()
         try {
             const {data:signedStuData, error:signedStuError} = await client
-            .from('STUDENTDETAILS')
+            .from('ADMITTEDSTUDENTS')
             .select('*')
-            .eq('studentUID', ident)
+            .eq('email', ident)
             .single()
             if(signedStuError) throw signedStuError
             studentDetails.value = signedStuData

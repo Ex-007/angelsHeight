@@ -67,7 +67,7 @@ export const useStudentStore = defineStore('studentauth', () => {
             if(signUpError) throw signUpError
             const regID = authData.user.id
             userData.value = authData.user
-           await  saveOtherDetails(regID, RegisterDetails)
+        //    await  saveOtherDetails(regID, RegisterDetails)
         } catch (err) {
             error.value = err.message
             console.log(err.message)
@@ -77,32 +77,32 @@ export const useStudentStore = defineStore('studentauth', () => {
     }
 
     // FUNCTION TO SAVE OTHER DETAILS TO THE DATABASE
-    const saveOtherDetails = async (regID, RegisterDetails) => {
-        isLoading.value = true
-        error.value = null
-        const client = useSupabaseClient()
-        try {
-            const {data:otherDetailsData, error:otherDetailsError} = await client
-            .from('STUDENTDETAILS')
-            .insert([
-                {
-                    matricNo : null,
-                    studentUID : regID,
-                    email : RegisterDetails.email,
-                    lastname : RegisterDetails.lastname,
-                    firstname : RegisterDetails.firstname,
-                    middlename : RegisterDetails.middlename,
-                    faculty : null,
-                    department : null
-                }
-            ])
-            if(otherDetailsError) throw otherDetailsError
-        } catch (err) {
-            error.value = err.message
-        } finally{
-            isLoading.value = false
-        }
-    }
+    // const saveOtherDetails = async (regID, RegisterDetails) => {
+    //     isLoading.value = true
+    //     error.value = null
+    //     const client = useSupabaseClient()
+    //     try {
+    //         const {data:otherDetailsData, error:otherDetailsError} = await client
+    //         .from('STUDENTDETAILS')
+    //         .insert([
+    //             {
+    //                 matricNo : null,
+    //                 studentUID : regID,
+    //                 email : RegisterDetails.email,
+    //                 lastname : RegisterDetails.lastname,
+    //                 firstname : RegisterDetails.firstname,
+    //                 middlename : RegisterDetails.middlename,
+    //                 faculty : null,
+    //                 department : null
+    //             }
+    //         ])
+    //         if(otherDetailsError) throw otherDetailsError
+    //     } catch (err) {
+    //         error.value = err.message
+    //     } finally{
+    //         isLoading.value = false
+    //     }
+    // }
 
     // LOGIN ADMIN OR STUDENT
     const loginUser = async(loginDetails) => {

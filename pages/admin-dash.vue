@@ -143,7 +143,14 @@
               <input type="text" id="stFirst" class="contactInput" placeholder="Student Firstname" v-model="updateStudentInfo.firstname" readonly>
 
               <label for="stMiddle">Student Middlename</label>
-              <input type="text" id="stMiddle" class="contactInput" placeholder="Student Middlename" v-model="updateStudentInfo.middlename" readonly>
+              <input type="text" id="transactt" class="contactInput" placeholder="Student Middlename" v-model="updateStudentInfo.middlename" readonly>
+
+
+              <label for="transactt">Student Transaction ID</label>
+              <input type="text" id="transactt" class="contactInput" placeholder="Student Transaction Id" v-model="updateStudentInfo.transactionId" readonly>
+
+              <label for="phoneNum">Student Phone Number</label>
+              <input type="text" id="phoneNum" class="contactInput" placeholder="Student Phone Number" v-model="updateStudentInfo.phone" readonly>
 
               <label for="stDept">Student Department</label>
               <select id="stDept" class="contactInput" v-model="updateStudentInfo.department">
@@ -201,7 +208,27 @@
             <div class="transactionDet">
               <h1>Admitted Students</h1>
               <h4 v-if="admittedSuc">{{ transSuccessful.success }}</h4>
-              <input type="text" class="contactInput" placeholder="Enter Student's Name" v-model="admission.name">
+              <input type="text" class="contactInput" placeholder="Student's Firstname" v-model="admission.firstname">
+              <input type="text" class="contactInput" placeholder="Student's Middlename" v-model="admission.middlename">
+              <input type="text" class="contactInput" placeholder="Student's Lastname" v-model="admission.lastname">
+              <input type="text" class="contactInput" placeholder="Faculty" v-model="admission.faculty">
+              <label for="department">Department</label>
+              <select id="department" class="contactInput" v-model="admission.department">
+                  <option>Environmental Health Technology</option>
+                  <option>Community Health Extension Worker (CHEW) Junior</option>
+                  <option>Community Health Extension Worker (CHEW) Senior</option>
+                  <option>Dental Therapy</option>
+                  <option>Pharmacy Technician</option>
+                  <option>Opticianry Dispensar</option>
+                  <option>Public Health Technology</option>
+                  <option>Health Assistant Medical</option>
+                  <option>Health Technician</option>
+                  <option>Computer Science Technology</option>
+                  <option>Nutrition and Dietetics</option>
+                  <option>Medical Laboratory Technician</option>
+                  <option>Orthopedic Plaster Card</option>
+              </select>
+              <input type="text" class="contactInput" placeholder="Enter Student's Matric" v-model="admission.matricNo">
               <input type="text" class="contactInput" placeholder="Enter Student's Email" v-model="admission.email">
               <input type="text" class="contactInput" placeholder="Enter Student's Phone Number" v-model="admission.phone">
               <input type="text" class="contactInput" placeholder="Enter Student's Transaction Id" v-model="admission.identity">
@@ -233,40 +260,41 @@
                     <img :src="admin.selectedUser.passportUrl" alt="The Student's Passport">
                   </div>
                   <h3>Personal Information</h3>
-                  <li>Surname:{{ admin.selectedUser.surname }}</li>
-                  <li>Firstname:{{ admin.selectedUser.firstname }}</li>
-                  <li>Middlename:{{ admin.selectedUser.middlename }}</li>
-                  <li>Date of Birth:{{ admin.selectedUser.dateOfBirth }}</li>
-                  <li>Gender:{{ admin.selectedUser.gender }}</li>
-                  <li>Religion:{{ admin.selectedUser.religion }}</li>
-                  <li>Local Gvmt:{{ admin.selectedUser.localGovernment }}</li>
-                  <li>Home Address:{{ admin.selectedUser.homeAddress }}</li>
-                  <li>Guardian Name:{{ admin.selectedUser.guardian }}</li>
-                  <li>Permanend Addr:{{ admin.selectedUser.permanentAddress }}</li>
-                  <li>Secondary School:{{ admin.selectedUser.secondarySchool }}</li>
-                  <li>Extra Curricula:{{ admin.selectedUser.extraCurricula }}</li>
-                  <li>Disability:{{ admin.selectedUser.disability }}</li>
-                  <li>Disability Cause:{{ admin.selectedUser.disableContent }}</li>
-                  <li>Phone Number:{{ admin.selectedUser.phone }}</li>
-                  <li>Payment ID:{{ admin.selectedUser.paymentId }}</li>
+                  <li>Surname: {{ admin.selectedUser.surname }}</li>
+                  <li>Firstname: {{ admin.selectedUser.firstname }}</li>
+                  <li>Middlename: {{ admin.selectedUser.middlename }}</li>
+                  <li>Date of Birth: {{ admin.selectedUser.dateOfBirth }}</li>
+                  <li>Gender: {{ admin.selectedUser.gender }}</li>
+                  <li>Religion: {{ admin.selectedUser.religion }}</li>
+                  <li>Local Gvmt: {{ admin.selectedUser.localGovernment }}</li>
+                  <li>Home Address: {{ admin.selectedUser.homeAddress }}</li>
+                  <li>Guardian Name: {{ admin.selectedUser.guardianName }}</li>
+                  <li>Permanend Addr: {{ admin.selectedUser.permanentAddress }}</li>
+                  <li>Secondary School: {{ admin.selectedUser.secondarySchool }}</li>
+                  <li>Extra Curricula: {{ admin.selectedUser.extraCurricula }}</li>
+                  <li>Disability: {{ admin.selectedUser.disability }}</li>
+                  <li>Disability Cause: {{ admin.selectedUser.disableContent }}</li>
+                  <li>Phone Number: {{ admin.selectedUser.phone }}</li>
+                  <li>Email: {{ admin.selectedUser.email }}</li>
+                  <li>Payment ID: {{ admin.selectedUser.paymentId }}</li>
                   <h3>EMERGENCY CONTACTS</h3>
-                  <li>Fullname:{{ admin.selectedUser.E_fullname }}</li>
-                  <li>Address:{{ admin.selectedUser.E_address }}</li>
-                  <li>Phone Number:{{ admin.selectedUser.E_phone }}</li>
-                  <li>Email:{{ admin.selectedUser.E_email }}</li>
+                  <li>Fullname: {{ admin.selectedUser.E_fullname }}</li>
+                  <li>Address: {{ admin.selectedUser.E_address }}</li>
+                  <li>Phone Number: {{ admin.selectedUser.E_phone }}</li>
+                  <li>Email: {{ admin.selectedUser.E_email }}</li>
                   <h3>ENROLLED PROGRAM</h3>
-                  <li>First Choice:{{ admin.selectedUser.firstChoice }}</li>
-                  <li>Second Choice:{{ admin.selectedUser.secondChoice }}</li>
-                  <li>School Attended:{{ admin.selectedUser.schoolAttended }}</li>
-                  <li>Result Awarded:{{ admin.selectedUser.resultAwarded }}</li>
+                  <li>First Choice: {{ admin.selectedUser.firstChoice }}</li>
+                  <li>Second Choice: {{ admin.selectedUser.secondChoice }}</li>
+                  <li>School Attended: {{ admin.selectedUser.schoolAttended }}</li>
+                  <li>Result Awarded: {{ admin.selectedUser.resultAwarded }}</li>
                   <div class="imagePassport">
                     <img :src="admin.selectedUser.certificateUrl" alt="The Student's Passport">
                   </div>
                   <h3>SPONSOR</h3>
-                  <li>Fullname:{{ admin.selectedUser.S_fullname }}</li>
-                  <li>Address:{{ admin.selectedUser.S_address }}</li>
-                  <li>Phone Number:{{ admin.selectedUser.S_phone }}</li>
-                  <li>Relationship :{{ admin.selectedUser.S_relationship }}</li>
+                  <li>Fullname: {{ admin.selectedUser.S_fullname }}</li>
+                  <li>Address: {{ admin.selectedUser.S_address }}</li>
+                  <li>Phone Number: {{ admin.selectedUser.S_phone }}</li>
+                  <li>Relationship: {{ admin.selectedUser.S_relationship }}</li>
                 </ul>
               </div>
           </div>
@@ -326,27 +354,36 @@ import auth from '~/middleware/auth';
 
     // TRANSACTION ID REFERENCE
     const admission = ref({
-        name : '',
+        firstname : '',
         identity : '',
         email : '',
-        phone : ''
+        lastname : '',
+        middlename : '',
+        faculty : '',
+        department : '',
+        matricNo : '',
+        phone : '',
     })
     const admittedSuc = ref(false)
 
-    // TRANSACTION ID FUNCTION
+    // ADMITTED STUDENTS
     const saveAdmitted = async() => {
-        if(admission.value.identity == '' || admission.value.name == '' || admission.value.email == '' || admission.value.phone == ''){
-          admittedSuccess.value.errorin = 'no field should be empty'
+      if(admission.value.identity == '' || admission.value.firstname == '' || admission.value.lastname == '' || admission.value.middlename == '' || admission.value.email == '' || admission.value.phone == ''){
+        transSuccessful.value.errorin = 'no field should be empty'
             return
         }
-
+        transSuccessful.value.errorin = ''
         await admin.admittedStudentss(admission.value)
-        admittedSuc.value = true
-        admittedSuccess.value.success = 'Successful'
-        admission.value.name = ''
+        // admittedSuc.value = true
+        transSuccessful.value.errorin = 'Successful'
+        admission.value.firstname = ''
+        admission.value.lastname = ''
+        admission.value.middlename = ''
         admission.value.identity = ''
         admission.value.email = ''
         admission.value.phone = ''
+        admission.value.department = ''
+        admission.value.faculty = ''
     }
 
     // WATCH FOR THE LOGOUT
@@ -480,7 +517,9 @@ const updateStudentInfo = ref ({
   firstname: '',
   middlename: '',
   department: '',
-  faculty: ''
+  faculty: '',
+  transactionId: '',
+  phone: ''
 })
 
 // FETCH INFO
@@ -501,6 +540,8 @@ const updateInformation = async() => {
   updateStudentInfo.value.middlename = admin.updateSearch.middlename
   updateStudentInfo.value.department = admin.updateSearch.department
   updateStudentInfo.value.faculty = admin.updateSearch.faculty
+  updateStudentInfo.value.transactionId = admin.updateSearch.pay_identity
+  updateStudentInfo.value.phone = admin.updateSearch.phone
 }
 
 // ERROR AND SUCCESS
@@ -527,6 +568,8 @@ const clearUpdate = () => {
   updateStudentInfo.value.middlename = ''
   updateStudentInfo.value.department = ''
   updateStudentInfo.value.faculty = ''
+  updateStudentInfo.value.phone = ''
+  updateStudentInfo.value.transactionId = ''
 }
 
 // INPUTTING 
