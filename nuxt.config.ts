@@ -23,5 +23,9 @@ export default defineNuxtConfig({
         key: process.env.SUPABASE_KEY
       }
     }
+  },
+  ssr: true,
+  nitro: {
+    preset: 'static'
   }
 })
