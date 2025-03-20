@@ -36,5 +36,5 @@ jobs:
         username: ${{ secrets.GO54_FTP_USERNAME }}
         password: ${{ secrets.GO54_FTP_PASSWORD }}
         local-dir: .output/public/  
-        # server-dir: /home2/angelsh2/public_html/angelsheight/
+        # server-dir: /home2/angelsh2/public_html/angelsheight///
         server-dir: ${{ secrets.GO54_DEPLOY_PATH }}/
