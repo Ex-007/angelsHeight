@@ -7,6 +7,9 @@ export default defineNuxtConfig({
     "~/assets/css/global.css",
     'font-awesome/css/font-awesome.min.css',
   ],
+  build: {
+    transpile: ["font-awesome"]
+  },
   supabase:{
     url: process.env.SUPABASE_URL,
     key: process.env.SUPABASE_KEY,

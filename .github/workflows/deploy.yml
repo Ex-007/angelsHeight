@@ -1,0 +1,39 @@
+name: Deploy to Go54
+
+on:
+  push:
+    branches: [ main ]  # Replace with your default branch if different
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'  # Use the Node.js version your project requires
+        cache: 'npm'
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Create .env file with Supabase credentials
+      run: |
+        echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+        echo "SUPABASE_KEY=${{ secrets.SUPABASE_KEY }}" >> .env
+        
+    - name: Build Nuxt app
+      run: npm run build && npm run generate  # Ensure full static build
+      
+    - name: Deploy to Go54 via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.GO54_FTP_HOST }}
+        username: ${{ secrets.GO54_FTP_USERNAME }}
+        password: ${{ secrets.GO54_FTP_PASSWORD }}
+        local-dir: .output/public/  
+        server-dir: ${{ secrets.GO54_DEPLOY_PATH }}/
