@@ -3,13 +3,12 @@
         <!-- Error/Success Messages -->
         <div v-if="store.error" class="error-message">{{ store.error }}</div>
         <h5 v-if="noInput" class="error-message">{{ errorMessage }}</h5>
-        
-        <!-- Form Section - Shown before submission -->
-        <form v-if="!formSubmitted" @submit.prevent="submitRegistration" class="page">
+        <div v-if="successMessage" class="success-message">{{ successMessage }}</div>
+        <form @submit.prevent="submitRegistration" class="page">
             <p>
                 Note: This Page is for Students who has paid the form fee and seeking admission.
             </p>
-            
+            <!-- <h5>There's an error</h5> -->
             <div class="stepA">
                 <h1>Personal Information</h1>
 
@@ -86,7 +85,7 @@
     
                 <!-- IF YES -->
                 <label for="disab">If Yes, State the Nature:</label>
-                <input type="text" id="disab" class="contactInput" v-model="store.studentData.disableContent" :required="store.studentData.disability === 'Yes'" :disabled="store.studentData.disability === 'No'">
+                <input type="text" id="disab" class="contactInput" v-model="store.studentData.disableContent" :required="store.studentData.disability === 'Yes'" :diabled="store.studentData.disability === 'No'">
     
                 <!-- PHONE NUMBER -->
                 <label for="phone">Phone Number:</label>
@@ -109,8 +108,8 @@
                     <input type="text" id="adddre" class="contactInput" v-model="store.studentData.E_address" required>
 
                     <!-- PHONE NUMBER -->
-                    <label for="emergencyPhone">Phone Number:</label>
-                    <input type="text" id="emergencyPhone" class="contactInput" v-model="store.studentData.E_phone" required>
+                    <label for="adddre">Phone Number:</label>
+                    <input type="text" id="adddre" class="contactInput" v-model="store.studentData.E_phone" required>
 
                     <!-- EMAIL -->
                     <label for="eee">Email:</label>
@@ -139,6 +138,7 @@
                     <option>Medical Laboratory Technician</option>
                     <option>Orthopedic Plaster Card</option>
                 </select>
+                <!-- <input type="text" id="firstChoice" class="contactInput" v-model="store.studentData.firstChoice" required> -->
     
                 <!-- SECOND CHOISE -->
                 <label for="secondChoice">Second Choice:</label>
@@ -157,6 +157,7 @@
                     <option>Medical Laboratory Technician</option>
                     <option>Orthopedic Plaster Card</option>
                 </select>
+                <!-- <input type="text" id="secondChoice" class="contactInput" v-model="store.studentData.secondChoice" required> -->
     
                 <!-- EDUCATIONAL BACKGROUND -->
                  <div class="stepA eduBack">
@@ -167,6 +168,7 @@
                         <option>NECO</option>
                         <option>NABTEB</option>
                     </select>
+                    <!-- <input type="text" class="contactInput" placeholder="Result Awarded" v-model="store.studentData.resultAwarded" required> -->
                  </div>
 
                  <div class="stepA academi">
@@ -201,185 +203,24 @@
                     <input type="text" id="financialRelat" class="contactInput" v-model="store.studentData.S_relationship" required>
                  </div>
             
+            
             <div class="stepA buttonSign">
                 <h5 v-if="noInput" class="error-message">{{ errorMessage }}</h5>
-                <button type="submit" :disabled="store.isLoading">{{ store.isLoading ? 'Registering...' : 'Register' }}</button>
+                <button type="submit" :disabled="store.isLoading">{{ store.isLoading ? 'Registering' : 'Register' }}</button>
             </div>
+            
+            
+            
+
         </form>
-
-        <!-- Print/Success Section - Shown after submission -->
-        <div v-if="formSubmitted" class="success-container">
-            <div class="success-message">
-                <h2>Registration Successful!</h2>
-                <p>Your form has been successfully submitted and saved to our database.</p>
-                <div class="print-actions">
-                    <button @click="printForm" class="print-button">Print Registration Form</button>
-                    <button @click="goToHome" class="home-button">Return Home</button>
-                </div>
-            </div>
-
-            <!-- Printable Form Section (hidden until print is clicked) -->
-            <div id="printable-form" class="printable-form">
-                <div class="print-header">
-                    <h1>Student Registration Form</h1>
-                    <p>Registration ID: {{ registrationId }}</p>
-                    <p>Date: {{ formattedDate }}</p>
-                </div>
-
-                <div class="print-section">
-                    <h2>Personal Information</h2>
-                    <div class="passport-photo">
-                        <img :src="store.studentData.passportUrl" alt="Passport Photo" width="150" />
-                    </div>
-                    <div class="info-grid">
-                        <div class="info-row">
-                            <div class="info-label">Full Name:</div>
-                            <div class="info-value">{{ store.studentData.surname }} {{ store.studentData.firstname }} {{ store.studentData.middlename }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Date of Birth:</div>
-                            <div class="info-value">{{ formatDate(store.studentData.dateOfBirth) }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Gender:</div>
-                            <div class="info-value">{{ store.studentData.gender }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Religion:</div>
-                            <div class="info-value">{{ store.studentData.religion }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Local Government:</div>
-                            <div class="info-value">{{ store.studentData.localGovernment }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Current Home Address:</div>
-                            <div class="info-value">{{ store.studentData.homeAddress }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Parent/Guardian:</div>
-                            <div class="info-value">{{ store.studentData.guardian }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Permanent Address:</div>
-                            <div class="info-value">{{ store.studentData.permanentAddress }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Secondary School:</div>
-                            <div class="info-value">{{ store.studentData.secondarySchool }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Extra Curricular Activities:</div>
-                            <div class="info-value">{{ store.studentData.extraCurricula }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Physical Disabilities:</div>
-                            <div class="info-value">{{ store.studentData.disability }}</div>
-                        </div>
-                        <div v-if="store.studentData.disability === 'Yes'" class="info-row">
-                            <div class="info-label">Nature of Disability:</div>
-                            <div class="info-value">{{ store.studentData.disableContent }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Phone Number:</div>
-                            <div class="info-value">{{ store.studentData.phone }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Email:</div>
-                            <div class="info-value">{{ store.studentData.email }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="print-section">
-                    <h2>Emergency Contact</h2>
-                    <div class="info-grid">
-                        <div class="info-row">
-                            <div class="info-label">Full Name:</div>
-                            <div class="info-value">{{ store.studentData.E_fullname }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Address:</div>
-                            <div class="info-value">{{ store.studentData.E_address }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Phone Number:</div>
-                            <div class="info-value">{{ store.studentData.E_phone }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Email:</div>
-                            <div class="info-value">{{ store.studentData.E_email }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="print-section">
-                    <h2>Program Information</h2>
-                    <div class="info-grid">
-                        <div class="info-row">
-                            <div class="info-label">First Choice:</div>
-                            <div class="info-value">{{ store.studentData.firstChoice }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Second Choice:</div>
-                            <div class="info-value">{{ store.studentData.secondChoice }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">School Attended:</div>
-                            <div class="info-value">{{ store.studentData.schoolAttended }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Result Awarded:</div>
-                            <div class="info-value">{{ store.studentData.resultAwarded }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="print-section">
-                    <h2>Sponsor Information</h2>
-                    <div class="info-grid">
-                        <div class="info-row">
-                            <div class="info-label">Full Name:</div>
-                            <div class="info-value">{{ store.studentData.S_fullname }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Address:</div>
-                            <div class="info-value">{{ store.studentData.S_address }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Phone Number:</div>
-                            <div class="info-value">{{ store.studentData.S_phone }}</div>
-                        </div>
-                        <div class="info-row">
-                            <div class="info-label">Relationship:</div>
-                            <div class="info-value">{{ store.studentData.S_relationship }}</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="print-footer">
-                    <div class="signature-section">
-                        <div class="signature-box">
-                            <p>_______________________</p>
-                            <p>Student's Signature</p>
-                        </div>
-                        <div class="signature-box">
-                            <p>_______________________</p>
-                            <p>Official Signature</p>
-                        </div>
-                    </div>
-                    <p class="print-date">Printed on: {{ formattedDate }}</p>
-                </div>
-            </div>
-        </div>
+        <!-- <i class="fa fa-user"></i> -->
     </div>
 </template>
 
 <script setup>
-    import {ref, watch, computed } from 'vue'
+    import {ref, watch} from 'vue'
     import {useRouter, useRoute} from 'vue-router'
     import {useFormStore} from '@/stores/formcollection'
-
     const store = useFormStore()
     const router = useRouter()
     const route = useRoute()
@@ -392,35 +233,6 @@
     const successMessage = ref('')
     const validationErrors = ref([])
     const showValidationErrors = ref(false)
-    const formSubmitted = ref(false)
-    const registrationId = ref('')
-
-// Generate a random registration ID
-const generateRegistrationId = () => {
-    const timestamp = new Date().getTime().toString().slice(-6)
-    const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0')
-    return `REG-${timestamp}-${random}`
-}
-
-// Format date for display
-const formatDate = (dateString) => {
-    if (!dateString) return ''
-    const date = new Date(dateString)
-    return date.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
-    })
-}
-
-// Get today's date formatted
-const formattedDate = computed(() => {
-    return new Date().toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: 'long',
-        year: 'numeric'
-    })
-})
 
     // Handle passport uploads
     const handlePassportPhoto = (event) => {
@@ -435,6 +247,7 @@ const formattedDate = computed(() => {
         const filez = event.target.files[0]
         if (filez) {
             store.setCertificate(filez)
+            console.log(filez)
             certificateFileName.value = filez.name
         }
     }
@@ -453,20 +266,18 @@ const formattedDate = computed(() => {
             errorMessage.value = 'Transaction ID not found'
         }
     });
-        // ALREADY REGISTERED
+        // NO TRANSACTION ID FOUND
     watch(() => store.alreadyRegistered, (newVal) => {
         if (newVal) {
             noInput.value = true
             errorMessage.value = 'You have already Registered'
         }
     });
-        // SUCCESSFUL
+        // NO TRANSACTION ID FOUND
     watch(() => store.canProceed, (newVal) => {
         if (newVal) {
             successMessage.value = 'Student registration successful!'
-            formSubmitted.value = true
-            registrationId.value = generateRegistrationId()
-            // router.push('/Formsubmitted')
+            router.push('/Formsubmitted')
         }
     });
 
@@ -528,6 +339,8 @@ const validateForm = () => {
 }
 
 
+
+
     // Submit form
     const submitRegistration = async () => {
         showValidationErrors.value = true
@@ -540,146 +353,15 @@ const validateForm = () => {
 
         try {
             await store.checkId()
+            // await store.registerStudent()
+            // showValidationErrors.value = false
+            // successMessage.value = 'Student registration successful!'
+            // router.push('/Formsubmitted')
 
         } catch (error) {
             console.error('Registration failed:', error)
         }
     }
-// resend api
-// re_itnGjHW7_LvdQrT1G4Cf4b7v9DgY9vxhv
-
-// Print the form
-const printForm = () => {
-        const printContents = document.getElementById('printable-form').innerHTML
-        const originalContents = document.body.innerHTML
-        
-        // Create a new window with only the form content
-        const printWindow = window.open('', '_blank')
-        printWindow.document.write(`
-            <html>
-                <head>
-                    <title>Angel's Registration Form</title>
-                    <style>
-                        body {
-                            font-family: Arial, sans-serif;
-                            line-height: 1.6;
-                            padding: 20px;
-                        }
-                        .headerWithDet{
-                            display: flex;
-                            flex-direction: column;
-                            justify-content: center;
-                            align-items: center;
-                            margin-bottom: 10px;
-                        }
-                        .print-header {
-                            text-align: center;
-                            margin-bottom: 20px;
-                            border-bottom: 2px solid #000;
-                            padding-bottom: 10px;
-                        }
-                        .print-section {
-                            margin-bottom: 20px;
-                            page-break-inside: avoid;
-                        }
-                        .print-section h2 {
-                            border-bottom: 1px solid #ccc;
-                            padding-bottom: 5px;
-                        }
-                        .info-grid {
-                            display: grid;
-                            grid-template-columns: 1fr;
-                            gap: 8px;
-                        }
-                        .info-row {
-                            display: flex;
-                        }
-                        .info-label {
-                            font-weight: bold;
-                            width: 200px;
-                        }
-                        .info-value {
-                            flex: 1;
-                        }
-                        .passport-photo {
-                            text-align: center;
-                            margin-bottom: 20px;
-                        }
-                        .signature-section {
-                            display: flex;
-                            justify-content: space-between;
-                            margin-top: 50px;
-                        }
-                        .signature-box {
-                            text-align: center;
-                            width: 200px;
-                        }
-                        .print-footer {
-                            margin-top: 30px;
-                            text-align: center;
-                            font-size: 12px;
-                        }
-                        .print-date {
-                            margin-top: 30px;
-                            text-align: right;
-                            font-size: 12px;
-                        }
-                        .numberes{
-                            display: flex;
-                            gap: 10px;
-                        }
-                        @media print {
-                            body {
-                                margin: 0;
-                                padding: 15mm;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="headerWithDet">
-                        <h1>ANGELS HEIGHT</h1>
-                        <p>...Healthcare Training Per Excellence is Our Concern</p>
-                        <div class="numberes">
-                            <p>09032327228</p>
-                            <p>08107812435</p>
-                        </div>
-                    </div>
-                    ${printContents}
-                </body>
-            </html>
-        `)
-        
-        printWindow.document.close()
-        printWindow.focus()
-        
-        // Print after images have loaded
-        setTimeout(() => {
-            printWindow.print()
-        }, 500)
-    }
-
-    // Navigate back to home
-    const goToHome = () => {
-        router.push('/')
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

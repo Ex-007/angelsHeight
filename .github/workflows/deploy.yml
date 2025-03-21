@@ -2,7 +2,7 @@ name: Deploy to Go54
 
 on:
   push:
-    branches: [ main ]  # Replace with your default branch if different
+    branches: [ main ]
 
 jobs:
   build-and-deploy:
@@ -15,7 +15,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '18'  # Use the Node.js version your project requires
+        node-version: '18'
         cache: 'npm'
         
     - name: Install dependencies
@@ -36,5 +36,4 @@ jobs:
         username: ${{ secrets.GO54_FTP_USERNAME }}
         password: ${{ secrets.GO54_FTP_PASSWORD }}
         local-dir: .output/public/  
-        # server-dir: /home2/angelsh2/public_html/angelsheight///
         server-dir: ${{ secrets.GO54_DEPLOY_PATH }}/

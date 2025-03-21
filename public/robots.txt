@@ -1,1 +1,30 @@
+User-agent: *
+Allow: /
 
+# Allow all search engines to index the main content
+Disallow: /admin/
+Disallow: /wp-admin/
+Disallow: /login/
+Disallow: /wp-login.php
+Disallow: /private/
+Disallow: /temp/
+Disallow: /cgi-bin/
+Disallow: /*?*
+Disallow: /Regadd/
+Disallow: /admin-dash/
+Disallow: /student-profile/
+
+# Disallow duplicate content
+Disallow: /*?utm_source=
+Disallow: /*?utm_medium=
+Disallow: /*?utm_campaign=
+Disallow: /*?fbclid=
+
+# Allow image indexing
+Allow: /img/
+
+# Crawl delay to prevent server overload
+Crawl-delay: 10
+
+# Sitemap location
+Sitemap: https://angelsheight.org/sitemap.xml
