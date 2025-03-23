@@ -41,7 +41,7 @@
       <!-- Copyright -->
       <div class="footer-bottom">
         <p>&copy; {{ new Date().getFullYear() }} Angelsheight. All rights reserved.</p>
-        <p><a href="mailto:admin@angelsheight.org">admin@angelsheight.org</a></p>
+        <p><a href="mailto:info@angelsheight.org">info@angelsheight.org</a></p>
       </div>
     </footer>
   </template>
@@ -61,6 +61,9 @@
     gap: 40px;
     max-width: 1200px;
     margin: auto;
+  }
+  .footer-bottom a{
+    color: white;
   }
   
   .footer-section {

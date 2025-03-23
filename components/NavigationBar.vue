@@ -34,13 +34,14 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 20px;
+    background: white;
 }
 .firstTop{
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 10px;
-    color: white;
+    color: rgb(228, 70, 70);
 }
 ul{
     display: flex;
@@ -59,7 +60,7 @@ li:hover{
     background: rgb(195, 38, 38);
 }
 a{
-    color: rgb(255, 255, 255);
+    color: rgb(224, 41, 41);
     text-decoration: none;
     font-size: 40px;
 
