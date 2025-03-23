@@ -776,6 +776,9 @@ const updateStudenPay = async () => {
   updatePay.value.error = false
   await admin.updatePayment(payment.value)
   updatePay.value.success = true
+  updatePay.value.message = 'successfully saved'
+  payment.value.amountPaid = ''
+  payment.value.paymentMade = ''
 }
 
 
