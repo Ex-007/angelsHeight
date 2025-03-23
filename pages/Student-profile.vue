@@ -12,6 +12,7 @@
         <li @click="activeTab = 'requests'" :class="{ active: activeTab === 'requests' }">📩 Course Form</li>
         <li @click="activeTab = 'profile'" :class="{ active: activeTab === 'profile' }">👤 Profile</li>
         <li @click="activeTab = 'premium'" :class="{ active: activeTab === 'premium' }">💎 Check Result</li>
+        <li @click="activeTab = 'payments'" :class="{ active: activeTab === 'payments' }">💎 Check Payments</li>
         <li @click="logout">🚪 Logout</li>
       </ul>
     </aside>
@@ -88,18 +89,6 @@
               <input type="text" id="stMiddle" class="contactInput" v-model="updateStudentInfo.department" readonly>
               <input type="text" id="stMiddle" class="contactInput" v-model="updateStudentInfo.faculty" readonly>
             </div>
-            <!-- <div class="stepA">
-              <h3>Please upload your passport</h3>
-              <label for="passport"><i class="fa fa-file" style="font-size: 40px; cursor: pointer;"></i></label>
-              <input type="file" id="passport" style="display: none;" @change="handlePassportPhoto" accept="image/*" required>
-              <div v-if="passportPreviewUrl" class="preview">
-                  <img :src="passportPreviewUrl" alt="Passport Preview" width="100" />
-              </div>
-            </div>
-            <h3 v-if="student.updateInfoDataSuccess">Upload successful</h3>
-            <div class="buttons">
-              <button @click="updateStudenInfo">{{ student.isLoading ? 'Changing...' : 'Change Profile Picture' }}</button>
-            </div> -->
         </div>
       </section>
 
@@ -193,6 +182,36 @@
         </div>
 
       </section>
+
+      <!-- CHECK PAYMENTS -->
+      <section v-if="activeTab === 'payments'">
+        <h3 class="checkHead">CHECK PAYMENTS</h3>
+          <table class="payment-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Amount Paid</th>
+                <th>Payment Made</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(payment, index) in student.paymentsIn" :key="index">
+                <td>{{ formatDate(payment.timestamp) }}</td>
+                <td>{{ formatCurrency(payment.amountPaid) }}</td>
+                <td>{{ payment.paymentMade }}"</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2">Total</td>
+                <td>{{ formatCurrency(calculateTotal(student.paymentsIn)) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+
+  
+
+      </section>
     </main>
   </div>
 </template>
@@ -205,10 +224,32 @@
   const router = useRouter();
   const route = useRoute()
 
-      // ROUTE GUARD
-    // definePageMeta({
-    //   middleware: [auth]
-    // })
+// FORMAT DATE
+const formatDate = (dateString) => {
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:4059734699.
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+// format currency
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'NGN',
+  }).format(amount);
+}
+
+// calculate total
+const calculateTotal = (payments) => {
+  return payments.reduce((total, payment) => {
+    return total + parseFloat(payment.amountPaid || 0 );
+  }, 0);
+}
+
+
 
   // WATCH BYPASS BY NOT LOGGED IN USERS
   watch(() => student.isBypass, (newVal) => {
@@ -348,6 +389,7 @@ const fetchPic = async () => {
   onMounted(async () => {
     await student.signinUser()
     await student.fetchDetails()
+    await student.fetchPayment()
     await fetchPic()
     await attachDetails()
   })
@@ -357,6 +399,21 @@ const fetchPic = async () => {
   </script>
   
   <style scoped>
+  .payment-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  .payment-table th, .payment-table td{
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    border: 1px solid #9b6161;
+  }
+
+  .payment-table tr:nth-child(even){
+    background-color: #473333;
+  }
       .preview {
         margin-top: 10px;
         border: 1px solid #ddd;

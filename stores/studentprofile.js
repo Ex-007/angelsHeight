@@ -4,6 +4,7 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
     const isLoading = ref(false)
     const error = ref(null)
     const results = ref([])
+    const paymentsIn = ref([])
     const noResults = ref(false)
     const user = ref(null)
     const studentDetails = ref(null)
@@ -308,7 +309,30 @@ const uploadFiles = async() => {
 //     }
 // }
 
-
+// FETCH THE STUDENT PAYMENT
+    const fetchPayment = async() => {
+        isLoading.value = true
+        error.value = null
+        const ident = user.value.email
+        const client = useSupabaseClient()
+        try {
+            const {data:paymentData, error:paymentError} = await client
+            .from('ADMITTEDSTUDENTS')
+            .select('payment_info')
+            .eq('email', ident)
+            .single()
+            if(paymentError) throw paymentError
+            const paymentHistory = paymentData.payment_info?.payments || []
+            paymentsIn.value = paymentHistory
+            console.log(paymentHistory)
+            return paymentData
+        } catch (err) {
+            error.value = err.message
+            console.log(err.message)
+        } finally{
+            isLoading.value = false
+        }
+    }
 
 
 
@@ -336,6 +360,8 @@ const uploadFiles = async() => {
         gpaClassification,
         profilepicturee,
         fetchPicture,
+        fetchPayment,
+        paymentsIn
 
 
         // setPassportPhoto,
