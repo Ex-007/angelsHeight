@@ -16,6 +16,7 @@ export const useAdminStore = defineStore('admin', () => {
     const updateSearch = ref(null)
     const isUpdating = ref(false)
     const isFetching = ref(false)
+    const imageUploaded = ref(false)
 
 
     // FETCH THE SIGNED IN USER
@@ -309,19 +310,152 @@ export const useAdminStore = defineStore('admin', () => {
         }
     }
 
+    // FOR PASSPORT
 
-// AH/ME/25/1-0024
+    const administrator = reactive({
+        passportPhoto: null,
+        passportPhotoUrl: null
+    })
+
+    function setPassportPhoto(file){
+        administrator.passportPhoto = file
+    }
+    // UPLOADING THE FILES
+    const uploadFiles = async() => {
+        isLoading.value = true
+        error.value = null
+        const client = useSupabaseClient()
+
+        try {
+            const passportPhotoPath = `admin-profile/${Date.now()}-${administrator.passportPhoto.name}`
+            
+            const {data:passportData, error:passportError} = await client.storage
+            .from('studentform')
+            .upload(passportPhotoPath, administrator.passportPhoto)
+            if(passportError) throw passportError
+
+            const passportUrll = client.storage
+            .from('studentform')
+            .getPublicUrl(passportPhotoPath).data.publicUrl
+
+            administrator.passportPhotoUrl = passportUrll
+
+            return passportUrll
+
+        } catch (err) {
+            error.value = err.message
+            throw error
+        } finally{
+            isLoading.value = false
+        }
+    }
+
+// function to upload the picture
+const uploadAdminImage = async () => {
+    isLoading.value = true
+    error.value = null
+    const client = useSupabaseClient()
+    try {
+        const photoUrl = await uploadFiles()
+        console.log("Photo URL:", photoUrl)
+        const {data:upData, error:upError} = await client.auth.updateUser({
+            data:{
+                displayPicture : photoUrl
+            }
+        }) 
+        if(upError) throw upError
+        imageUploaded.value = true
+        console.log(photoUrl)
+        console.log('successful', upData)
+    } catch (err) {
+        error.value = err.message
+        console.log(err.message)
+    } finally{
+        isLoading.value = false
+    }
+
+}
+
+// UPDATING THE PAYMENT
+// const updatePayment = async (paymentData) => {
+//     isLoading.value = true
+//     error.value = null
+//     const client = useSupabaseClient()
+//     try {
+//         const {data:payData, error:payError} = await client
+//         .from('ADMITTEDSTUDENTS')
+//         .update({
+//             payment_info: supabase.utils.jsonb.addProperties({
+//                 amountPaid: paymentData.amountPaid,
+//                 paymentMade: paymentData.paymentMade
+//             })
+//         })
+//         .eq('email', paymentData.email)
+
+//         if(payError) throw payError
+//         updateInfoDataSuccess.value = true
+//         return payData
+//     } catch (err) {
+//         error.value = err.message
+//         console.log(err.message)
+//         return null
+//     } finally{
+//         isLoading.value = false
+//     }
+// }
 
 
+const updatePayment = async (paymentData) => {
+    isLoading.value = true
+    error.value = null
+    const client = useSupabaseClient()
+    try {
+        // First fetch the current row to get existing metadata
+        const { data: currentData, error: fetchError } = await client
+            .from('ADMITTEDSTUDENTS')
+            .select('payment_info')
+            .eq('email', paymentData.email)
+            .single()
+        
+        if (fetchError) throw fetchError
+        
+        // Initialize metadata if it doesn't exist
+        const metadataUpdate = currentData.payment_info || {}
+        
+        // If payments array doesn't exist yet, create it
+        if (!metadataUpdate.payments) {
+            metadataUpdate.payments = []
+        }
+        
+        // Create a new payment entry with timestamp
+        const newPaymentEntry = {
+            amountPaid: paymentData.amountPaid,
+            paymentMade: paymentData.paymentMade,
+            timestamp: new Date().toISOString()
+        }
+        
+        // Add the new payment to the payments array
+        metadataUpdate.payments.push(newPaymentEntry)
+        
+        // Update the record with the modified metadata
+        const {data: payData, error: payError} = await client
+            .from('ADMITTEDSTUDENTS')
+            .update({
+                payment_info: metadataUpdate
+            })
+            .eq('email', paymentData.email)
 
-
-
-
-
-
-
-
-
+        if(payError) throw payError
+        updateInfoDataSuccess.value = true
+        console.log('updated')
+        return payData
+    } catch (err) {
+        error.value = err.message
+        return null
+    } finally{
+        isLoading.value = false
+    }
+}
 
 
 
@@ -363,6 +497,10 @@ export const useAdminStore = defineStore('admin', () => {
         fetchStudentForUpdate,
         updateMatFacDep,
         updateInfoDataSuccess,
-        coursesList
+        coursesList,
+        setPassportPhoto,
+        uploadAdminImage,
+        imageUploaded,
+        updatePayment
     }
 })

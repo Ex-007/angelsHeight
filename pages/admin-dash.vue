@@ -3,7 +3,7 @@
       <!-- Sidebar Navigation -->
       <aside class="sidebar">
         <div class='profileP'>
-            <img src='/img/profilepicture.jpeg' alt="Profile Picture" class="profilePicture" />
+          <img :src="adminData.profilePicture || '/img/profilepicture.jpeg'" alt="Profile Picture" class="profilePicture" />
             <p v-if="tracking">{{tracking}}</p>
         </div>
         <ul>
@@ -14,6 +14,7 @@
           <li @click="activeTab = 'premium'" :class="{ active: activeTab === 'premium' }">💎 Transaction ID</li>
           <li @click="activeTab = 'registered'" :class="{ active: activeTab === 'registered' }">💎 Registered Students</li>
           <li @click="activeTab = 'admitted'" :class="{ active: activeTab === 'admitted' }">💎 Admitted Students</li>
+          <li @click="activeTab = 'payments'" :class="{ active: activeTab === 'payments' }">💴 Update Payment</li>
           <li @click="logout">🚪 Logout</li>
         </ul>
       </aside>
@@ -26,6 +27,13 @@
                 <h2>Email: {{ adminData.email }}</h2>
                 <h2>Phone: {{ adminData.phone }}</h2>
                 <h2>Role: {{ adminData.role }}</h2>
+                <label for="passport"><i class="fa fa-file" style="font-size: 40px; cursor: pointer;"></i></label>
+                <input type="file" id="passport" style="display: none;" @change="handlePassportPhoto" accept="image/*" required>
+                <div v-if="passportPreviewUrl" class="preview">
+                    <img :src="passportPreviewUrl" alt="Passport Preview" width="100" />
+                    <h3>{{ photoUploaded }}</h3>
+                </div>
+                <button @click="uploaderr">upload image</button>
             </div>
         </section>
 
@@ -68,6 +76,9 @@
   
                 <label for="level">Level</label>
                 <select id="level" class="contactInput" v-model="scoreDet.level">
+                  <option>Year I</option>
+                  <option>Year II</option>
+                  <option>Year III</option>
                   <option>NDI</option>
                   <option>NDII</option>
                   <option>HNDI</option>
@@ -299,6 +310,50 @@
               </div>
           </div>
         </section>
+  
+        <!-- PAYMENT UPDATE -->
+        <section v-if="activeTab === 'payments'">
+          <div class="transactionDet">
+            <h3>UPDATE STUDENT PAYMENTS</h3>
+            <div class="innerDetails">
+              <label for="stEmail">Student Email</label>
+              <input type="text" id="stEmail" class="contactInput" placeholder="Student Email" v-model="payment.email">
+
+              <label for="stMatric">Student Matric</label>
+              <input type="text" id="stMatric" class="contactInput" placeholder="Student Matric" v-model="payment.matricNo">
+
+              <label for="stLast">Student Lastname</label>
+              <input type="text" id="stLast" class="contactInput" placeholder="Student Lastname" v-model="payment.lastname" readonly>
+
+              <label for="stFirst">Student Firstname</label>
+              <input type="text" id="stFirst" class="contactInput" placeholder="Student Firstname" v-model="payment.firstname" readonly>
+
+              <label for="stMiddle">Student Middlename</label>
+              <input type="text" id="transactt" class="contactInput" placeholder="Student Middlename" v-model="payment.middlename" readonly>
+
+
+              <label for="transactt">Student Transaction ID</label>
+              <input type="text" id="transactt" class="contactInput" placeholder="Student Transaction Id" v-model="payment.transactionId" readonly>
+
+              <label for="phoneNum">Student Phone Number</label>
+              <input type="text" id="phoneNum" class="contactInput" placeholder="Student Phone Number" v-model="payment.phone" readonly>
+
+              <label for="paymentMade">Payment Made</label>
+              <input type="text" id="paymentMade" class="contactInput" placeholder="Payment Made" v-model="payment.paymentMade">
+
+              <label for="amountPaid">Amount Paid</label>
+              <input type="text" id="amountPaid" class="contactInput" placeholder="Amount Paid" v-model="payment.amountPaid">
+
+
+            <h3 v-if="updatePay.error">{{ updatePay.message }}</h3>
+            <h3 v-if="updatePay.success">{{ updatePay.message }}</h3>
+            <div class="buttons">
+              <button @click="fetchStudentPay">{{ admin.isFetching ? 'Fetching...' : 'Fetch' }}</button>
+              <button @click="updateStudenPay">{{ admin.isUpdating ? 'Updating...' : 'Update' }}</button>
+            </div>
+        </div>
+      </div>
+        </section>
       </main>
     </div>
   </template>
@@ -319,6 +374,22 @@ import auth from '~/middleware/auth';
     definePageMeta({
       middleware: [auth]
     })
+
+      // Handle passport uploads
+      const passportPreviewUrl = ref('')
+      const handlePassportPhoto = (event) => {
+      const file = event.target.files[0]
+      if (file) {
+          admin.setPassportPhoto(file)
+          passportPreviewUrl.value = URL.createObjectURL(file)
+      }
+  }
+
+  // UPLOAD IMAGE
+  const uploaderr = () => {
+    admin.uploadAdminImage()
+  }
+
     // const activeTab = ref('courses');
     const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
@@ -407,6 +478,15 @@ import auth from '~/middleware/auth';
       }
     });
 
+    // WATCH PHOTO SUCCESS
+    const photoUploaded = ref('')
+    watch(() => admin.imageUploaded, (newVal) => {
+      if (newVal) {
+        photoUploaded.value = 'Update Successful'
+        passportPreviewUrl.value = ''
+      }
+    });
+
   // FUNCTION TO LOGOUT
   const logout = () => {
     admin.logOut()
@@ -425,7 +505,8 @@ const adminData = ref({
   name: '',
   email: '',
   phone: '',
-  role : ''
+  role : '',
+  profilePicture : ''
 })
 
 // ASSIGN ADMIN DETAILS
@@ -434,6 +515,7 @@ const fixDetails = async () => {
   adminData.value.email =  admin.loggedAdmin.email
   adminData.value.phone =  admin.loggedAdmin.Phone
   adminData.value.role =  admin.loggedAdmin.role
+  adminData.value.profilePicture =  admin.loggedAdmin.displayPicture
 }
 
 
@@ -550,8 +632,6 @@ const updateDentt = ref({
   error: false,
   success: false
 })
-// const updateMessage = ref(false)
-// const updateText = ref('')
 // UPDATE FETCHED INFO
 const updateStudenInfo = async() => {
   await admin.updateMatFacDep(updateStudentInfo.value)
@@ -571,6 +651,68 @@ const clearUpdate = () => {
   updateStudentInfo.value.phone = ''
   updateStudentInfo.value.transactionId = ''
 }
+
+// UPDATE PAYMENT
+const payment = ref({
+  email: '',
+  matricNo: '',
+  lastname: '',
+  firstname: '',
+  middlename: '',
+  transactionId: '',
+  phone: '',
+  amountPaid: '',
+  paymentMade: ''
+})
+
+const updatePay = ref({
+  message: '',
+  error: false,
+  success: false
+})
+
+const fetchStudentPay = async () => {
+  if(payment.value.email === ''){
+    updatePay.value.error = true
+    updatePay.value.message = 'No field should be empty'
+    return
+  }
+  updatePay.value.error = true 
+  await admin.fetchStudentForUpdate(payment.value)
+  await updatePayInfo()
+}
+
+// POPULATE PAYMENT UI WITH FETCHED INFO
+const updatePayInfo = async() => {
+  payment.value.email = admin.updateSearch.email
+  payment.value.matricNo = admin.updateSearch.matricNo
+  payment.value.lastname = admin.updateSearch.lastname
+  payment.value.firstname = admin.updateSearch.firstname
+  payment.value.middlename = admin.updateSearch.middlename
+  payment.value.department = admin.updateSearch.department
+  payment.value.faculty = admin.updateSearch.faculty
+  payment.value.transactionId = admin.updateSearch.pay_identity
+  payment.value.phone = admin.updateSearch.phone
+}
+
+const updateStudenPay = async () => {
+  if(payment.value.email === '' || payment.value.amountPaid === '' || payment.value.paymentMade === ''){
+    updatePay.value.error = true
+    updatePay.value.message = 'No field should be empty'
+    return
+  }
+  updatePay.value.error = false
+  await admin.updatePayment(payment.value)
+  updatePay.value.success = true
+}
+
+
+
+
+
+
+
+
 
 // INPUTTING 
 const courseLists = ref({

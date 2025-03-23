@@ -1,7 +1,7 @@
 <template>
     <div>
         <!-- REGISTRATION FOR ADMIN -->
-        <div class="page" v-if="registerVisible">
+        <div class="page">
             <h5 v-if="registerE">{{ registerError }}</h5>
             <input type="text" class="contactInput" placeholder="Please input your Fullname" v-model="RegisterDetails.fullname">
             <input type="text" class="contactInput" placeholder="Please input your Phone Number" v-model="RegisterDetails.phone">
@@ -11,23 +11,8 @@
                 <button @click.prevent="togglePasswordVisibility" type="button">{{ passwordVisible ? 'Hide' : 'Show' }} Password </button>
                 <button @click="registerAdmin">Register</button>
             </div>
-            <h3>Already Have an account? <span @click="toggleSign">Sign In</span></h3>
         </div>
 
-
-
-        <!-- SIGN IN FOR ADMIN -->
-        <div class="page" v-if="loginVisible">
-            <h5 v-if="loginE">{{ loginError }}</h5>
-            <input type="email" class="contactInput" placeholder="Please input your email" v-model="LoginDetails.email">
-            <input :type="passwordVisible ? 'text' : 'password'" class="contactInput" placeholder="Password" v-model="LoginDetails.password">
-            <div class="buttons">
-                <button @click.prevent="togglePasswordVisibility" type="button">{{ passwordVisible ? 'Hide' : 'Show' }} Password </button>
-                <button @click="loginAdmin">Sign in</button>
-            </div>
-            <h3>Don't have an account? <span @click="toggleRegister">Register</span></h3>
-        </div>
-        <!-- <i class="fa fa-user"></i> -->
     </div>
 </template>
 
@@ -39,20 +24,6 @@
     import {useAuthStore} from '@/stores/registration'
     const auth = useAuthStore()
 
-
-    // LOGIN VISIBILITY
-    const loginVisible = ref(false)
-    const toggleSign = () => {
-        registerVisible.value = false
-        loginVisible.value = true
-    }
-
-    // REGISTRATION VISIBILITY
-    const registerVisible = ref(true)
-    const toggleRegister = () => {
-        registerVisible.value = true
-        loginVisible.value = false
-    }
 
     // REGISTRATION ERROR
     const registerError = ref('')
@@ -85,20 +56,6 @@
         }
     });
 
-
-
-
-
-
-    // LOGIN DETAILS
-    const LoginDetails = ref({
-        email : '',
-        password : ''
-    })
-    // LOGIN FUNCTION
-    const loginAdmin = () => {
-
-    }
 
     const passwordVisible = ref(false)
     const togglePasswordVisibility = () => {

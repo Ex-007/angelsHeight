@@ -9,7 +9,6 @@ export const useAuthStore = defineStore('auth', () => {
 
     // REGISTER ADMIN
     const registerNewAdmin = async(RegisterDetails) => {
-        console.log(RegisterDetails)
         isLoading.value = true
         error.value = null
         canProceed.value = false
@@ -23,6 +22,7 @@ export const useAuthStore = defineStore('auth', () => {
                     data:{
                         Fullname: RegisterDetails.fullname,
                         Phone: RegisterDetails.phone,
+                        profilePicutre: '',
                         role: "admin"
                     }
                 }
@@ -31,8 +31,6 @@ export const useAuthStore = defineStore('auth', () => {
             if(signUpError) throw signUpError
             userData.value = data.user
             canProceed.value = true
-            console.log(data)
-            console.log(data.user)
         } catch (err) {
             error.value = err.message
             console.log(err.message)
