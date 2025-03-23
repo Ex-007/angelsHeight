@@ -7,6 +7,7 @@ export const useAdminStore = defineStore('admin', () => {
     const resultUploadData = ref(null)
     const canOut = ref(false)
     const formStudents = ref([])
+    const paymentsIn = ref([])
     const selectedUser = ref(null)
     const isLoggedIn = ref(false)
     const loggedAdmin = ref(null)
@@ -376,34 +377,6 @@ const uploadAdminImage = async () => {
 
 }
 
-// UPDATING THE PAYMENT
-// const updatePayment = async (paymentData) => {
-//     isLoading.value = true
-//     error.value = null
-//     const client = useSupabaseClient()
-//     try {
-//         const {data:payData, error:payError} = await client
-//         .from('ADMITTEDSTUDENTS')
-//         .update({
-//             payment_info: supabase.utils.jsonb.addProperties({
-//                 amountPaid: paymentData.amountPaid,
-//                 paymentMade: paymentData.paymentMade
-//             })
-//         })
-//         .eq('email', paymentData.email)
-
-//         if(payError) throw payError
-//         updateInfoDataSuccess.value = true
-//         return payData
-//     } catch (err) {
-//         error.value = err.message
-//         console.log(err.message)
-//         return null
-//     } finally{
-//         isLoading.value = false
-//     }
-// }
-
 
 const updatePayment = async (paymentData) => {
     isLoading.value = true
@@ -457,6 +430,30 @@ const updatePayment = async (paymentData) => {
     }
 }
 
+// FETCH PAYMENT
+const checkPayments = async(check) => {
+    isLoading.value = true
+    error.value = null
+    const client = useSupabaseClient()
+    try {
+        const {data:paymentData, error:paymentError} = await client
+        .from('ADMITTEDSTUDENTS')
+        .select('payment_info')
+        .eq('email', check)
+        .single()
+        if(paymentError) throw paymentError
+        const paymentHistory = paymentData.payment_info?.payments || []
+        paymentsIn.value = paymentHistory
+        return paymentData
+    } catch (err) {
+        error.value = err.message
+        console.log(err.message)
+    } finally{
+        isLoading.value = false
+    }
+}
+
+
 
 
 
@@ -501,6 +498,8 @@ const updatePayment = async (paymentData) => {
         setPassportPhoto,
         uploadAdminImage,
         imageUploaded,
-        updatePayment
+        updatePayment,
+        checkPayments,
+        paymentsIn
     }
 })

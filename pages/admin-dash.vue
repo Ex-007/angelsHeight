@@ -15,6 +15,7 @@
           <li @click="activeTab = 'registered'" :class="{ active: activeTab === 'registered' }">💎 Registered Students</li>
           <li @click="activeTab = 'admitted'" :class="{ active: activeTab === 'admitted' }">💎 Admitted Students</li>
           <li @click="activeTab = 'payments'" :class="{ active: activeTab === 'payments' }">💴 Update Payment</li>
+          <li @click="activeTab = 'paymentsCheck'" :class="{ active: activeTab === 'paymentsCheck' }">💴 Check Payment</li>
           <li @click="logout">🚪 Logout</li>
         </ul>
       </aside>
@@ -354,6 +355,43 @@
         </div>
       </div>
         </section>
+  
+        <!-- PAYMENT CHECK -->
+        <section v-if="activeTab === 'paymentsCheck'">
+          <div class="transactionDet">
+            <h3>CHECK STUDENT PAYMENTS</h3>
+            <div class="innerDetails">
+              <label for="saEmail">Student Email</label>
+              <input type="text" id="saEmail" class="contactInput" placeholder="Student Email" v-model="check">
+              <table class="payment-table" v-if="admin.paymentsIn.length > 0">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Amount Paid</th>
+                <th>Payment Made</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(payment, index) in admin.paymentsIn" :key="index">
+                <td>{{ formatDate(payment.timestamp) }}</td>
+                <td>{{ formatCurrency(payment.amountPaid) }}</td>
+                <td>{{ payment.paymentMade }}"</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="2">Total</td>
+                <td>{{ formatCurrency(calculateTotal(admin.paymentsIn)) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+
+            <div class="buttons">
+              <button @click="fetchPayments">{{ admin.isLoading ? 'checking...' : 'Check' }}</button>
+            </div>
+        </div>
+      </div>
+        </section>
       </main>
     </div>
   </template>
@@ -374,6 +412,40 @@ import auth from '~/middleware/auth';
     definePageMeta({
       middleware: [auth]
     })
+
+// FORMAT DATE
+const formatDate = (dateString) => {
+// Suggested code may be subject to a license. Learn more: ~LicenseLog:4059734699.
+  return new Date(dateString).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+}
+
+// format currency
+const formatCurrency = (amount) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'NGN',
+  }).format(amount);
+}
+
+// calculate total
+const calculateTotal = (payments) => {
+  return payments.reduce((total, payment) => {
+    return total + parseFloat(payment.amountPaid || 0 );
+  }, 0);
+}
+
+      const check = ref('')
+      const fetchPayments = async () => {
+        if(check.value == ''){
+          alert('Enter Email')
+          return
+        }
+        await admin.checkPayments(check.value)
+      }
 
       // Handle passport uploads
       const passportPreviewUrl = ref('')
@@ -704,6 +776,9 @@ const updateStudenPay = async () => {
   updatePay.value.error = false
   await admin.updatePayment(payment.value)
   updatePay.value.success = true
+  updatePay.value.message = 'successfully saved'
+  payment.value.amountPaid = ''
+  payment.value.paymentMade = ''
 }
 
 
@@ -760,6 +835,21 @@ const clearCourse = () => {
   </script>
   
   <style scoped>
+      .payment-table{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  .payment-table th, .payment-table td{
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    border: 1px solid #9b6161;
+  }
+
+  .payment-table tr:nth-child(even){
+    background-color: #473333;
+  }
   .matricName{
     background-color: green;
     color: white;
