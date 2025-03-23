@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="page">
-            <h2>Form Submitted. You will be Notified on your email soon</h2>
+            <h2>Form Submitted. You will be Notified on your email soon!</h2>
         </div>
     </div>
 </template>
