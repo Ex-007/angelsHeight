@@ -13,7 +13,8 @@
           <li @click="activeTab = 'profile'" :class="{ active: activeTab === 'profile' }">👤 Students</li>
           <li @click="activeTab = 'premium'" :class="{ active: activeTab === 'premium' }">💎 Transaction ID</li>
           <li @click="activeTab = 'registered'" :class="{ active: activeTab === 'registered' }">💎 Registered Students</li>
-          <li @click="activeTab = 'admitted'" :class="{ active: activeTab === 'admitted' }">💎 Admitted Students</li>
+          <li @click="activeTab = 'admitted'" :class="{ active: activeTab === 'admitted' }">💎 Admit a Students</li>
+          <li @click="activeTab = 'Ladmitted'" :class="{ active: activeTab === 'Ladmitted' }">💎List Admitted Students</li>
           <li @click="activeTab = 'payments'" :class="{ active: activeTab === 'payments' }">💴 Update Payment</li>
           <li @click="activeTab = 'paymentsCheck'" :class="{ active: activeTab === 'paymentsCheck' }">💴 Check Payment</li>
           <li @click="logout">🚪 Logout</li>
@@ -249,6 +250,50 @@
               
           </div>
         </section>
+
+        <!-- LIST ADMITTED STUDENTS -->
+        <section v-if="activeTab === 'Ladmitted'">
+            <div class="transactionDet">
+              <h1>Admitted Students List</h1>
+              
+            <button @click="printOut" disabled>Print</button>
+              <div class="newlyl">
+                
+                <table class="payment-table heightinh" id="printable-section">
+              <thead>
+                <tr>
+                  <th>S/N</th>
+                  <th>Date</th>
+                  <th>Lastname</th>
+                  <th>Firstname</th>
+                  <th>Middlename</th>
+                  <th>Department</th>
+                  <th>Faculty</th>
+                  <th>Email</th>
+                  <th>Matric No</th>
+                  <th>Payment Id</th>
+                  <th>Phone Number</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="(admisttedd, index) in admin.allAdmitted" :key="index">
+                  <td>{{ payment.id }}</td>
+                  <td>{{ formatDate(admisttedd.created_at) }}</td>
+                  <td>{{ admisttedd.lastname }}</td>
+                  <td>{{ admisttedd.firstname }}</td>
+                  <td>{{ admisttedd.middlename }}</td>
+                  <td>{{ admisttedd.department }}</td>
+                  <td>{{ admisttedd.faculty }}</td>
+                  <td>{{ admisttedd.email }}</td>
+                  <td>{{ admisttedd.matricNo }}</td>
+                  <td>{{ admisttedd.pay_identity }}</td>
+                  <td>{{ admisttedd.phone }}</td>
+                </tr>
+              </tbody>
+            </table>
+              </div>
+            </div>
+        </section>
   
         <!-- REGISTERED STUDENTS -->
         <section v-if="activeTab === 'registered'">
@@ -339,11 +384,14 @@
               <label for="phoneNum">Student Phone Number</label>
               <input type="text" id="phoneNum" class="contactInput" placeholder="Student Phone Number" v-model="payment.phone" readonly>
 
-              <label for="paymentMade">Payment Made</label>
+              <label for="paymentRecierve">Payment Receiver</label>
+              <input type="text" id="paymentRecierve" class="contactInput" placeholder="Recieved By:" v-model="payment.receiver">
+
+              <label for="paymentMade">Payment For:</label>
               <input type="text" id="paymentMade" class="contactInput" placeholder="Payment Made" v-model="payment.paymentMade">
 
               <label for="amountPaid">Amount Paid</label>
-              <input type="text" id="amountPaid" class="contactInput" placeholder="Amount Paid" v-model="payment.amountPaid">
+              <input type="number" id="amountPaid" class="contactInput" placeholder="Amount Paid" v-model="payment.amountPaid">
 
 
             <h3 v-if="updatePay.error">{{ updatePay.message }}</h3>
@@ -369,13 +417,15 @@
                 <th>Date</th>
                 <th>Amount Paid</th>
                 <th>Payment Made</th>
+                <th>Received By</th>
               </tr>
             </thead>
             <tbody>
               <tr v-for="(payment, index) in admin.paymentsIn" :key="index">
                 <td>{{ formatDate(payment.timestamp) }}</td>
                 <td>{{ formatCurrency(payment.amountPaid) }}</td>
-                <td>{{ payment.paymentMade }}"</td>
+                <td>{{ payment.paymentMade }}</td>
+                <td>{{ payment.receivedBy }}</td>
               </tr>
             </tbody>
             <tfoot>
@@ -462,8 +512,8 @@ const calculateTotal = (payments) => {
     admin.uploadAdminImage()
   }
 
-    // const activeTab = ref('courses');
-    const activeTab = ref('home');
+    const activeTab = ref('Ladmitted');
+    // const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
     success : '',
@@ -734,7 +784,8 @@ const payment = ref({
   transactionId: '',
   phone: '',
   amountPaid: '',
-  paymentMade: ''
+  paymentMade: '',
+  receiver: ''
 })
 
 const updatePay = ref({
@@ -768,7 +819,7 @@ const updatePayInfo = async() => {
 }
 
 const updateStudenPay = async () => {
-  if(payment.value.email === '' || payment.value.amountPaid === '' || payment.value.paymentMade === ''){
+  if(payment.value.email === '' || payment.value.amountPaid === '' || payment.value.paymentMade === '' || payment.receiver == ''){
     updatePay.value.error = true
     updatePay.value.message = 'No field should be empty'
     return
@@ -821,20 +872,130 @@ const clearCourse = () => {
   courseLists.value.units = ''
 }
 
+// PRINTING SECTION
+const printOut = () => {
+  const printContent = document.getElementById('printable-section').innerHTML
+  const printWindow = window.open('', '_blank', 'width=800,height=600')
 
+  printWindow.document.write(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>Course Registration Form</title>
+        <style>
+          /* Reset all styles */
+          * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+          }
+          
+          /* Basic styling */
+          body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: black;
+            padding: 20px;
+            line-height: 1.5;
+          }
+            .sleekness{
+              text-align:center;
+            }
+            .headerWithDet{
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 10px;
+            }
+            .numberes{
+                display: flex;
+                gap: 10px;
+            }
+            .newlyl{
+              width: 100%;
+              max-height: 900px;
+              overflow-y: auto;
+            }
+                .payment-table{
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 20px;
+            }
+            .payment-table th, .payment-table td{
+              padding: 12px;
+              text-align: left;
+              border-bottom: 1px solid #ddd;
+              border: 1px solid #9b6161;
+              color: rgb(250, 250, 250);
+            }
+              @media print {
+              body {
+                margin: 0;
+                padding: 0;
+              }
+              
+              .payment-table {
+                width: 100%;
+                font-size: 0.8em;
+              }
 
+          
+          .no-print {
+            display: none;
+          }
+        </style>
+      </head>
+      <body>
+    <div class="headerWithDet">
+        <h1>ANGELS HEIGHT</h1>
+        <p>...Healthcare Training Per Excellence is Our Concern</p>
+        <div class="numberes">
+            <p>09032327228</p>
+            <p>08107812435</p>
+        </div>
+        <h2>Course Registration Form</h2>
+    </div>
+        ${printContent}
+      </body>
+      </html>
+    `)
+    
+    // Close the document and trigger print
+    printWindow.document.close()
+    
+    // Wait for content to load
+    printWindow.onload = () => {
+      printWindow.focus()
+      printWindow.print()
+    }
+}
 
 
 
   onMounted(async () => {
     await admin.signinUser()
     await admin.fetchRegistered()
+    await admin.fetchAdmittedStudents()
     await fixDetails()
   })
 
   </script>
   
   <style scoped>
+  .newlyl{
+    width: 100%;
+    max-height: 850px;
+    overflow-y: auto;
+  }
+  .newlyl::-webkit-scrollbar{
+  display: none;
+}
+.newlyl{
+  -ms-overflow-style: none; 
+  scrollbar-width: none;  
+}
       .payment-table{
     width: 100%;
     border-collapse: collapse;
@@ -845,6 +1006,7 @@ const clearCourse = () => {
     text-align: left;
     border-bottom: 1px solid #ddd;
     border: 1px solid #9b6161;
+    color: rgb(250, 250, 250);
   }
 
   .payment-table tr:nth-child(even){

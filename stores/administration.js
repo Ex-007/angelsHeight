@@ -8,6 +8,7 @@ export const useAdminStore = defineStore('admin', () => {
     const canOut = ref(false)
     const formStudents = ref([])
     const paymentsIn = ref([])
+    const allAdmitted = ref([])
     const selectedUser = ref(null)
     const isLoggedIn = ref(false)
     const loggedAdmin = ref(null)
@@ -404,6 +405,7 @@ const updatePayment = async (paymentData) => {
         const newPaymentEntry = {
             amountPaid: paymentData.amountPaid,
             paymentMade: paymentData.paymentMade,
+            receivedBy: paymentData.receiver,
             timestamp: new Date().toISOString()
         }
         
@@ -420,7 +422,6 @@ const updatePayment = async (paymentData) => {
 
         if(payError) throw payError
         updateInfoDataSuccess.value = true
-        console.log('updated')
         return payData
     } catch (err) {
         error.value = err.message
@@ -445,6 +446,27 @@ const checkPayments = async(check) => {
         const paymentHistory = paymentData.payment_info?.payments || []
         paymentsIn.value = paymentHistory
         return paymentData
+    } catch (err) {
+        error.value = err.message
+        console.log(err.message)
+    } finally{
+        isLoading.value = false
+    }
+}
+
+// FETCH ALL ADMITTED STUDENTS
+const fetchAdmittedStudents = async () => {
+    isLoading.value = true
+    error.value = null
+    const client = useSupabaseClient()
+    try {
+        const {data:admittedStudentData, error:admittedStudentError} = await client
+        .from('ADMITTEDSTUDENTS')
+        .select('*')
+        if(admittedStudentError) throw admittedStudentError
+        allAdmitted.value = admittedStudentData
+        console.log(admittedStudentData)
+        return admittedStudentData
     } catch (err) {
         error.value = err.message
         console.log(err.message)
@@ -500,6 +522,8 @@ const checkPayments = async(check) => {
         imageUploaded,
         updatePayment,
         checkPayments,
-        paymentsIn
+        paymentsIn,
+        allAdmitted,
+        fetchAdmittedStudents
     }
 })

@@ -60,6 +60,9 @@
           <div class="courseYear">
             <h3>Select level</h3>
             <select v-model="courseFormField.level">
+              <option>Year I</option>
+              <option>Year II</option>
+              <option>Year III</option>
               <option>NDI</option>
               <option>NDII</option>
               <option>HNDI</option>
@@ -107,6 +110,9 @@
 
           <label for="level">Level</label>
           <select id="level" v-model="resultSelect.level">
+            <option>Year I</option>
+            <option>Year II</option>
+            <option>Year IIII</option>
             <option>NDI</option>
             <option>NDII</option>
             <option>HNDI</option>
