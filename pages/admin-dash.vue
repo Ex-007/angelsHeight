@@ -512,8 +512,8 @@ const calculateTotal = (payments) => {
     admin.uploadAdminImage()
   }
 
-    const activeTab = ref('Ladmitted');
-    // const activeTab = ref('home');
+    // const activeTab = ref('Ladmitted');
+    const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
     success : '',
