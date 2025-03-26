@@ -253,13 +253,13 @@
 
         <!-- LIST ADMITTED STUDENTS -->
         <section v-if="activeTab === 'Ladmitted'">
-            <div class="transactionDet">
+            <div class="newlyll">
               <h1>Admitted Students List</h1>
               
-            <button @click="printOut" disabled>Print</button>
+            <!-- <button @click="printOut" disabled>Print</button> -->
               <div class="newlyl">
                 
-                <table class="payment-table heightinh" id="printable-section">
+                <table class="heightinh" id="printable-section">
               <thead>
                 <tr>
                   <th>S/N</th>
@@ -277,7 +277,7 @@
               </thead>
               <tbody>
                 <tr v-for="(admisttedd, index) in admin.allAdmitted" :key="index">
-                  <td>{{ payment.id }}</td>
+                  <td>{{ index + 1 }}</td>
                   <td>{{ formatDate(admisttedd.created_at) }}</td>
                   <td>{{ admisttedd.lastname }}</td>
                   <td>{{ admisttedd.firstname }}</td>
@@ -512,8 +512,8 @@ const calculateTotal = (payments) => {
     admin.uploadAdminImage()
   }
 
-    // const activeTab = ref('Ladmitted');
-    const activeTab = ref('home');
+    const activeTab = ref('Ladmitted');
+    // const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
     success : '',
@@ -981,21 +981,136 @@ const printOut = () => {
     await fixDetails()
   })
 
+  definePageMeta({
+  hideFooter: true
+})
   </script>
   
   <style scoped>
-  .newlyl{
+
+
+  .newlyl {
+    width: 90%;
+    max-height: 800px;
+    overflow: scroll; 
+    max-width: 1200px;
+    display: block;
+    position: relative;
+}
+  .newlyll {
     width: 100%;
     max-height: 850px;
+    overflow: scroll; 
+    max-width: 100%;
+    /* display: block;
+    position: relative; */
+}
+
+
+
+.heightinh {
+    width: 100%; 
+    min-width: 1200px; 
+    border-collapse: collapse;
+    color: white;
+}
+
+.heightinh th,
+.heightinh td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    white-space: nowrap; 
+}
+
+.heightinh thead th {
+    position: sticky;
+    top: 0;
+    background-color: #000000;
+    z-index: 1;
+}
+
+/* Explicit Scrollbar Styling */
+.newlyl::-webkit-scrollbar {
+    width: 12px; 
+    height: 12px; 
+    display: block !important; 
+}
+
+.newlyl::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.newlyl::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+    border: 3px solid #f1f1f1;
+}
+
+.newlyl::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Explicit scrollbar for Firefox */
+.newlyl {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .newlyl {
+        max-height: 500px;
+    }
+    
+    .heightinh {
+        min-width: 800px;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* .newlyl{
+    max-height: 850px;
     overflow-y: auto;
+    overflow-x: auto;
+    max-width: 100%;
+    white-space: nowrap;
   }
+
   .newlyl::-webkit-scrollbar{
   display: none;
 }
+
+@media (min-width: 768px) {
+  .newlyl {
+    max-height: 300px;
+    max-width: 300px;
+  }
+}
+
 .newlyl{
   -ms-overflow-style: none; 
   scrollbar-width: none;  
-}
+} */
       .payment-table{
     width: 100%;
     border-collapse: collapse;
