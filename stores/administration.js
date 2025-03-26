@@ -213,7 +213,7 @@ export const useAdminStore = defineStore('admin', () => {
         const client = useSupabaseClient()
         try {
             const {data:searchData, error:searchError} = await client
-            .from('STUDENTDETAILS')
+            .from('ADMITTEDSTUDENTS')
             .select('*')
             .eq('matricNo', studentMatric)
             .single()

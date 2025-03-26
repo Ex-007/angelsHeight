@@ -42,6 +42,7 @@
       <div class="footer-bottom">
         <p>&copy; {{ new Date().getFullYear() }} Angelsheight. All rights reserved.</p>
         <p><a href="mailto:info@angelsheight.org">info@angelsheight.org</a></p>
+        <p>Designed by <a href="https://abtech-two.vercel.app">ABTech</a></p>
       </div>
     </footer>
   </template>

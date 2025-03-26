@@ -854,7 +854,7 @@ const alert = ref({
 })
 
 const saveCourse = async () => {
-  if(courseLists.value.code == '' || courseLists.value.title == '' || courseLists.value.units == ''){
+  if(courseLists.value.code == '' || courseLists.value.title == ''){
     alert.value.error = true
     alert.value.message = 'No field should be empty'
     return
