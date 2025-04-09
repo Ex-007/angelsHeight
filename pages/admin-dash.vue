@@ -101,13 +101,44 @@
               <div class="control firstSide">
 
                 <label for="courseCode">Course Title : </label>
-                <input type="text" class="contactInput" id="courseCode" placeholder="Course Code" v-model="scoreDet.courseCode">
+                <select
+                  id="courseTitle"
+                  class="contactInput"
+                  v-model="scoreDet.courseTitle"
+                  @change="handleCourseSelect"
+                >
+                  <option disabled value="">Select a Course</option>
+                  <option
+                    v-for="course in admin.courseLists"
+                    :key="course.course_code"
+                    :value="course.title"
+                  >
+                    {{ course.title }}
+                  </option>
+                </select>
+                <!-- <input type="text" class="contactInput" id="courseCode" placeholder="Course Code" v-model="scoreDet.courseCode"> -->
   
                 <label for="cc">Course Code : </label>
-                <input type="text" class="contactInput" id="cc" placeholder="CC" v-model="scoreDet.cc">
+                <input
+                  type="text"
+                  class="contactInput"
+                  id="cc"
+                  placeholder="Course Code"
+                  v-model="scoreDet.courseCode"
+                  readonly
+                />
+                <!-- <input type="text" class="contactInput" id="cc" placeholder="CC" v-model="scoreDet.cc"> -->
   
                 <label for="cu">CU : </label>
-                <input type="number" class="contactInput" id="cu" placeholder="CU" v-model="scoreDet.cu">
+                <input
+                  type="number"
+                  class="contactInput"
+                  id="cu"
+                  placeholder="CU"
+                  v-model="scoreDet.cu"
+                  readonly
+                />
+                <!-- <input type="number" class="contactInput" id="cu" placeholder="CU" v-model="scoreDet.cu"> -->
   
                 <label for="test">Test : </label>
                 <input type="number" class="contactInput" id="test" placeholder="Test Score" v-model="scoreDet.test">
@@ -456,11 +487,25 @@ import auth from '~/middleware/auth';
     const admin = useAdminStore()
     const router = useRouter();
     const route = useRoute()
-    
+
+  // Handle Course Selection
+const handleCourseSelect = () => {
+  const selected = admin.courseLists.find(c => c.title === scoreDet.value.courseTitle)
+  if (selected) {
+    scoreDet.value.courseCode = selected.code
+    scoreDet.value.cu = selected.units
+  }
+}
+
+
+
+
+
 
     // ROUTE GUARD
     definePageMeta({
-      middleware: [auth]
+      layout: 'no-foot',
+      middleware: ['auth']
     })
 
 // FORMAT DATE
@@ -978,12 +1023,10 @@ const printOut = () => {
     await admin.signinUser()
     await admin.fetchRegistered()
     await admin.fetchAdmittedStudents()
+    await admin.fetchAllCourse()
     await fixDetails()
   })
 
-  definePageMeta({
-  hideFooter: true
-})
   </script>
   
   <style scoped>

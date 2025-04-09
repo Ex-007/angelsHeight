@@ -19,6 +19,7 @@ export const useAdminStore = defineStore('admin', () => {
     const isUpdating = ref(false)
     const isFetching = ref(false)
     const imageUploaded = ref(false)
+    const courseLists = ref([])
 
 
     // FETCH THE SIGNED IN USER
@@ -475,6 +476,25 @@ const fetchAdmittedStudents = async () => {
     }
 }
 
+// FETCH ALL COURSES
+const fetchAllCourse = async () => {
+    isLoading.value = true
+    error.value = null
+    const client = useSupabaseClient()
+    try {
+        const {data:formData, error:formError} = await client
+            .from('COURSELIST')
+            .select('*')
+
+            if(formError) throw formError
+            courseLists.value = formData
+            console.log(formData)
+    } catch (err) {
+        error.value = err.message
+    } finally{
+        isLoading.value = false
+    }
+}
 
 
 
@@ -524,6 +544,8 @@ const fetchAdmittedStudents = async () => {
         checkPayments,
         paymentsIn,
         allAdmitted,
-        fetchAdmittedStudents
+        fetchAdmittedStudents,
+        fetchAllCourse,
+        courseLists
     }
 })
