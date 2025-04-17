@@ -1,8 +1,16 @@
 <template>
     <div class="course-selection-container">
     <div class="headerWithDet">
-        <h1>ANGELS HEIGHT</h1>
-        <p>...Healthcare Training Per Excellence is Our Concern</p>
+      <div class="nameAndLogo">
+        <img src="/img/angelLogo.png" alt="The logo image" width="60px">
+        <div class="namee">
+          <h1>ANGELS HEIGHT</h1>
+          <p>...Healthcare Training Per Excellence is Our Concern</p>
+        </div>
+      </div>
+        
+        
+        
         <div class="numberes">
             <p>09032327228</p>
             <p>08107812435</p>
@@ -195,6 +203,9 @@
             padding: 20px;
             line-height: 1.5;
           }
+              .nameAndLogo{
+                display: flex;
+              }
             .sleekness{
               text-align:center;
             }
@@ -266,8 +277,13 @@
       </head>
       <body>
     <div class="headerWithDet">
-        <h1>ANGELS HEIGHT</h1>
-        <p>...Healthcare Training Per Excellence is Our Concern</p>
+      <div class="nameAndLogo">
+        <img src="/img/angelLogo.png" alt="The logo image" width="60px">
+        <div class="namee">
+          <h1>ANGELS HEIGHT</h1>
+          <p>...Healthcare Training Per Excellence is Our Concern</p>
+        </div>
+      </div>
         <div class="numberes">
             <p>09032327228</p>
             <p>08107812435</p>
@@ -478,5 +494,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
+  }
+  .nameAndLogo{
+    display: flex;
   }
   </style>

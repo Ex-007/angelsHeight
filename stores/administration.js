@@ -36,7 +36,7 @@ export const useAdminStore = defineStore('admin', () => {
             if (loggedUserError) {
                 if (loggedUserError.code === 'PGRST116') {
                     error.value = 'No user logged in'
-                    console.log('not signed in')
+                    // console.log('not signed in')
                     isBypass.value = true
                     return null
                 }
@@ -49,11 +49,11 @@ export const useAdminStore = defineStore('admin', () => {
                 // console.log("User data:", loggedUserData.user.user_metadata)
                 return loggedUserData.user 
             } else {
-                console.log("No user data found:", loggedUserData)
+                // console.log("No user data found:", loggedUserData)
                 return null
             }
         } catch (err) {
-            console.error("Error in signinUser:", err)
+            // console.error("Error in signinUser:", err)
             error.value = err.message
             return null 
         } finally {
@@ -185,8 +185,8 @@ export const useAdminStore = defineStore('admin', () => {
                 {
                     name: studentDet.name,
                     assmt: studentDet.assmt,
-                    cc: studentDet.cc,
-                    coursecode: studentDet.courseCode,
+                    cc: studentDet.courseCode,
+                    coursecode: studentDet.courseTitle,
                     cu: studentDet.cu,
                     exam: studentDet.exam,
                     level: studentDet.level,
@@ -305,7 +305,7 @@ export const useAdminStore = defineStore('admin', () => {
             ])
             if(courseUpError) throw courseUpError
             resultUploadData.value = 'Successfully Uploaded'
-            console.log('successful', courseUpData)
+            // console.log('successful', courseUpData)
         } catch (err) {
             error.value = err.message
         } finally{
@@ -360,7 +360,7 @@ const uploadAdminImage = async () => {
     const client = useSupabaseClient()
     try {
         const photoUrl = await uploadFiles()
-        console.log("Photo URL:", photoUrl)
+        // console.log("Photo URL:", photoUrl)
         const {data:upData, error:upError} = await client.auth.updateUser({
             data:{
                 displayPicture : photoUrl
@@ -368,11 +368,11 @@ const uploadAdminImage = async () => {
         }) 
         if(upError) throw upError
         imageUploaded.value = true
-        console.log(photoUrl)
-        console.log('successful', upData)
+        // console.log(photoUrl)
+        // console.log('successful', upData)
     } catch (err) {
         error.value = err.message
-        console.log(err.message)
+        // console.log(err.message)
     } finally{
         isLoading.value = false
     }
@@ -449,7 +449,7 @@ const checkPayments = async(check) => {
         return paymentData
     } catch (err) {
         error.value = err.message
-        console.log(err.message)
+        // console.log(err.message)
     } finally{
         isLoading.value = false
     }
@@ -466,11 +466,11 @@ const fetchAdmittedStudents = async () => {
         .select('*')
         if(admittedStudentError) throw admittedStudentError
         allAdmitted.value = admittedStudentData
-        console.log(admittedStudentData)
+        // console.log(admittedStudentData)
         return admittedStudentData
     } catch (err) {
         error.value = err.message
-        console.log(err.message)
+        // console.log(err.message)
     } finally{
         isLoading.value = false
     }
@@ -488,7 +488,7 @@ const fetchAllCourse = async () => {
 
             if(formError) throw formError
             courseLists.value = formData
-            console.log(formData)
+            // console.log(formData)
     } catch (err) {
         error.value = err.message
     } finally{

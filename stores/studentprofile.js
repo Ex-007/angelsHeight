@@ -29,7 +29,7 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
             if (loggedUserError && !loggedUserData.user) {
                 if (loggedUserError.code === 'PGRST116') {
                     error.value = 'No user logged in'
-                    console.log('not signed in')
+                    // console.log('not signed in')
                     isBypass.value = true
                     return null
                 }
@@ -42,11 +42,11 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
                 // console.log(loggedUserData.user.email)
                 return loggedUserData.user
             } else {
-                console.log("No user data found:", loggedUserData)
+                // console.log("No user data found:", loggedUserData)
                 return null
             }
         } catch (err) {
-            console.error("Error in signinUser:", err)
+            // console.error("Error in signinUser:", err)
             error.value = err.message
             return null
         } finally {
@@ -122,7 +122,7 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
                 results.value = []
                 noResults.value = true
             }
-            console.log(data)
+            // console.log(data)
         } catch (err) {
             error.value = err.message
         } finally{
@@ -234,7 +234,7 @@ const fetchPicture = async() => {
         profilepicturee.value = imageData
     } catch (err) {
         error.value = err.message
-        console.log(err.value)
+        // console.log(err.value)
     } finally {
         isLoading.value = false
     }
@@ -279,7 +279,7 @@ const uploadFiles = async() => {
 
     } catch (err) {
         error.value = err.message
-        console.log(err.message)
+        // console.log(err.message)
         throw error
     } finally{
         isLoading.value = false
@@ -324,11 +324,11 @@ const uploadFiles = async() => {
             if(paymentError) throw paymentError
             const paymentHistory = paymentData.payment_info?.payments || []
             paymentsIn.value = paymentHistory
-            console.log(paymentHistory)
+            // console.log(paymentHistory)
             return paymentData
         } catch (err) {
             error.value = err.message
-            console.log(err.message)
+            // console.log(err.message)
         } finally{
             isLoading.value = false
         }
