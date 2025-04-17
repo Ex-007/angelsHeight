@@ -438,7 +438,7 @@
         <!-- PAYMENT CHECK -->
         <section v-if="activeTab === 'paymentsCheck'">
           <div class="transactionDet">
-            <h3>CHECK STUDENT PAYMENTS</h3>
+            <h3>CHECK STUDENTS PAYMENT</h3>
             <div class="innerDetails">
               <label for="saEmail">Student Email</label>
               <input type="text" id="saEmail" class="contactInput" placeholder="Student Email" v-model="check">
