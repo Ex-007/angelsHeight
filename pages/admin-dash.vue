@@ -442,6 +442,7 @@
             <div class="innerDetails">
               <label for="saEmail">Student Email</label>
               <input type="text" id="saEmail" class="contactInput" placeholder="Student Email" v-model="check">
+              <!-- <h3>{{ admin.paymentsDataL.lastname + ' ' + admin.paymentsDataL.firstname }}</h3> -->
               <table class="payment-table" v-if="admin.paymentsIn.length > 0">
             <thead>
               <tr>
@@ -466,11 +467,11 @@
               </tr>
             </tfoot>
           </table>
+          
+          <div class="buttons">
+            <button @click="fetchPayments">{{ admin.isLoading ? 'checking...' : 'Check' }}</button>
+          </div>
           <button @click="exportAdminCheckedPaymentsToPDF(admin, checkedEmail)">Print</button>
-
-            <div class="buttons">
-              <button @click="fetchPayments">{{ admin.isLoading ? 'checking...' : 'Check' }}</button>
-            </div>
         </div>
       </div>
         </section>
@@ -483,10 +484,9 @@
 
 
   import { useRouter, useRoute } from 'vue-router';
-    import {useAdminStore} from '@/stores/administration'
-import auth from '~/middleware/auth';
-import { jsPDF } from 'jspdf'
-import autoTable from 'jspdf-autotable'
+  import {useAdminStore} from '@/stores/administration'
+  import { jsPDF } from 'jspdf'
+  import autoTable from 'jspdf-autotable'
 
     const admin = useAdminStore()
     const router = useRouter();
@@ -1011,27 +1011,43 @@ const exportToPDF = () => {
 }
 
 // PRINT PAYMENTS IN ADMIN
-const exportAdminCheckedPaymentsToPDF = (admin, checkedEmail) => {
+const exportAdminCheckedPaymentsToPDF = (admin, checkedEmail, paymentsDataL) => {
   const doc = new jsPDF({
-    orientation: 'portrait',
+    orientation: 'landscape',
     unit: 'mm',
     format: 'a4',
   })
 
-  // Header
-  doc.setFontSize(16)
-  doc.setTextColor(40)
-  doc.text('ANGELS HEIGHT COLLEGE OF HEALTH TECHNOLOGY', 105, 20, { align: 'center' })
-  doc.setFontSize(12)
-  doc.text('Checked Payment Report', 105, 28, { align: 'center' })
+  // Add Logo
+  const logoWidth = 30
+  const logoHeight = 30
+  const logoMarginBottom = 10
+  const logoY = 5
+  const headerStartY = logoY + logoHeight + logoMarginBottom
+  doc.addImage(logoBase64, 'PNG', 10, 5, logoWidth, logoHeight)
 
-  // Student info
+
+  // Header Title
+  doc.setFontSize(18)
+  doc.text('ANGELS HEIGHT COLLEGE OF HEALTH TECHNOLOGY', 148, 15, { align: 'center' }) // Center title
+  doc.setFontSize(12)
+  doc.text('Student Payment Record', 148, 23, { align: 'center' })
+
+  // Student info - Adjust positions for center alignment
+  const studentInfoStartY = 40;
+  const centerX = doc.internal.pageSize.width / 2;
+
+  // Student's Name
   doc.setFontSize(10)
-  doc.text(`Email Checked: ${checkedEmail}`, 14, 40)
-  // console.log(checkedEmail)
-  // console.log(admin.value)
-  // console.log(admin.paymentsIn)
-  // console.log(admin.paymentsIn)
+  doc.text(`Name: ${admin.paymentsDataL.lastname} ${admin.paymentsDataL.firstname} ${admin.paymentsDataL.middlename}`, centerX, studentInfoStartY, { align: 'center' })
+
+  // Student's Matric No
+  doc.setFontSize(10)
+  doc.text(`Matric No: ${admin.paymentsDataL.matricNo}`, centerX, studentInfoStartY + 8, { align: 'center' })
+
+  // Student's Department
+  doc.setFontSize(10)
+  doc.text(`Department: ${admin.paymentsDataL.department}`, centerX, studentInfoStartY + 16, { align: 'center' })
 
   // Payment Table
   const headers = [['Date', 'Amount Paid', 'Payment Made', 'Received By']]
@@ -1051,10 +1067,10 @@ const exportAdminCheckedPaymentsToPDF = (admin, checkedEmail) => {
 
   autoTable(doc, {
     head: headers,
+    startY: studentInfoStartY + 24,  // Adjust to position after student info
     body: body,
-    startY: 50,
     styles: {
-      fontSize: 9,
+      fontSize: 8,
       cellPadding: 2,
     },
     headStyles: {
@@ -1062,6 +1078,7 @@ const exportAdminCheckedPaymentsToPDF = (admin, checkedEmail) => {
       textColor: 255,
       halign: 'center',
     },
+    margin: { top: 30 },
     columnStyles: {
       0: { halign: 'center' },
       1: { halign: 'center' },
@@ -1077,7 +1094,7 @@ const exportAdminCheckedPaymentsToPDF = (admin, checkedEmail) => {
   doc.text(`Page 1 of 1`, 180, pageHeight - 10)
 
   // Save the PDF
-  doc.save(`checked-payments-${checkedEmail}.pdf`)
+  doc.save(`${admin.paymentsDataL.lastname} ${admin.paymentsDataL.firstname} ${admin.paymentsDataL.middlename}_payment.pdf`)
 }
 
 

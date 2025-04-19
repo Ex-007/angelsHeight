@@ -20,6 +20,7 @@ export const useAdminStore = defineStore('admin', () => {
     const isFetching = ref(false)
     const imageUploaded = ref(false)
     const courseLists = ref([])
+    const paymentsDataL = ref(null)
 
 
     // FETCH THE SIGNED IN USER
@@ -440,12 +441,14 @@ const checkPayments = async(check) => {
     try {
         const {data:paymentData, error:paymentError} = await client
         .from('ADMITTEDSTUDENTS')
-        .select('payment_info')
+        .select('*')
+        // .select('payment_info', 'lastname', 'firstname', 'middlename', 'matricNo')
         .eq('email', check)
         .single()
         if(paymentError) throw paymentError
         const paymentHistory = paymentData.payment_info?.payments || []
         paymentsIn.value = paymentHistory
+        paymentsDataL.value = paymentData
         return paymentData
     } catch (err) {
         error.value = err.message
@@ -546,6 +549,7 @@ const fetchAllCourse = async () => {
         allAdmitted,
         fetchAdmittedStudents,
         fetchAllCourse,
-        courseLists
+        courseLists,
+        paymentsDataL
     }
 })
