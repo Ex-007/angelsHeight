@@ -711,6 +711,9 @@ const attachValue = () => {
   searchResults.value.firstname = admin.searchDataa.firstname
   searchResults.value.lastname = admin.searchDataa.lastname
   searchResults.value.middlename = admin.searchDataa.middlename
+  scoreDet.value.name = admin.searchDataa.lastname + ' ' + admin.searchDataa.firstname + ' ' + admin.searchDataa.middlename
+
+  scoreDet.value.matricNo = admin.searchDataa.matricNo
 }
 
 
