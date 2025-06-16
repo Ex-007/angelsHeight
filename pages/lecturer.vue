@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="firstStep">
-            <img src="/img/profilePicture.jpeg" alt="The profile picture">
+            <img src="/img/profilepicture.jpeg" alt="The profile picture">
             <div class="otherDetails">
                 <h3>Name: John Doe</h3>
                 <h3>Email: JohnDoe@gmail.com</h3>
