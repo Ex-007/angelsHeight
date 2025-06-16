@@ -14,6 +14,7 @@
                 <option>CMH227</option>
                 <option>PMS111</option>
                 <option>ETB200</option>
+                <option>ETB201</option>
             </select>
             <input :type="passwordVisible ? 'text' : 'password'" class="contactInput" placeholder="Password" v-model="lecturerDetails.password">
             <p v-if="passwordError" class="errorClass">{{ passwordError }}</p>
