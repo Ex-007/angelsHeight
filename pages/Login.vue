@@ -150,7 +150,7 @@
     // WATCH FOR SIGN IN BY LECTURERS
     watch(() => auth.lecturerRedirect, (newVal) => {
         if (newVal) {
-            router.push('/lecturer-direct')
+            router.push('/lecturer')
         }
     });
 

@@ -2,12 +2,19 @@
     <div>
         <!-- REGISTRATION FOR ADMIN -->
         <div class="page">
+            <h3>This Page is for lecturer's Registration</h3>
             <h5 v-if="registerE">{{ registerError }}</h5>
             <input type="text" class="contactInput" placeholder="Please input your Fullname" v-model="lecturerDetails.fullname">
             <p v-if="nameError" class="errorClass">{{ nameError }}</p>
             <input type="text" class="contactInput" placeholder="Please input your Phone Number" v-model="lecturerDetails.phone">
             <input type="email" class="contactInput" placeholder="Please input your email" v-model="lecturerDetails.email">
             <p v-if="emailError" class="errorClass">{{ emailError }}</p>
+            <select class="contactInput" v-model="lecturerDetails.course">
+                <option>CMH224</option>
+                <option>CMH227</option>
+                <option>PMS111</option>
+                <option>ETB200</option>
+            </select>
             <input :type="passwordVisible ? 'text' : 'password'" class="contactInput" placeholder="Password" v-model="lecturerDetails.password">
             <p v-if="passwordError" class="errorClass">{{ passwordError }}</p>
             <div class="buttons">
@@ -25,6 +32,7 @@
     const router = useRouter()
     import {useAuthStore} from '@/stores/registration'
     const auth = useAuthStore()
+
     const nameError = ref('')
     const passwordError = ref('')
     const emailError = ref('')
@@ -44,7 +52,8 @@
         fullname : '',
         phone: '',
         email: '',
-        password: ''
+        password: '',
+        course: 'CBT111'
     })
     // REGISTRATION FUNCTION
     const registerLecturer = async () => {
@@ -94,6 +103,9 @@
 </script>
 
 <style scoped>
+h3{
+    color: white;
+}
     .page{
         display: flex;
         justify-content: center;

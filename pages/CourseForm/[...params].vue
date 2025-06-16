@@ -102,9 +102,12 @@
         </div>
       </div>
       
+      <div class="errorClass">
+        <p v-if="processData.error">{{ processData.message }}</p>
+      </div>
       <!-- Action Buttons -->
       <div class="action-buttons">
-        <button @click="printForm" class="print-btn">Print Form</button>
+        <button @click="printForm" class="print-btn"> {{ courseStore.isLoading ? 'Processing...' : 'Process'}}</button>
         <button @click="resetForm" class="reset-btn">Reset</button>
       </div>
     </div>
@@ -115,6 +118,8 @@
   import { definePageMeta } from '#imports'
   import {useCourseStore} from '@/stores/courseform'
   const coursess = useCourseStore()
+  import {useLecturerStore} from '@/stores/lecturerConcern'
+  const courseStore = useLecturerStore()
   import{useRouter, useRoute} from 'vue-router'
   const router = useRouter()
   const route = useRoute()
@@ -125,13 +130,7 @@
   definePageMeta({
     layout: false
   })
-  
-  // Student information - replace with actual data from your Nuxt store or API
-  const studentName = ref('John Doe')
-  const studentId = ref('STU12345')
-  const department = ref('Computer Science')
-  const level = ref('300')
-  const semester = ref('First Semester')
+
   
   // Reactive state
   const searchQuery = ref('')
@@ -172,9 +171,57 @@
   const removeCourse = (index) => {
     selectedCourses.value.splice(index, 1)
   }
+
+  const processData = ref({
+    error: false,
+    message: ''
+  })
+
+  // PREPARE COURSE DATA
+  const preparedCourseData = () => {
+    return selectedCourses.value.map(course => ({
+      courseCode: course.code,
+      courseTitle: course.title,
+      courseUnit: course.units
+    }))
+  }
+
+  const printForm = async() => {
+    processData.value.error = false
+    processData.value.message = ''
+    if(selectedCourses.value.length === 0){
+      console.log('Please Select a course')
+      return
+    }
+    const matricc = studentDetail.value.matric
+    const session = formLevel
+    const semesterr = formSemester
+    const coursesValue = preparedCourseData()
+    const studentName = studentDetail.value.lastname + " " + studentDetail.value.firstname + " " + studentDetail.value.middlename
+    console.log(studentName)
+
+    console.log(coursesValue, matricc, session, semesterr)
+    const response = await courseStore.saveCourse(coursesValue, matricc, session, semesterr, studentName)
+
+    if(!response.success){
+      processData.value.error = true
+      processData.value.message = 'Error Processing Course Form'
+      setTimeout(() => {
+        processData.value.error = false
+        processData.value.message = ''
+      }, 3000);
+      console.log('Error Processing Course Form')
+      return
+    }
+
+    processData.value.error = false
+    processData.value.message = ''
+    console.log('done')
+    await printFormm()
+  }
   
   // Print the form using a new window with clean styles
-  const printForm = () => {
+  const printFormm = async () => {
     // Get the printable content
     const printContent = document.getElementById('printable-section').innerHTML
     
@@ -365,6 +412,11 @@
   </script>
   
   <style scoped>
+  .errorClass{
+    text-align: center;
+    background-color: red;
+    color: white;
+  }
   .sleekness{
     text-align: center;
   }

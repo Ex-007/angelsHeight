@@ -7,6 +7,7 @@ export const useAuthStore = defineStore('auth', () => {
     const canProceed = ref(false)
     const canLecture = ref(false)
 
+    
     // REGISTER ADMIN
     const registerNewAdmin = async(RegisterDetails) => {
         isLoading.value = true
@@ -44,6 +45,8 @@ export const useAuthStore = defineStore('auth', () => {
         isLoading.value = true
         error.value = null
         canLecture.value = false
+
+        console.log(lecturerDetails)
         const client = useSupabaseClient()
         try {
             const {data, error:lecturerError} = await client.auth.signUp({
@@ -54,6 +57,7 @@ export const useAuthStore = defineStore('auth', () => {
                     data:{
                         Fullname: lecturerDetails.fullname,
                         Phone: lecturerDetails.phone,
+                        course: lecturerDetails.course,
                         role: "lecturer"
                     }
                 }
@@ -64,6 +68,7 @@ export const useAuthStore = defineStore('auth', () => {
             canLecture.value = true
         } catch (err) {
             error.value = err.message
+            console.log(err)
             console.log(err.message)
         } finally{
             isLoading.value = false
