@@ -13,7 +13,7 @@ export const useLecturerStore = defineStore('lecturer', () => {
     }
 
     // SEARCH COURSE
-const saveCourse = async(coursesValue, matricc, session, semesterr, studentName) => {
+const saveCourse = async(coursesValue, matricc, session, semesterr, studentName, studentLevel) => {
     isLoading.value = true
     error.value = null
     console.log(coursesValue, matricc, session, semesterr, studentName)
@@ -52,7 +52,8 @@ const saveCourse = async(coursesValue, matricc, session, semesterr, studentName)
                 totalCourses: coursesValue.length,
                 registrationDate: new Date(),
                 lastUpdated: new Date(),
-                studentName: studentName
+                studentName: studentName,
+                level: studentLevel
             }
         }
         

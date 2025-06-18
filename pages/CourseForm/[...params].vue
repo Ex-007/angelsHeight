@@ -196,12 +196,13 @@
     const matricc = studentDetail.value.matric
     const session = formLevel
     const semesterr = formSemester
+    const studentLevel = formYear
     const coursesValue = preparedCourseData()
     const studentName = studentDetail.value.lastname + " " + studentDetail.value.firstname + " " + studentDetail.value.middlename
     console.log(studentName)
 
     console.log(coursesValue, matricc, session, semesterr)
-    const response = await courseStore.saveCourse(coursesValue, matricc, session, semesterr, studentName)
+    const response = await courseStore.saveCourse(coursesValue, matricc, session, semesterr, studentName, studentLevel)
 
     if(!response.success){
       processData.value.error = true
@@ -222,13 +223,10 @@
   
   // Print the form using a new window with clean styles
   const printFormm = async () => {
-    // Get the printable content
     const printContent = document.getElementById('printable-section').innerHTML
     
-    // Create a new window for printing
     const printWindow = window.open('', '_blank', 'width=800,height=600')
     
-    // Write clean HTML to the new window
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
@@ -342,15 +340,11 @@
       </html>
     `)
     
-    // Close the document and trigger print
     printWindow.document.close()
     
-    // Wait for content to load
     printWindow.onload = () => {
       printWindow.focus()
       printWindow.print()
-      // Close the window after printing
-      // printWindow.onafterprint = () => { printWindow.close() }
     }
   }
   
@@ -392,7 +386,6 @@
 
   // ATTACHED FETCHED DETAILS
   const attachDetails = async () => {
-    // console.log(coursess.studentDetails)
     studentDetail.value.matric = coursess.studentDetails.matricNo
     studentDetail.value.email = coursess.studentDetails.email
     studentDetail.value.lastname = coursess.studentDetails.lastname

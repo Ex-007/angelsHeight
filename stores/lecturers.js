@@ -59,22 +59,18 @@ export const useLecturersStore = defineStore('lecturers', () => {
     }
 
     // SEARCH COURSE
-    const searchCourse = async(matricNumber, session = null, semester = 'First') => {
+    const searchCourse = async(matricNumber, semester) => {
         isLoading.value = true
         error.value = null
         const courseCode = coursess.value
         
         try {
             const matricNum = replaceMatric(matricNumber)
-            
+            // AH/DE/25/2-0049
             // Use provided session or generate current academic year
-            let sessionToUse = session
-            if (!session) {
-                const {currentYear, previousYear} = extractYears()
-                sessionToUse = `${previousYear}-${currentYear}`
-            }
-            
-            console.log('Session:', sessionToUse, 'Semester:', semester, 'Course Code:', courseCode)
+            const {previousYear, currentYear} = extractYears()
+            let sessionToUse = `${previousYear}-${currentYear}`
+
 
             const { $firebase } = useNuxtApp()
             const db = $firebase.firestore
@@ -103,7 +99,6 @@ export const useLecturersStore = defineStore('lecturers', () => {
 
             querySnapshot.forEach((doc) => {
                 const docData = doc.data()
-                console.log('Checking document:', doc.id)
                 
                 if (docData._metadata) {
                     studentMetadata = docData._metadata
@@ -116,12 +111,10 @@ export const useLecturersStore = defineStore('lecturers', () => {
                         ...docData[courseCode]
                     }
                     documentId = doc.id
-                    console.log('Course found:', foundCourse)
                 }
             })
 
             if (!foundCourse) {
-                console.log('Course code not found in any document')
                 return {
                     success: false,
                     courseFound: false,
@@ -141,7 +134,6 @@ export const useLecturersStore = defineStore('lecturers', () => {
 
         } catch (err) {
             error.value = err.message
-            console.log('Error searching course:', err.message)
             return {
                 success: false,
                 error: err.message,
@@ -154,23 +146,17 @@ export const useLecturersStore = defineStore('lecturers', () => {
     }
 
     // UPDATE SCORES
-    const updateCourseScores = async(matricNumber, scores, session = null, semester = 'First') => {
+    const updateCourseScores = async(matricNumber, scores, semester) => {
         isLoading.value = true
         error.value = null
         const courseCode = coursess.value
         
         try {
             const matricNum = replaceMatric(matricNumber)
-            console.log('Updating scores for matric:', matricNum, 'Course:', courseCode)
-            
-            // Use provided session or generate current academic year
-            let sessionToUse = session
-            if (!session) {
-                const {currentYear, previousYear} = extractYears()
-                sessionToUse = `${previousYear}-${currentYear}`
-            }
-            
-            console.log('Session:', sessionToUse, 'Semester:', semester)
+            const {previousYear, currentYear} = extractYears()
+            let sessionToUse = `${previousYear}-${currentYear}`
+
+
 
             const { $firebase } = useNuxtApp()
             const db = $firebase.firestore
@@ -245,11 +231,10 @@ export const useLecturersStore = defineStore('lecturers', () => {
             const docRef = doc(db, subcollectionPath, targetDocId)
             await updateDoc(docRef, updateData)
 
-            console.log('Course scores updated successfully')
 
             return {
                 success: true,
-                message: 'Course scores updated successfully',
+                message: 'Course scores updated successfully.',
                 updatedScores: {
                     courseCode,
                     exam,
@@ -264,7 +249,6 @@ export const useLecturersStore = defineStore('lecturers', () => {
 
         } catch (err) {
             error.value = err.message
-            console.log('Error updating course scores:', err.message)
             return {
                 success: false,
                 error: err.message,

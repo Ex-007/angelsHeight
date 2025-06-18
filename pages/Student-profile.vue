@@ -30,6 +30,8 @@
             <li>Matric No: {{ studentDetail.matric }}</li>
             <li>Department: {{ studentDetail.department }}</li>
             <li>Faculty: {{ studentDetail.faculty }}</li>
+            <li>CGPA: {{ cgpa }}</li>
+            <li>Classification: {{ cgpaClassification }}</li>
           </ul>
         </div>
       </section>
@@ -60,9 +62,9 @@
           <div class="courseYear">
             <h3>Select level</h3>
             <select v-model="courseFormField.level">
-              <option>Year I</option>
-              <option>Year II</option>
-              <option>Year III</option>
+              <option>YearI</option>
+              <option>YearII</option>
+              <option>YearIII</option>
               <option>NDI</option>
               <option>NDII</option>
               <option>HNDI</option>
@@ -110,9 +112,9 @@
 
           <label for="level">Level</label>
           <select id="level" v-model="resultSelect.level">
-            <option>Year I</option>
-            <option>Year II</option>
-            <option>Year IIII</option>
+            <option>YearI</option>
+            <option>YearII</option>
+            <option>YearIIII</option>
             <option>NDI</option>
             <option>NDII</option>
             <option>HNDI</option>
@@ -159,7 +161,7 @@
             <thead>
               <tr>
                 <th>Course Title</th>
-                <th>CC</th>
+                <th>Course Code</th>
                 <th>Test</th>
                 <th>Prct</th>
                 <th>Assmt</th>
@@ -173,15 +175,16 @@
             </thead>
             <tbody>
               <tr v-for="(incomingg, index) in student.results" :key="index">
-                <td>{{ incomingg.coursecode }}</td>
-                <td>{{ incomingg.cc }}</td>
+                <td>{{ incomingg.courseTitle }}</td>
+                <td>{{ incomingg.courseCode }}</td>
                 <td>{{ incomingg.test }}</td>
                 <td>{{ incomingg.practical }}</td>
-                <td>{{ incomingg.assmt }}</td>
+                <td>{{ incomingg.attendance }}</td>
                 <td>{{ incomingg.exam }}</td>
-                <td>{{ incomingg.cu }}</td>
+                <td>{{ incomingg.courseUnits }}</td>
                 <td>{{ incomingg.total }}</td>
                 <td>{{ incomingg.gradePoint.toFixed(2) }}</td>
+                <td>{{ incomingg.grade }}</td>
               </tr>
             </tbody>
           </table>
@@ -230,6 +233,9 @@
   const route = useRoute()
   import { jsPDF } from 'jspdf'
 import autoTable from 'jspdf-autotable'
+
+const cgpa = ref('')
+const cgpaClassification = ref('')
 
 // FORMAT DATE
 const formatDate = (dateString) => {
@@ -561,6 +567,12 @@ const exportPaymentPDF = (student) => {
     await student.fetchPayment()
     await fetchPic()
     await attachDetails()
+    const result = await student.calculateStudentCGPA()
+    if(!result.success){
+      return
+    }
+    cgpa.value = result.cgpa
+    cgpaClassification.value = result.classification
   })
 
 

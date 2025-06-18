@@ -10,11 +10,66 @@
             <input type="email" class="contactInput" placeholder="Please input your email" v-model="lecturerDetails.email">
             <p v-if="emailError" class="errorClass">{{ emailError }}</p>
             <select class="contactInput" v-model="lecturerDetails.course">
-                <option>CMH224</option>
                 <option>CMH227</option>
-                <option>PMS111</option>
-                <option>ETB200</option>
-                <option>ETB201</option>
+                <option>CMH226</option>
+                <option>ENT126</option>
+                <option>COM111</option>
+                <option>STA224</option>
+                <option>CMH230</option>
+                <option>CMH229</option>
+                <option>CMH228</option>
+                <option>CMH227</option>
+                <option>CMS226</option>
+                <option>CMH225</option>
+                <option>CMH224</option>
+                <option>CMH223</option>
+                <option>CMH222</option>
+                <option>CMH221</option>
+                <option>CMH219</option>
+                <option>CMH218</option>
+                <option>CMH217</option>
+                <option>CMH216</option>
+                <option>CMH215</option>
+                <option>CMH214</option>
+                <option>CMH213</option>
+                <option>CMH212</option>
+                <option>CMH211</option>
+                <option>CMS211</option>
+                <option>CHE221</option>
+                <option>CMH115</option>
+                <option>CMH114</option>
+                <option>CMH113</option>
+                <option>CMH112</option>
+                <option>CMH111</option>
+                <option>CMS111</option>
+                <option>CMH124</option>
+                <option>CMH126</option>
+                <option>CMH121</option>
+                <option>CMS121</option>
+                <option>CMH122</option>
+                <option>CMH123</option>
+                <option>CMH127</option>
+                <option>CMH128</option>
+                <option>FOT111</option>
+                <option>CHE225</option>
+                <option>CHE224</option>
+                <option>CHE223</option>
+                <option>CHE222</option>
+                <option>CHE221</option>
+                <option>GNS411</option>
+                <option>GNS102</option>
+                <option>CHE211</option>
+                <option>CHE212</option>
+                <option>GNS213</option>
+                <option>CHE213</option>
+                <option>BCH111</option>
+                <option>GNS111</option>
+                <option>CMH116</option>
+                <option>GNS101</option>
+                <option>GNS111</option>
+                <option>GNS213</option>
+                <option>CHE215</option>
+                <option>CHE214</option>
             </select>
             <input :type="passwordVisible ? 'text' : 'password'" class="contactInput" placeholder="Password" v-model="lecturerDetails.password">
             <p v-if="passwordError" class="errorClass">{{ passwordError }}</p>
