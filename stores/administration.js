@@ -1,4 +1,5 @@
 import {defineStore} from 'pinia'
+import {collection, getDocs, doc, updateDoc, deleteDoc, deleteField, orderBy, addDoc, documentId} from 'firebase/firestore'
 
 export const useAdminStore = defineStore('admin', () => {
     const isLoading = ref(false)
@@ -21,7 +22,9 @@ export const useAdminStore = defineStore('admin', () => {
     const imageUploaded = ref(false)
     const courseLists = ref([])
     const paymentsDataL = ref(null)
-
+    const results = ref([])
+    const noResults = ref(false)
+// AH/DE/25/2-0049
 
     // FETCH THE SIGNED IN USER
     const signinUser = async () => {
@@ -499,9 +502,249 @@ const fetchAllCourse = async () => {
     }
 }
 
+// FETCH STUDENTS RESULT
 
+    const replaceMatric = (matric) => {
+        return matric.replaceAll("/", "-")
+    }
 
+        // FETCH STUDENT SCORES PER SEMESTER
+       const fetchStudentScores = async(resultSelect) => {
+        isLoading.value = true
+        error.value = null
+        
+        const yearRange = resultSelect.year
+        const semester = resultSelect.semester
+        const selectedLevel = resultSelect.level
+        const matricValue = resultSelect.matricNo
+        const [previousYear, currentYear] = yearRange.split("/");
+        
+        try {
+            const matricNum = replaceMatric(matricValue)
+            let sessionToUse = `${previousYear}-${currentYear}`
+    
+            const { $firebase } = useNuxtApp()
+            const db = $firebase.firestore
+    
+            const subcollectionPath = `COURSE_FORM/${matricNum}/${sessionToUse}-${semester}`
+            const courseFormCollection = collection(db, subcollectionPath)
+    
+            // Get all documents in the subcollection
+            const querySnapshot = await getDocs(courseFormCollection)
+    
+            if (querySnapshot.empty) {
+                results.value = []
+                noResults.value = true
+                return {
+                    success: false,
+                    error: 'No course registration found for this student and session',
+                    message: 'No course registration found for this student this session',
+                    courseFound: false,
+                    courseData: null
+                }
+            }
+    
+            // Collect all courses from documents that match the selected level
+            let allCourses = []
+            let studentMetadata = null
+    
+            querySnapshot.forEach((doc) => {
+                const docData = doc.data()
+                
+                // Extract student metadata if available
+                if (docData._metadata) {
+                    studentMetadata = docData._metadata
+                    
+                    // Check if this document's level matches the selected level
+                    if (docData._metadata.level !== selectedLevel) {
+                        // Skip this document if level doesn't match
+                        return
+                    }
+                } else {
+                    // Skip documents without metadata
+                    return
+                }
+                
+                // Extract all courses from this document (excluding metadata)
+                // Only execute this if the level matches
+                Object.keys(docData).forEach(key => {
+                    if (key !== '_metadata') {
+                        const courseData = docData[key]
+                        
+                        // Check if this looks like course data (has expected properties)
+                        if (courseData && typeof courseData === 'object') {
+                            allCourses.push({
+                                courseCode: key,
+                                ...courseData,
+                                documentId: doc.id,
+                                level: docData._metadata.level // Add level info to course data
+                            })
+                        }
+                    }
+                })
+            })
+    
+            if (allCourses.length === 0) {
+                results.value = []
+                noResults.value = true
+                return {
+                    success: false,
+                    courseFound: false,
+                    courseData: null,
+                    message: `No courses found for level ${selectedLevel} in Student's Course Form`
+                }
+            }
+    
+            // Calculate results for all courses (similar to old code logic)
+            results.value = allCourses.map(courseScore => {
+                const totalScore = calculateTotalScore(
+                    courseScore.attendance, 
+                    courseScore.exam, 
+                    courseScore.practical, 
+                    courseScore.test
+                )
+                const {grade, gradePoint} = calculateGrade(totalScore)
+                
+                return {
+                    ...courseScore,
+                    totalScore,
+                    grade,
+                    gradePoint,
+                    // Add session info for consistency
+                    studentMetadata,
+                    semester: semester,
+                    year: yearRange,
+                    matricNo: matricValue
+                }
+            })
+    
+            // Reset noResults flag since we found courses
+            noResults.value = false
+    
+            // console.log('courseData: ', allCourses)
+            // console.log('studentInfo: ', studentMetadata)
+            // console.log('totalCourses: ', allCourses.length)
+            // console.log('selectedLevel: ', selectedLevel)
+            // console.log('subcollectionPath: ', subcollectionPath)
+    
+            return {
+                success: true,
+                courseFound: true,
+                courseData: allCourses,
+                totalCourses: allCourses.length,
+                studentInfo: studentMetadata,
+                selectedLevel: selectedLevel,
+                subcollectionPath: subcollectionPath
+            }
+    
+        } catch (err) {
+            error.value = err.message
+            console.log(err.message)
+            results.value = []
+            
+            return {
+                success: false,
+                error: err.message,
+                courseFound: false,
+                courseData: null
+            }
+        } finally {
+            isLoading.value = false
+        }
+    }
 
+    // Helper function to get CGPA classification
+const getCGPAClassification = (cgpa) => {
+    if (cgpa >= 3.50) return "Distinction"
+    if (cgpa >= 3.0) return "Upper credit"
+    if (cgpa >= 2.50) return "Lower credit"
+    if (cgpa >= 2.00) return "Pass"
+    return "Fail"
+}
+    // CALCULATE TOTAL SCORE
+    const calculateTotalScore = (assessment, exam, practical, test) => {
+        const assessmentScore = Number(assessment || 0)
+        const testScore = Number(test || 0)
+        const examScore = Number(exam || 0)
+        const practicalScore = Number(practical || 0)
+
+        return assessmentScore + testScore + examScore + practicalScore
+    }
+
+    // CALCULATE GRADE POINT BASED ON TOTAL SCORE
+    const calculateGrade = (totalScore) => {
+        if (totalScore >= 75) return {
+          grade: 'A',
+          gradePoint: 4.0
+        };
+        if (totalScore >= 70) return {
+          grade: 'AB',
+          gradePoint: 3.5
+        };
+        if (totalScore >= 65) return {
+          grade: 'B',
+          gradePoint: 3.25
+        };
+        if (totalScore >= 60) return {
+          grade: 'BC',
+          gradePoint: 3.0
+        };
+        if (totalScore >= 55) return {
+          grade: 'C',
+          gradePoint: 2.75
+        };
+        if (totalScore >= 50) return {
+          grade: 'CD',
+          gradePoint: 2.5
+        };
+        if (totalScore >= 45) return {
+          grade: 'D',
+          gradePoint: 2.25
+        };
+        if (totalScore >= 40) return {
+          grade: 'E',
+          gradePoint: 2.0
+        };
+        return {
+          grade: 'F',
+          gradePoint: 0.0
+        };
+      };
+    
+      // Calculate GPA classification
+    const getGPAClassification = (gpa) => {
+        const numGPA = parseFloat(gpa);
+        if (numGPA >= 3.50) return 'Distinction';
+        if (numGPA >= 3.00) return 'Upper credit';
+        if (numGPA >= 2.50) return 'Lower credit';
+        if (numGPA >= 2.00) return 'Pass';
+        return 'Fail';
+    };
+    // Total credit units
+    const totalCreditUnits = computed(() => {
+        return results.value.reduce((sum, course) => {
+          const creditUnit = Number(course.cu || 1);
+          return sum + creditUnit;
+        }, 0);
+      });
+
+    // Total weighted points
+    const totalWeightedPoints = computed(() => {
+        return results.value.reduce((sum, course) => {
+          const creditUnit = Number(course.cu || 1);
+          return sum + (course.gradePoint * creditUnit);
+        }, 0);
+      });
+    // Calculate cumulative GPA
+    const cumulativeGPA = computed(() => {
+        if (results.value.length === 0) return '0.00';
+        return (totalWeightedPoints.value / totalCreditUnits.value).toFixed(2);
+    });
+  
+  // Get GPA classification
+  const gpaClassification = computed(() => {
+    return getGPAClassification(cumulativeGPA.value);
+  });
 
 
 
@@ -550,6 +793,11 @@ const fetchAllCourse = async () => {
         fetchAdmittedStudents,
         fetchAllCourse,
         courseLists,
-        paymentsDataL
+        paymentsDataL,
+        gpaClassification,
+        fetchStudentScores,
+        results,
+        cumulativeGPA,
+        noResults
     }
 })

@@ -57,113 +57,98 @@
         <div class="courseForm">
             <h2>Enter Student's Result</h2>
             <div class="searchStudent">
-              <input type="text" class="contactInput" placeholder="Enter Matric No" v-model="studentMatric">
+              <input type="text" class="contactInput" placeholder="Enter Matric No" v-model="resultSelect.matricNo">
             </div>
-            <button @click="searchResult">Search</button>
-            <div class="availableStudent">
-              <h3 v-if="admin.searchDataa" class="matricName">{{ searchResults.lastname + ' ' + searchResults.firstname + ' ' + searchResults.middlename }}</h3>
+          </div>
+
+  <div class="resultVariable">
+
+
+          <label for="semester">Semester</label>
+          <select id="semester" v-model="resultSelect.semester">
+            <option>First</option>
+            <option>Second</option>
+          </select>
+
+          <label for="level">Level</label>
+          <select id="level" v-model="resultSelect.level">
+            <option>YearI</option>
+            <option>YearII</option>
+            <option>YearIIII</option>
+            <option>NDI</option>
+            <option>NDII</option>
+            <option>HNDI</option>
+            <option>HNDII</option>
+          </select>
+
+          <label for="year">Year</label>
+          <select id="year" v-model="resultSelect.year">
+            <option>2024/2025</option>
+            <option>2025/2026</option>
+            <option>2026/2027</option>
+            <option>2027/2028</option>
+            <option>2028/2029</option>
+            <option>2029/2030</option>
+          </select>
+          <!-- <h4 v-if="errorrM" class="resultError">{{ errorM }}</h4> -->
+          <button @click="checkResult" :disabled="admin.isLoading">{{ admin.isLoading ? 'Searching' : 'Search'}}</button>
+        </div>
+
+        <div v-if="admin.isLoading" class="loading">Loading records...</div>
+
+        <div v-if="admin.noResults && !admin.isLoading" class="no-results">No matching records found</div>
+
+        <div class="resultTable" v-if="admin.results.length > 0">
+          <div class="summary-card">
+            <h3 class='semesterHead'>Semester Summary</h3>
+            <h3 class='semesterHead'>{{ studentNamee }}</h3>
+            <div class="summary-stats">
+              <div class="stat">
+                <div class="stat-value">{{ admin.results.length }}</div>
+                <div class="stat-label">Courses</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">{{ admin.cumulativeGPA }}</div>
+                <div class="stat-label">GPA</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">{{ admin.gpaClassification }}</div>
+                <div class="stat-label">GRADE</div>
+              </div>
             </div>
+          </div>
 
-            <div class="fetchedStudentProfile">
-              <div class="control firstSide">
-
-                <label for="matricc">Matric No : </label>
-                <input type="text" id="matricc" class="contactInput" placeholder="Matric No" v-model="scoreDet.matricNo">
-  
-                <label for="semester">Semester</label>
-                <select id="semester" class="contactInput" v-model="scoreDet.semester">
-                  <option>First</option>
-                  <option>Second</option>
-                </select>
-  
-                <label for="level">Level</label>
-                <select id="level" class="contactInput" v-model="scoreDet.level">
-                  <option>Year I</option>
-                  <option>Year II</option>
-                  <option>Year III</option>
-                  <option>NDI</option>
-                  <option>NDII</option>
-                  <option>HNDI</option>
-                  <option>HNDII</option>
-                </select>
-  
-                <label for="year">Year</label>
-                <select id="year" class="contactInput" v-model="scoreDet.year">
-                  <option>2024/2025</option>
-                  <option>2025/2026</option>
-                  <option>2026/2027</option>
-                  <option>2027/2028</option>
-                </select>
-  
-                
-              </div>
-
-              <div class="control firstSide">
-
-                <label for="courseCode">Course Title : </label>
-                <select
-                  id="courseTitle"
-                  class="contactInput"
-                  v-model="scoreDet.courseTitle"
-                  @change="handleCourseSelect"
-                >
-                  <option disabled value="">Select a Course</option>
-                  <option
-                    v-for="course in admin.courseLists"
-                    :key="course.course_code"
-                    :value="course.title"
-                  >
-                    {{ course.title }}
-                  </option>
-                </select>
-                <!-- <input type="text" class="contactInput" id="courseCode" placeholder="Course Code" v-model="scoreDet.courseCode"> -->
-  
-                <label for="cc">Course Code : </label>
-                <input
-                  type="text"
-                  class="contactInput"
-                  id="cc"
-                  placeholder="Course Code"
-                  v-model="scoreDet.courseCode"
-                  readonly
-                />
-                <!-- <input type="text" class="contactInput" id="cc" placeholder="CC" v-model="scoreDet.cc"> -->
-  
-                <label for="cu">CU : </label>
-                <input
-                  type="number"
-                  class="contactInput"
-                  id="cu"
-                  placeholder="CU"
-                  v-model="scoreDet.cu"
-                  readonly
-                />
-                <!-- <input type="number" class="contactInput" id="cu" placeholder="CU" v-model="scoreDet.cu"> -->
-  
-                <label for="test">Test : </label>
-                <input type="number" class="contactInput" id="test" placeholder="Test Score" v-model="scoreDet.test">
-              </div>
-
-              <div class="control secondSide">
-
-                <label for="prct">PRCT : </label>
-                <input type="number" class="contactInput" id="prct" placeholder="Prct" v-model="scoreDet.practical">
-  
-                <label for="assmt">Assessment : </label>
-                <input type="number" class="contactInput" id="assmt" placeholder="Assessment" v-model="scoreDet.assmt">
-  
-                <label for="exam">Exam : </label>
-                <input type="number" class="contactInput" id="exam" placeholder="Exam" v-model="scoreDet.exam">
-  
-                <label for="total">Total : </label>
-                <input type="number" class="contactInput" id="total" placeholder="Total" v-model="scoreDet.total">
-              </div>
-
-            </div>
-            <input type="text" class="contactInput" placeholder="Student's Name" v-model="scoreDet.name">
-            <h4 v-if="uploadSuccess" class="transIdSuccess">{{ upSuccMsg }}</h4>
-            <h4 v-if="uploadError" class="transIdError">{{ upErrMsg }}</h4>
-            <button @click="updateResult">{{admin.isLoading ? 'Uploading' : 'Upload'}}</button>
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Course Title</th>
+                <th>Course Code</th>
+                <th>Test</th>
+                <th>Prct</th>
+                <th>Assmt</th>
+                <th>Exam</th>
+                <th>CU</th>
+                <th>Total</th>
+                <th>GP</th>
+                <th>QP</th>
+                <th>LG</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(incomingg, index) in admin.results" :key="index">
+                <td>{{ incomingg.courseTitle }}</td>
+                <td>{{ incomingg.courseCode }}</td>
+                <td>{{ incomingg.test }}</td>
+                <td>{{ incomingg.practical }}</td>
+                <td>{{ incomingg.attendance }}</td>
+                <td>{{ incomingg.exam }}</td>
+                <td>{{ incomingg.courseUnits }}</td>
+                <td>{{ incomingg.total }}</td>
+                <td>{{ incomingg.gradePoint.toFixed(2) }}</td>
+                <td>{{ incomingg.grade }}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
 
@@ -490,15 +475,38 @@
 
     const admin = useAdminStore()
     const router = useRouter();
+    const studentNamee = ref('')
     const route = useRoute()
 
   // Handle Course Selection
-const handleCourseSelect = () => {
-  const selected = admin.courseLists.find(c => c.title === scoreDet.value.courseTitle)
-  if (selected) {
-    scoreDet.value.courseCode = selected.code
-    scoreDet.value.cu = selected.units
+// const handleCourseSelect = () => {
+//   const selected = admin.courseLists.find(c => c.title === scoreDet.value.courseTitle)
+//   if (selected) {
+//     scoreDet.value.courseCode = selected.code
+//     scoreDet.value.cu = selected.units
+//   }
+// }
+
+// CHECK RESULT
+  // RESULT SELECTIONS
+  const resultSelect = ref({
+    semester: '',
+    level: '',
+    year: '',
+    matricNo: ''
+  })
+
+  const checkResult = async () => {
+  if(resultSelect.value.level == '' || resultSelect.value.level == '' || resultSelect.value.year == ''){
+    // errorrM.value = true
+    // errorM.value = 'Please Select Year, Semester and Level...'
+    return
   }
+
+  const response = await admin.fetchStudentScores(resultSelect.value)
+
+  studentNamee.value = response.studentInfo.studentName
+
 }
 
 
@@ -562,7 +570,8 @@ const calculateTotal = (payments) => {
   }
 
     // const activeTab = ref('Ladmitted');
-    const activeTab = ref('home');
+    const activeTab = ref('requests');
+    // const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
     success : '',
@@ -1123,7 +1132,79 @@ const exportAdminCheckedPaymentsToPDF = (admin, checkedEmail, paymentsDataL) => 
   </script>
   
   <style scoped>
+    .resultVariable{
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+      color: white;
+    }
+    .resultVariable button{
+      border-radius: 20px;
+    }
 
+    .loading, .no-results {
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+  color: #e10808;
+}
+
+.summary-card {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 20px 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+.semesterHead{
+  text-align: center;
+  font-size: 18px;
+  color: black;
+}
+.summary-stats {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  margin-top: 10px;
+}
+.summary-stats {
+  display: flex;
+  justify-content: space-around;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: #4a6bff;
+}
+
+.stat-label {
+  font-size: 14px;
+  color: #666;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.results-table th, .results-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.results-table th {
+  background-color: #f5f5f5;
+  font-weight: 600;
+}
+td{
+  color: white;
+}
 
   .newlyl {
     width: 90%;

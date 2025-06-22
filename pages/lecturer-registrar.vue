@@ -109,7 +109,7 @@
         phone: '',
         email: '',
         password: '',
-        course: 'CBT111'
+        course: 'CMH227'
     })
     // REGISTRATION FUNCTION
     const registerLecturer = async () => {

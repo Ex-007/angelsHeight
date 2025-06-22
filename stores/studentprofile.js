@@ -281,11 +281,6 @@ export const useStudentstoreStore = defineStore('studentStore', () => {
 }
 
 // FETCH STUDENT'S CUMULATIVE GRADE POINT (CGPA)
-// Helper function to round to 2 decimal places without floating point errors
-const roundTo2Decimals = (num) => {
-    return Math.round((num + Number.EPSILON) * 100) / 100
-}
-
 const calculateStudentCGPA = async(selectedLevel = null) => {
     isLoading.value = true
     error.value = null
@@ -297,9 +292,6 @@ const calculateStudentCGPA = async(selectedLevel = null) => {
         const { $firebase } = useNuxtApp()
         const db = $firebase.firestore
 
-        // First, we need to get all possible session-semester combinations
-        // Since we can't directly list subcollections, we'll need to know the sessions
-        // or get them from another source. For now, let's assume common sessions:
         const currentYear = new Date().getFullYear()
         const possibleSessions = []
         
@@ -335,14 +327,11 @@ const calculateStudentCGPA = async(selectedLevel = null) => {
                         
                         // Extract student metadata if available
                         if (docData._metadata) {
-                            // If selectedLevel is provided, check if this document's level matches
                             if (selectedLevel && docData._metadata.level !== selectedLevel) {
-                                // Skip this document if level doesn't match the selected level
                                 return
                             }
                             studentMetadata = docData._metadata
                         } else {
-                            // Skip documents without metadata if level filtering is required
                             if (selectedLevel) {
                                 return
                             }
@@ -355,7 +344,6 @@ const calculateStudentCGPA = async(selectedLevel = null) => {
                                 
                                 // Check if this looks like course data
                                 if (courseData && typeof courseData === 'object') {
-                                    // Calculate scores for this course
                                     const totalScore = calculateTotalScore(
                                         courseData.attendance, 
                                         courseData.exam, 
@@ -397,8 +385,6 @@ const calculateStudentCGPA = async(selectedLevel = null) => {
                     })
                 }
             } catch (sessionError) {
-                // Silently continue if this session doesn't exist
-                // This is expected for non-existent sessions
                 continue
             }
         }
@@ -409,7 +395,7 @@ const calculateStudentCGPA = async(selectedLevel = null) => {
                 success: false,
                 error: `No courses found for this student${levelMessage}`,
                 message: `No courses found in student's academic records${levelMessage}`,
-                cgpa: 0.00,
+                cgpa: 0,
                 totalCreditUnits: 0,
                 totalCourses: 0,
                 courses: [],
@@ -418,8 +404,8 @@ const calculateStudentCGPA = async(selectedLevel = null) => {
             }
         }
 
-        // Calculate CGPA - use custom rounding to maintain precision
-        const cgpa = totalCreditUnits > 0 ? roundTo2Decimals(totalQualityPoints / totalCreditUnits) : 0.00
+        // Calculate CGPA
+        const cgpa = totalCreditUnits > 0 ? (totalQualityPoints / totalCreditUnits).toFixed(2) : 0
 
         // Group courses by session and semester for better organization
         const coursesBySession = allCourses.reduce((acc, course) => {
@@ -443,19 +429,21 @@ const calculateStudentCGPA = async(selectedLevel = null) => {
                 sessionCreditUnits += creditUnit
             })
             
-            const sessionGPA = sessionCreditUnits > 0 ? roundTo2Decimals(sessionQualityPoints / sessionCreditUnits) : 0.00
-            
+            const sessionGPA = sessionCreditUnits > 0 ? (sessionQualityPoints / sessionCreditUnits).toFixed(2) : 0
+            console.log('First CGPA display :', cgpa)
             return {
                 session: sessionKey,
-                gpa: sessionGPA, // Return as number with 2 decimal precision
+                gpa: parseFloat(sessionGPA),
                 courses: sessionCourses.length,
                 creditUnits: sessionCreditUnits
             }
         })
+        console.log(cgpa)
 
         return {
             success: true,
-            cgpa: cgpa, // Return as number with 2 decimal precision
+            // cgpa: parseFloat(cgpa),
+            cgpa:cgpa,
             totalQualityPoints: totalQualityPoints,
             totalCreditUnits: totalCreditUnits,
             totalCourses: allCourses.length,
@@ -468,10 +456,11 @@ const calculateStudentCGPA = async(selectedLevel = null) => {
             academicSummary: {
                 totalSessions: Object.keys(coursesBySession).length,
                 averageCoursesPerSession: Math.round(allCourses.length / Object.keys(coursesBySession).length),
-                highestSessionGPA: sessionGPAs.length > 0 ? Math.max(...sessionGPAs.map(s => s.gpa)) : 0.00,
-                lowestSessionGPA: sessionGPAs.length > 0 ? Math.min(...sessionGPAs.map(s => s.gpa)) : 0.00
+                highestSessionGPA: sessionGPAs.length > 0 ? Math.max(...sessionGPAs.map(s => s.gpa)) : 0,
+                lowestSessionGPA: sessionGPAs.length > 0 ? Math.min(...sessionGPAs.map(s => s.gpa)) : 0
             },
             classification: getCGPAClassification(cgpa)
+            // classification: getCGPAClassification(parseFloat(cgpa))
         }
 
     } catch (err) {
@@ -481,7 +470,7 @@ const calculateStudentCGPA = async(selectedLevel = null) => {
         return {
             success: false,
             error: err.message,
-            cgpa: 0.00,
+            cgpa: 0,
             totalCreditUnits: 0,
             totalCourses: 0,
             courses: [],
