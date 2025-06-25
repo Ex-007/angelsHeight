@@ -4,7 +4,7 @@
       <div class="nameAndLogo">
         <img src="/img/angelLogo.png" alt="The logo image" width="60px">
         <div class="namee">
-          <h1>ANGELS HEIGHT</h1>
+          <h1>ANGELS HEIGHT COLLEGE OF HEALTH TECHNOLOGY</h1>
           <p>...Healthcare Training Per Excellence is Our Concern</p>
         </div>
       </div>
@@ -198,11 +198,11 @@
     const semesterr = formSemester
     const studentLevel = formYear
     const coursesValue = preparedCourseData()
+    const department = studentDetail.value.department
     const studentName = studentDetail.value.lastname + " " + studentDetail.value.firstname + " " + studentDetail.value.middlename
-    console.log(studentName)
 
     console.log(coursesValue, matricc, session, semesterr)
-    const response = await courseStore.saveCourse(coursesValue, matricc, session, semesterr, studentName, studentLevel)
+    const response = await courseStore.saveCourse(coursesValue, matricc, session, semesterr, studentName, studentLevel, department)
 
     if(!response.success){
       processData.value.error = true

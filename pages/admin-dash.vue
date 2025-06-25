@@ -17,6 +17,7 @@
           <li @click="activeTab = 'Ladmitted'" :class="{ active: activeTab === 'Ladmitted' }">💎List Admitted Students</li>
           <li @click="activeTab = 'payments'" :class="{ active: activeTab === 'payments' }">💴 Update Payment</li>
           <li @click="activeTab = 'paymentsCheck'" :class="{ active: activeTab === 'paymentsCheck' }">💴 Check Payment</li>
+          <li @click="activeTab = 'transcript'" :class="{ active: activeTab === 'transcript' }">Generate Transcript</li>
           <li @click="logout">🚪 Logout</li>
         </ul>
       </aside>
@@ -90,7 +91,6 @@
             <option>2028/2029</option>
             <option>2029/2030</option>
           </select>
-          <!-- <h4 v-if="errorrM" class="resultError">{{ errorM }}</h4> -->
           <button @click="checkResult" :disabled="admin.isLoading">{{ admin.isLoading ? 'Searching' : 'Search'}}</button>
         </div>
 
@@ -149,6 +149,7 @@
               </tr>
             </tbody>
           </table>
+          <button @click="approveResult">Approve</button>
         </div>
 
 
@@ -460,6 +461,15 @@
         </div>
       </div>
         </section>
+
+        <!-- TRANSCRIPT -->
+         <section v-if="activeTab === 'transcript'">
+          <div class="transcriptDiv">
+            <h3>Generate Students' Transcript</h3>
+            <input type="text" placeholder="Enter matric no..." v-model="studentMat">
+            <button @click="getTranscript">{{ admin.isLoading ? 'Generating...' : 'Generate' }}</button>
+          </div>
+         </section>
       </main>
     </div>
   </template>
@@ -508,6 +518,39 @@
   studentNamee.value = response.studentInfo.studentName
 
 }
+
+
+// APPROVE STDUDENT'S RESULT
+const approveResult = async() => {
+  await admin.approveResult(resultSelect.value)
+  console.log('Approved', resultSelect.value)
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -570,8 +613,8 @@ const calculateTotal = (payments) => {
   }
 
     // const activeTab = ref('Ladmitted');
-    const activeTab = ref('requests');
-    // const activeTab = ref('home');
+    // const activeTab = ref('transcript');
+    const activeTab = ref('home');
 // TRANSACTION ID SUCCESS UPDATE REFERENCE
   const transSuccessful = ref({
     success : '',
@@ -891,6 +934,14 @@ const updateStudenPay = async () => {
   updatePay.value.message = 'successfully saved'
   payment.value.amountPaid = ''
   payment.value.paymentMade = ''
+}
+
+const studentMat = ref('')
+// TRANSCRIPT SECTION
+const getTranscript = async() => {
+  const matricNo = studentMat.value
+  const result = await admin.printStudentTranscript(matricNo)
+  console.log(result)
 }
 
 
@@ -1682,6 +1733,24 @@ label{
     }
   }
 
+  /* TRANSCRIPT SECTION */
+  .transcriptDiv, .transcriptRe{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+  .transcriptDiv input, .transcriptDiv button{
+    width: 200px;
+    border-radius: 10px;
+    height: 30px;
+    border: none;
+  }
+
+  .transcriptRe{
+    margin-top: 10px;
+  }
 
   </style>
   

@@ -755,17 +755,6 @@ const calculateCGPAUpToLevel = async(targetLevel) => {
     }
 }
 
-// Usage examples:
-// Calculate CGPA for all levels
-// const allLevelsResult = await calculateStudentCGPA()
-
-// Calculate CGPA for specific level only (e.g., 200 level)
-// const specificLevelResult = await calculateStudentCGPA('200')
-
-// Calculate CGPA up to and including specific level (e.g., up to 300 level)
-// const upToLevelResult = await calculateCGPAUpToLevel('300')
-
-
 
     // CALCULATE TOTAL SCORE
     const calculateTotalScore = (assessment, exam, practical, test) => {
