@@ -22,9 +22,22 @@
             <p v-if="passwordError" class="errorClass">{{ passwordError }}</p>
             <div class="buttons">
                 <button @click.prevent="togglePasswordVisibility" type="button">{{ passwordVisible ? 'Hide' : 'Show' }} Password </button>
-                <button @click="registerStudent" :disabled="auth.isLoading">{{auth.isLoading ? 'Registering...' : 'Register'}}</button>
+
+
+
+
+              <button @click="registerStudent" class="primary-btn" :disabled="auth.isLoading">
+                <template v-if="auth.isLoading">
+                  <div class="spinner"></div>
+                </template>
+                <template v-else> Sign In </template>
+              </button>
+
+
+
+                <!-- <button @click="registerStudent" :disabled="auth.isLoading">{{auth.isLoading ? 'Registering...' : 'Register'}}</button> -->
             </div>
-            <h3>Already Have an account? <span @click="toggleSign">Sign In</span></h3>
+            <h3>Already Have an account? <span @click="toggleSign"><em> Sign In</em></span></h3>
             <h3 @click="forgotP" class="forgotBut">Forgot Password?</h3>
         </div>
 
@@ -35,16 +48,39 @@
             <input :type="passwordVisible ? 'text' : 'password'" class="contactInput" placeholder="Password" v-model="LoginDetails.password">
             <div class="buttons">
                 <button @click.prevent="togglePasswordVisibility" type="button">{{ passwordVisible ? 'Hide' : 'Show' }} Password </button>
-                <button @click="loginUser" :disabled="auth.isLoading">{{ auth.isLoading ? 'signing in...' : 'Sign in' }}</button>
+
+
+
+
+              <button @click="loginUser" class="primary-btn" :disabled="auth.isLoading">
+                <template v-if="auth.isLoading">
+                  <div class="spinner"></div>
+                </template>
+                <template v-else> Register </template>
+              </button>
+
+
+                <!-- <button @click="loginUser" :disabled="auth.isLoading">{{ auth.isLoading ? 'signing in...' : 'Sign in' }}</button> -->
             </div>
-            <h3>Don't have an account? <span @click="toggleRegister">Register</span></h3>
+            <h3>Don't have an account? <span @click="toggleRegister"> <em> Register</em></span></h3>
         </div>
 
         <!-- FORGOT PASSWORD -->
         <div class="page" v-if="forgotPass">
             <h5 v-if="loginE">{{ loginError }}</h5>
             <input type="email" class="contactInput" placeholder="Please input your email" v-model="resetEmail">
-            <button @click="confirmForgotEmail">Confirm</button>
+
+
+            
+
+              <button @click="confirmForgotEmail" class="primary-btn" :disabled="auth.isLoading">
+                <template v-if="auth.isLoading">
+                  <div class="spinner"></div>
+                </template>
+                <template v-else> Confirm </template>
+              </button>
+
+            <!-- <button @click="confirmForgotEmail">Confirm</button> -->
             <h3 @click="toggleRegister" class="forgotBut">Go back to Sign In</h3>
         </div>
 
@@ -65,7 +101,7 @@
 
 
     // LOGIN VISIBILITY
-    const loginVisible = ref(false)
+    const loginVisible = ref(true)
     const toggleSign = () => {
         registerVisible.value = false
         loginVisible.value = true
@@ -73,7 +109,7 @@
     }
 
     // REGISTRATION VISIBILITY
-    const registerVisible = ref(true)
+    const registerVisible = ref(false)
     const toggleRegister = () => {
         registerVisible.value = true
         loginVisible.value = false
@@ -179,7 +215,7 @@
     // WATCH FOR AUTHENTICATION TO PROCEED TO THE PAGE FOR EMAIL CONFIRMATION
     watch(() => auth.canReset, (newVal) => {
         if (newVal) {
-            router.push('/confirm-reset')
+            router.push('/email-confirmation')
         }
     });
 
@@ -328,6 +364,7 @@
 }
 .buttons{
     display: flex;
+    gap: 10px;
 }
 h5{
     font-size: 20px;
@@ -340,6 +377,14 @@ button{
     padding: 10px;
     border-radius: 20px;
     cursor: pointer;
+    border: none;
+}
+
+
+.primary-btn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 span{
     color: white;
@@ -351,6 +396,26 @@ h3{
     text-align-last: center;
     color: white;
 }
+
+
+.spinner {
+  width: 30px;
+  height: 30px;
+  border: 5px solid rgb(84, 8, 112);
+  border-top: 5px solid #ffffff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 768px){
     span{
     /* background-color: white;

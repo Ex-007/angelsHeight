@@ -150,15 +150,50 @@ export const useStudentStore = defineStore('studentauth', () => {
     const resetPassword = async (resetEmail) => {
         isLoading.value = true
         error.value = null
-        canReset.value = false
+
+        // console.log(resetEmail)
+        // canReset.value = false
         const client = useSupabaseClient()
         try {
-            const {data:resetData, error:resetError} = await client.auth.resetPasswordForEmail(resetEmail)
+            const {data:resetData, error:resetError} = await client.auth.resetPasswordForEmail(resetEmail, {
+                redirectTo : `${window.location.origin}/new-password`,
+            })
             if(resetError) throw resetError
             canReset.value = true
         } catch (err) {
+
+            console.log(err)
             error.value = err.message
         } finally{
+            isLoading.value = false
+        }
+    }
+
+    // UPDATE PASSWORD FUNCTION AFTER INPUT
+    const updatePassword = async(newPass) => {
+        isLoading.value = true
+
+        const client = useSupabaseClient()
+
+        try {
+            const {data:passwordUpdateData, error:paswordUpdateError} = await client.auth.updateUser({
+                password: newPass
+            })
+
+            if(paswordUpdateError) throw paswordUpdateError
+
+            return{
+                success: true,
+                message: 'Password reset successfully'
+            }
+        } catch (err) {
+            console.log(err.message)
+
+            return{
+                success: true,
+                message: err.message
+            }
+        }finally{
             isLoading.value = false
         }
     }
@@ -173,6 +208,7 @@ export const useStudentStore = defineStore('studentauth', () => {
         lecturerRedirect,
         adminRedirect,
         resetPassword,
-        canReset
+        canReset,
+        updatePassword
     }
 })
