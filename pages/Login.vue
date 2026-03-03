@@ -56,12 +56,13 @@
                 <template v-if="auth.isLoading">
                   <div class="spinner"></div>
                 </template>
-                <template v-else> Register </template>
+                <template v-else> Login </template>
               </button>
 
 
                 <!-- <button @click="loginUser" :disabled="auth.isLoading">{{ auth.isLoading ? 'signing in...' : 'Sign in' }}</button> -->
             </div>
+            <h3 @click="forgotP" class="forgotBut">Forgot Password?</h3>
             <h3>Don't have an account? <span @click="toggleRegister"> <em> Register</em></span></h3>
         </div>
 
